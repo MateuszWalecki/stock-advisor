@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Net.Mail;
 using System.Text.RegularExpressions;
 using StockAdvisor.Core.Exceptions;
@@ -7,14 +8,13 @@ namespace StockAdvisor.Core.Domain
 {
     public class User
     {
-        private static readonly Regex NameRegex = new Regex("^(?![_.-])(?!.*[_.-]{2})[a-zA-Z0-9._.-]+(?<![_.-])$");
-
         public Guid Id { get; protected set; }
         public string Email { get; protected set; }
         public string FirstName { get; protected set; }
         public string SurName { get; protected set; }
         public string Password { get; protected set; }
         public string Salt { get; protected set; }
+        public ISet<string> FavouriteCompaniesSymbols { get; protected set; } // by company symbol
         public DateTime CreatedAt { get; protected set; }
         public DateTime UpdatedAt { get; protected set; }
 
@@ -30,7 +30,9 @@ namespace StockAdvisor.Core.Domain
             SetFirstName(firstName);
             SetSurName(surName);
             SetPassword(password, salt);
-            CreatedAt = DateTime.UtcNow;
+            UpdatedAt = CreatedAt = DateTime.UtcNow;
+
+            FavouriteCompaniesSymbols = new HashSet<string>();
         }
 
 
@@ -125,6 +127,23 @@ namespace StockAdvisor.Core.Domain
             Password = password;
             Salt = salt;
             UpdatedAt = DateTime.UtcNow;
+        }
+
+        public void RemoveFromFavouriteCompanies(string companySymbol)
+        {
+            FavouriteCompaniesSymbols.Remove(companySymbol);
+            UpdatedAt = DateTime.Now;
+        }
+
+        public void AddToFavouriteCompanies(string companySymbol)
+        {
+            if (FavouriteCompaniesSymbols.Contains(companySymbol))
+            {
+                return;
+            }
+
+            FavouriteCompaniesSymbols.Add(companySymbol);
+            UpdatedAt = DateTime.Now;
         }
     }
 }

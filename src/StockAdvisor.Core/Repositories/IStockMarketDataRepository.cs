@@ -7,6 +7,6 @@ namespace StockAdvisor.Core.Repositories
     public interface IStockMarketDataRepository : IRepository
     {
         Task<IEnumerable<Company>> GetAllCompaniesAsync();
-        Task<IEnumerable<StockValue>> GetCompanyValueHistoryAsync(Company company);
+        Task<IEnumerable<StockValue>> GetCompanyValueHistoryAsync(string companySymbol);
     }
 }

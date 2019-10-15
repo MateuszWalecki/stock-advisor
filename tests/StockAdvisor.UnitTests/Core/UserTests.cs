@@ -1,4 +1,5 @@
 using System;
+using FluentAssertions;
 using StockAdvisor.Core.Domain;
 using StockAdvisor.Core.Exceptions;
 using Xunit;
@@ -152,6 +153,39 @@ namespace StockAdvisor.UnitTests.Core
 
             //Then
             Assert.Equal(newPw, user.Password);
+        }
+
+        [Fact]
+        public void when_company_is_not_in_favourites_it_could_be_added()
+        {
+            //Given
+            var user = GetValidUser();
+            string companySymbolToAdd = "ABCD";
+            DateTime userUpdateTime = user.UpdatedAt;
+
+            //When
+            user.AddToFavouriteCompanies(companySymbolToAdd);
+
+            //Then
+            Assert.Contains(companySymbolToAdd, user.FavouriteCompaniesSymbols);
+            Assert.NotEqual(user.UpdatedAt, userUpdateTime);
+        }
+
+        [Fact]
+        public void when_company_is_in_favourites_add_operation_does_not_affect()
+        {
+            //Given
+            var user = GetValidUser();
+            string companySymbolToAdd = "ABCD";
+            user.AddToFavouriteCompanies(companySymbolToAdd);
+            DateTime userUpdateTime = user.UpdatedAt;
+
+            //When
+            user.AddToFavouriteCompanies(companySymbolToAdd);
+
+            //Then
+            Assert.Contains(companySymbolToAdd, user.FavouriteCompaniesSymbols);
+            Assert.Equal(user.UpdatedAt, userUpdateTime);
         }
     }
 }
