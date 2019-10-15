@@ -8,15 +8,13 @@ namespace StockAdvisor.UnitTests.Core
     public class UserTests
     {
         string validEmail = "valid@example.com",
-            validUserName = "user1",
             validFirstName = "John",
             validSurName = "Rambo",
             validPassword = "Example1";
         Guid guid = Guid.NewGuid();
 
         public User GetValidUser()
-            => new User(guid, validEmail, validUserName, validFirstName,
-                validSurName, validPassword, "salt");
+            => new User(guid, validEmail, validFirstName, validSurName, validPassword, "salt");
         
         [Fact]
         public void user_can_be_created_if_given_data_is_valid()
@@ -24,13 +22,11 @@ namespace StockAdvisor.UnitTests.Core
             //Given
 
             //When
-            var user = new User(guid, validEmail, validUserName, validFirstName,
-                validSurName, validPassword, "salt");
+            var user = new User(guid, validEmail, validFirstName, validSurName, validPassword, "salt");
 
             //Then
             Assert.Equal(user.Id, guid);
             Assert.Equal(user.Email, validEmail);
-            Assert.Equal(user.UserName, validUserName);
             Assert.Equal(user.FirstName, validFirstName);
             Assert.Equal(user.SurName, validSurName);
             Assert.Equal(user.Password, validPassword);
@@ -43,22 +39,7 @@ namespace StockAdvisor.UnitTests.Core
             
             //When
             Action act = () =>
-                new User(guid, "invalidEmail", validUserName, validFirstName,
-                    validSurName, validPassword, "salt");
-
-            //Then
-            Assert.Throws<DomainException>(act);
-        }
-
-        [Fact]
-        public void given_invalid_username_while_creating_user_throws_domain_exception()
-        {
-            //Given
-            
-            //When
-            Action act = () =>
-                new User(guid, validEmail, "", validFirstName,
-                    validSurName, validPassword, "salt");
+                new User(guid, "invalidEmail", validFirstName, validSurName, validPassword, "salt");
 
             //Then
             Assert.Throws<DomainException>(act);
@@ -71,8 +52,7 @@ namespace StockAdvisor.UnitTests.Core
             
             //When
             Action act = () =>
-                new User(guid, validEmail, validUserName, "",
-                    validSurName, validPassword, "salt");
+                new User(guid, validEmail, "", validSurName, validPassword, "salt");
 
             //Then
             Assert.Throws<DomainException>(act);
@@ -85,8 +65,7 @@ namespace StockAdvisor.UnitTests.Core
             
             //When
             Action act = () =>
-                new User(guid, validEmail, validUserName, validFirstName,
-                    "", validPassword, "salt");
+                new User(guid, validEmail, validFirstName, "", validPassword, "salt");
 
             //Then
             Assert.Throws<DomainException>(act);
@@ -99,8 +78,7 @@ namespace StockAdvisor.UnitTests.Core
             
             //When
             Action act = () =>
-                new User(guid, validEmail, validUserName, validFirstName,
-                    validSurName, "", "salt");
+                new User(guid, validEmail, validFirstName, validSurName, "", "salt");
 
             //Then
             Assert.Throws<DomainException>(act);
@@ -121,17 +99,17 @@ namespace StockAdvisor.UnitTests.Core
         }
 
         [Fact]
-        public void users_user_name_can_be_changed()
+        public void users_email_are_saved_as_lower_invariant()
         {
             //Given
             var user = GetValidUser();
-            string newUserName = "newName";
+            string newEmail = "New@example.com";
 
             //When
-            user.SetUserName(newUserName);
+            user.SetEmail(newEmail);
 
             //Then
-            Assert.Equal(newUserName, user.UserName);
+            Assert.Equal(newEmail.ToLowerInvariant(), user.Email);
         }
 
         [Fact]

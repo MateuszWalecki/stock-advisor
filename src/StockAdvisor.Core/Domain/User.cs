@@ -11,7 +11,6 @@ namespace StockAdvisor.Core.Domain
 
         public Guid Id { get; protected set; }
         public string Email { get; protected set; }
-        public string UserName { get; protected set; }
         public string FirstName { get; protected set; }
         public string SurName { get; protected set; }
         public string Password { get; protected set; }
@@ -23,12 +22,11 @@ namespace StockAdvisor.Core.Domain
         {
         }
 
-        public User(Guid userId, string emailAddress, string userName, string firstName, 
+        public User(Guid userId, string emailAddress, string firstName, 
              string surName,string password, string salt)
         {
             Id = userId;
             SetEmail(emailAddress);
-            SetUserName(userName);
             SetFirstName(firstName);
             SetSurName(surName);
             SetPassword(password, salt);
@@ -38,6 +36,8 @@ namespace StockAdvisor.Core.Domain
 
         public void SetEmail(string emailAddress)
         {
+            emailAddress = emailAddress.ToLowerInvariant();
+
             try
             {
                 var addr = new MailAddress(emailAddress);
@@ -55,30 +55,6 @@ namespace StockAdvisor.Core.Domain
             }
 
             Email = emailAddress;
-            UpdatedAt = DateTime.UtcNow;
-        }
-        
-        public void SetUserName(string username) 
-        {
-            if(!NameRegex.IsMatch(username))
-            {
-                throw new DomainException(ErrorCodes.InvalidUsername, 
-                    "Username is invalid.");
-            }
-
-            if (String.IsNullOrEmpty(username))
-            {
-                throw new DomainException(ErrorCodes.InvalidUsername, 
-                    "Username is invalid.");
-            }
-
-            if (UserName == username)
-            {
-                throw new DomainException(ErrorCodes.InvalidUsername, 
-                    "New username cannot be equal to the currently used.");
-            }
-
-            UserName = username;
             UpdatedAt = DateTime.UtcNow;
         }
 

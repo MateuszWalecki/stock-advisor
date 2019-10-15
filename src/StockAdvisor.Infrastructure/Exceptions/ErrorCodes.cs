@@ -1,0 +1,8 @@
+namespace StockAdvisor.Infrastructure.Exceptions
+{
+    public static class ErrorCodes
+    {
+        public static string UserNotFound => "user_not_found";
+        public static string EmailInUse => "email_is_in_use";
+    }
+}
