@@ -2,6 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>Infrastructure</AssemblyName>
+    <PackageId>Infrastructure</PackageId>
   </PropertyGroup>
 
   <ItemGroup>

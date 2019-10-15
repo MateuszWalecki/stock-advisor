@@ -20,6 +20,12 @@ namespace StockAdvisor.Infrastructure.Services
         {
             var user = await _userRepository.GetAsync(email);
 
+            if (user == null)
+            {
+                throw new ServiceException(ErrorCodes.UserNotFound,
+                    $"User with email {email} does not exist.");
+            }
+
             return new UserDto
             {
                 Id = user.Id,
