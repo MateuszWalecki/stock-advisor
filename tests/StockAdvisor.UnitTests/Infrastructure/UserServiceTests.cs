@@ -22,6 +22,24 @@ namespace StockAdvisor.UnitTests.Infrastructure
         readonly Guid _id = Guid.NewGuid();
 
         [Fact]
+        public async Task get_async_should_invoke_get_async_on_repository()
+        {
+            //Given
+            var user = GetDefaultUser();
+
+            var userRepositoryMock = new Mock<IUserRepository>();
+            userRepositoryMock.Setup(x => x.GetAsync(_email))
+                              .Returns(Task.FromResult(user));
+            
+            var userService = new UserService(userRepositoryMock.Object);
+            await userService.GetAsync(_email);
+
+            //When 
+            //Then
+            userRepositoryMock.Verify(x => x.GetAsync(_email), Times.Once);
+        }
+
+        [Fact]
         public async Task get_async_returns_mapped_user_if_exists()
         {
             //Given
@@ -72,10 +90,11 @@ namespace StockAdvisor.UnitTests.Infrastructure
             var userRepositoryMock = new Mock<IUserRepository>();
             
             var userService = new UserService(userRepositoryMock.Object);
-            await userService.RegisterAsync(_email, _firstname,
-                _surname, _password);
 
             //When 
+            await userService.RegisterAsync(_email, _firstname,
+                _surname, _password);
+                
             //Then
             userRepositoryMock.Verify(x => x.AddAsync(It.IsAny<User>()), Times.Once);
         }
