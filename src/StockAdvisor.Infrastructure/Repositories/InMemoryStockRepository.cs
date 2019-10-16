@@ -50,15 +50,11 @@ namespace StockAdvisor.Infrastructure.Repositories
 
         public async Task<IEnumerable<StockValue>> GetCompanyValueHistoryAsync(string companySymbol)
         {
-            var stockValues = _values[companySymbol];
+            IEnumerable<StockValue> stockValues;
+            bool found = _values.TryGetValue(companySymbol, out stockValues);
 
-            if (stockValues == null)
-            {
-                throw new ServiceException(ErrorCodes.CompanyNotFound,
-                    $"Given company cannot be found. Symbol: {companySymbol}.");
-            }
-
-            return await Task.FromResult(stockValues);
+            return found ? await Task.FromResult(stockValues) :
+                           await Task.FromResult((IEnumerable<StockValue>)null);
         }
     }
 }
