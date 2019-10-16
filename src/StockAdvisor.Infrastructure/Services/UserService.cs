@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using StockAdvisor.Core.Domain;
 using StockAdvisor.Core.Repositories;
@@ -33,7 +34,7 @@ namespace StockAdvisor.Infrastructure.Services
                 FirstName = user.FirstName,
                 SurName = user.SurName,
                 CreatedAt = user.CreatedAt,
-                UpdatedAt = user.UpdatedAt
+                UpdatedAt = user.UpdatedAt,
             };
         }
 

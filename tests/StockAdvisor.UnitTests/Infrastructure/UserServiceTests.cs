@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Moq;
@@ -32,7 +33,7 @@ namespace StockAdvisor.UnitTests.Infrastructure
                 FirstName = user.FirstName,
                 SurName = user.SurName,
                 CreatedAt = user.CreatedAt,
-                UpdatedAt = user.UpdatedAt
+                UpdatedAt = user.UpdatedAt,
             };
 
             var userRepository = new Mock<IUserRepository>();
@@ -43,11 +44,11 @@ namespace StockAdvisor.UnitTests.Infrastructure
             var userDto = await userService.GetAsync(_email);
 
             //Then
-            expectedUserDto.Should().BeEquivalentTo(userDto, options =>
+            userDto.Should().BeEquivalentTo(expectedUserDto, options =>
                 options.ExcludingNestedObjects());
         }
-        [Fact]
 
+        [Fact]
         public async Task get_async_throws_service_exception_if_user_does_not_exists()
         {
             //Given

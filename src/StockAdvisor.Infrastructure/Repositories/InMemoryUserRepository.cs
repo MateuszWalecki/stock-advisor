@@ -10,7 +10,7 @@ namespace StockAdvisor.Infrastructure.Repositories
 {
     public class InMemoryUserRepository : IUserRepository
     {
-        private static ISet<User> _users = new HashSet<User>
+        private static readonly ISet<User> _users = new HashSet<User>
         {
             new User(Guid.NewGuid(), "first@example.com", "John", "Rambo", "Password1", "salt"),
             new User(Guid.NewGuid(), "second@example.com", "Sylvester", "Stalone", "Password2", "salt"),

@@ -9,7 +9,7 @@ namespace StockAdvisor.Infrastructure.Repositories
 {
     public class InMemoryStockRepository : IStockMarketDataRepository
     {
-        private static ISet<Company> _companies = new HashSet<Company>
+        private static readonly ISet<Company> _companies = new HashSet<Company>
         {
             new Company("AAPL", "Apple Inc."),
             new Company("MSFT", "Microsoft Corporation"),

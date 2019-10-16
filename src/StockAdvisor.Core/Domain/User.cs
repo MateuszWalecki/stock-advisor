@@ -14,7 +14,6 @@ namespace StockAdvisor.Core.Domain
         public string SurName { get; protected set; }
         public string Password { get; protected set; }
         public string Salt { get; protected set; }
-        public ISet<string> FavouriteCompaniesSymbols { get; protected set; } // by company symbol
         public DateTime CreatedAt { get; protected set; }
         public DateTime UpdatedAt { get; protected set; }
 
@@ -31,8 +30,6 @@ namespace StockAdvisor.Core.Domain
             SetSurName(surName);
             SetPassword(password, salt);
             UpdatedAt = CreatedAt = DateTime.UtcNow;
-
-            FavouriteCompaniesSymbols = new HashSet<string>();
         }
 
 
@@ -127,23 +124,6 @@ namespace StockAdvisor.Core.Domain
             Password = password;
             Salt = salt;
             UpdatedAt = DateTime.UtcNow;
-        }
-
-        public void RemoveFromFavouriteCompanies(string companySymbol)
-        {
-            FavouriteCompaniesSymbols.Remove(companySymbol);
-            UpdatedAt = DateTime.Now;
-        }
-
-        public void AddToFavouriteCompanies(string companySymbol)
-        {
-            if (FavouriteCompaniesSymbols.Contains(companySymbol))
-            {
-                return;
-            }
-
-            FavouriteCompaniesSymbols.Add(companySymbol);
-            UpdatedAt = DateTime.Now;
         }
     }
 }
