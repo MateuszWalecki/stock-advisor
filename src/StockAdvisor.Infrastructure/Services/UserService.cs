@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using AutoMapper;
 using StockAdvisor.Core.Domain;
 using StockAdvisor.Core.Repositories;
 using StockAdvisor.Infrastructure.DTO;
@@ -11,10 +12,12 @@ namespace StockAdvisor.Infrastructure.Services
     public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
+        private readonly IMapper _mapper;
 
-        public UserService(IUserRepository userRepository)
+        public UserService(IUserRepository userRepository, IMapper mapper)
         {
             _userRepository = userRepository;
+            _mapper = mapper;
         }
 
         public async Task<UserDto> GetAsync(string email)
@@ -27,15 +30,7 @@ namespace StockAdvisor.Infrastructure.Services
                     $"User with email {email} does not exist.");
             }
 
-            return new UserDto
-            {
-                Id = user.Id,
-                Email = user.Email,
-                FirstName = user.FirstName,
-                SurName = user.SurName,
-                CreatedAt = user.CreatedAt,
-                UpdatedAt = user.UpdatedAt,
-            };
+            return _mapper.Map<User, UserDto>(user);
         }
 
         public async Task RegisterAsync(string email, string firstName,

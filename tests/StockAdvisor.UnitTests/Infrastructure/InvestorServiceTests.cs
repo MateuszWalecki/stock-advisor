@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using AutoMapper;
 using FluentAssertions;
 using Moq;
 using StockAdvisor.Core.Domain;
@@ -25,7 +26,9 @@ namespace StockAdvisor.UnitTests.Infrastructure
             investorRepositoryMock.Setup(x => x.GetAsync(userId))
                                   .Returns(Task.FromResult((Investor)null));
 
-            var investorService = new InvestorService(investorRepositoryMock.Object);
+            var mapperMock = new Mock<IMapper>();
+
+            var investorService = new InvestorService(investorRepositoryMock.Object, mapperMock.Object);
 
             //When
             await investorService.RegisterAsync(userId);
@@ -45,7 +48,10 @@ namespace StockAdvisor.UnitTests.Infrastructure
             investorRepositoryMock.Setup(x => x.GetAsync(userId))
                                   .Returns(Task.FromResult(investor));
 
-            var investorService = new InvestorService(investorRepositoryMock.Object);
+
+            var mapperMock = new Mock<IMapper>();
+
+            var investorService = new InvestorService(investorRepositoryMock.Object, mapperMock.Object);
 
             //When
             Func<Task> act = () => investorService.RegisterAsync(userId);
@@ -66,7 +72,10 @@ namespace StockAdvisor.UnitTests.Infrastructure
             investorRepositoryMock.Setup(x => x.GetAsync(userId))
                                   .Returns(Task.FromResult(investor));
 
-            var investorService = new InvestorService(investorRepositoryMock.Object);
+
+            var mapperMock = new Mock<IMapper>();
+
+            var investorService = new InvestorService(investorRepositoryMock.Object, mapperMock.Object);
 
             //When
             await investorService.GetAsync(userId);
@@ -76,7 +85,7 @@ namespace StockAdvisor.UnitTests.Infrastructure
         }
 
         [Fact]
-        public async Task get_async_returns_dto_of_the_investor_if_it_exists()
+        public async Task get_async_returns_mapped_investor_if_it_exists()
         {
             //Given
             var userId = Guid.NewGuid();
@@ -95,13 +104,19 @@ namespace StockAdvisor.UnitTests.Infrastructure
             investorRepositoryMock.Setup(x => x.GetAsync(userId))
                                   .Returns(Task.FromResult(investor));
 
-            var investorService = new InvestorService(investorRepositoryMock.Object);
+
+            var mapperMock = new Mock<IMapper>();
+            mapperMock.Setup(x => x.Map<Investor, InvestorDto>(It.IsAny<Investor>()))
+                      .Returns(expectedInvestorDto);
+
+            var investorService = new InvestorService(investorRepositoryMock.Object, mapperMock.Object);
 
             //When
             var occuredInvestorDto = await investorService.GetAsync(userId);
             
             //Then
             occuredInvestorDto.Should().BeEquivalentTo(expectedInvestorDto);
+            mapperMock.Verify(x => x.Map<Investor, InvestorDto>(It.IsAny<Investor>()), Times.Once);
         }
 
         [Fact]
@@ -114,7 +129,10 @@ namespace StockAdvisor.UnitTests.Infrastructure
             investorRepositoryMock.Setup(x => x.GetAsync(userId))
                                   .Returns(Task.FromResult((Investor)null));
 
-            var investorService = new InvestorService(investorRepositoryMock.Object);
+
+            var mapperMock = new Mock<IMapper>();
+
+            var investorService = new InvestorService(investorRepositoryMock.Object, mapperMock.Object);
 
             //When
             Func<Task<InvestorDto>> act = () => investorService.GetAsync(userId);

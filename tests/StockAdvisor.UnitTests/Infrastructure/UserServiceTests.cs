@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using AutoMapper;
 using FluentAssertions;
 using Moq;
 using StockAdvisor.Core.Domain;
@@ -30,8 +31,10 @@ namespace StockAdvisor.UnitTests.Infrastructure
             var userRepositoryMock = new Mock<IUserRepository>();
             userRepositoryMock.Setup(x => x.GetAsync(_email))
                               .Returns(Task.FromResult(user));
-            
-            var userService = new UserService(userRepositoryMock.Object);
+
+            var mapperMock = new Mock<IMapper>();
+
+            var userService = new UserService(userRepositoryMock.Object, mapperMock.Object);
             await userService.GetAsync(_email);
 
             //When 
@@ -54,9 +57,14 @@ namespace StockAdvisor.UnitTests.Infrastructure
                 UpdatedAt = user.UpdatedAt,
             };
 
-            var userRepository = new Mock<IUserRepository>();
-            userRepository.Setup(x => x.GetAsync(_email)).Returns(Task.FromResult(user));
-            var userService = new UserService(userRepository.Object);
+            var userRepositoryMock = new Mock<IUserRepository>();
+            userRepositoryMock.Setup(x => x.GetAsync(_email)).Returns(Task.FromResult(user));
+
+            var mapperMock = new Mock<IMapper>();
+            mapperMock.Setup(x => x.Map<User, UserDto>(It.IsAny<User>()))
+                      .Returns(expectedUserDto);
+
+            var userService = new UserService(userRepositoryMock.Object, mapperMock.Object);
 
             //When
             var userDto = await userService.GetAsync(_email);
@@ -64,17 +72,20 @@ namespace StockAdvisor.UnitTests.Infrastructure
             //Then
             userDto.Should().BeEquivalentTo(expectedUserDto, options =>
                 options.ExcludingNestedObjects());
+            mapperMock.Verify(x => x.Map<User, UserDto>(It.IsAny<User>()), Times.Once);
         }
 
         [Fact]
         public async Task get_async_throws_service_exception_if_user_does_not_exists()
         {
             //Given
-            var userRepository = new Mock<IUserRepository>();
-            userRepository.Setup(x => x.GetAsync(_email))
+            var userRepositoryMock = new Mock<IUserRepository>();
+            userRepositoryMock.Setup(x => x.GetAsync(_email))
                           .Returns(Task.FromResult((User)null));
             
-            var userService = new UserService(userRepository.Object);
+            var mapperMock = new Mock<IMapper>();
+
+            var userService = new UserService(userRepositoryMock.Object, mapperMock.Object);
 
             //When
             Func<Task<UserDto>> act = () => userService.GetAsync(_email);
@@ -89,12 +100,14 @@ namespace StockAdvisor.UnitTests.Infrastructure
             //Given
             var userRepositoryMock = new Mock<IUserRepository>();
             
-            var userService = new UserService(userRepositoryMock.Object);
+            var mapperMock = new Mock<IMapper>();
+
+            var userService = new UserService(userRepositoryMock.Object, mapperMock.Object);
 
             //When 
             await userService.RegisterAsync(_email, _firstname,
                 _surname, _password);
-                
+
             //Then
             userRepositoryMock.Verify(x => x.AddAsync(It.IsAny<User>()), Times.Once);
         }
@@ -107,7 +120,9 @@ namespace StockAdvisor.UnitTests.Infrastructure
             userRepositoryMock.Setup(x => x.GetAsync(_email))
                               .Returns(Task.FromResult(GetDefaultUser()));
             
-            var userService = new UserService(userRepositoryMock.Object);
+            var mapperMock = new Mock<IMapper>();
+
+            var userService = new UserService(userRepositoryMock.Object, mapperMock.Object);
 
             //When 
             Func<Task> act = () => userService.RegisterAsync(_email, _firstname, _surname, _password); 
