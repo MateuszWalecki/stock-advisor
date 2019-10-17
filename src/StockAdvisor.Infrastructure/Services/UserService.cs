@@ -20,6 +20,14 @@ namespace StockAdvisor.Infrastructure.Services
             _mapper = mapper;
         }
 
+        public async Task ChangeUserPasswordAsync(Guid userId,
+            string newPassword, string oldPassword)
+        {
+            var user = await _userRepository.GetAsync(userId);
+            
+            user.ChangePassword(newPassword, oldPassword, "salt");
+        }
+
         public async Task<UserDto> GetAsync(string email)
         {
             var user = await _userRepository.GetAsync(email);
@@ -34,7 +42,7 @@ namespace StockAdvisor.Infrastructure.Services
 
             if (existingUser != null)
             {
-                throw new ServiceException(ErrorCodes.EmailInUse,
+                throw new ServiceException(ServiceErrorCodes.EmailInUse,
                     "Given email is in use.");
             }
 

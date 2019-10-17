@@ -97,6 +97,34 @@ namespace StockAdvisor.EndToEndTests.Controllers
             response.Headers.Location.Should().BeNull();
         }
 
+        //TODO: when exception is thrown from the core or infrastructore
+        // [Fact]
+        // public async Task short_name()
+        // {
+        //     //Given
+        //     string email = "new_user@email.com",
+	    //         firstName = "",
+	    //         surName = "Suarez",
+	    //         password = "FCBarcelona1";
+
+        //     var creauteUserRequest = new CreateUserCommand
+        //     {
+        //         Email = email,
+        //         FirstName = firstName,
+        //         SurName = surName,
+        //         Password = password
+        //     };
+            
+        //     var payload = GetPayload(creauteUserRequest);
+
+        //     //When
+        //     var response = await Client.PostAsync("users", payload);
+        //     var resopnseString = await response.Content.ReadAsStringAsync();
+
+        //     //Then
+        //     
+        // }
+
         private async Task<UserDto> GetUserAsync(string email)
         {
             var response = await Client.GetAsync($"users/{email}");

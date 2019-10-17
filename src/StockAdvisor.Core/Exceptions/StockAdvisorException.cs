@@ -32,6 +32,6 @@ namespace StockAdvisor.Core.Exceptions
             : base(string.Format(message, args), innerException)
         {
             Code = code;
-        }        
+        }
     }
 }

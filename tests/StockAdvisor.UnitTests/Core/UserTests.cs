@@ -141,18 +141,18 @@ namespace StockAdvisor.UnitTests.Core
             Assert.Equal(newSurname, user.SurName);
         }
         
-        [Fact]
-        public void users_password_can_be_changed()
-        {
-            //Given
-            var user = GetValidUser();
-            string newPw = "newPassword2";
+        // [Fact]
+        // public void users_password_can_be_changed()
+        // {
+        //     //Given
+        //     var user = GetValidUser();
+        //     string newPw = "newPassword2";
 
-            //When
-            user.SetPassword(newPw, "newSalt");
+        //     //When
+        //     user.SetPassword(newPw, "newSalt");
 
-            //Then
-            Assert.Equal(newPw, user.Password);
-        }
+        //     //Then
+        //     Assert.Equal(newPw, user.Password);
+        // }
     }
 }

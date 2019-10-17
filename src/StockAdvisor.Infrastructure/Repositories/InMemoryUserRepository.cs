@@ -40,7 +40,7 @@ namespace StockAdvisor.Infrastructure.Repositories
 
             if (userToDelte == null)
             {
-                throw new ServiceException(ErrorCodes.UserNotFound,
+                throw new ServiceException(ServiceErrorCodes.UserNotFound,
                     "User not found.");
             }
 

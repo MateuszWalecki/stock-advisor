@@ -93,7 +93,25 @@ namespace StockAdvisor.Core.Domain
             UpdatedAt = DateTime.UtcNow;
         }
 
-        public void SetPassword(string password, string salt)
+        public void ChangePassword(string newPassword, string oldPassword,
+            string salt)
+        {
+            if (oldPassword != newPassword)
+            {
+                throw new DomainException(ErrorCodes.PasswordDoesNotMach,
+                    "Current password does not match.");
+            }
+
+            if (newPassword == Password)
+            {
+                throw new DomainException(ErrorCodes.PasswordsSame,
+                    "This password is currently used.");
+            }
+
+            SetPassword(newPassword, salt);
+        }
+
+        private void SetPassword(string password, string salt)
         {
             if (string.IsNullOrWhiteSpace(password))
             {

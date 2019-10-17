@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Autofac;
+using Autofac.Extensions.DependencyInjection;
 using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -12,6 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using StockAdvisor.Core.Repositories;
+using StockAdvisor.Infrastructure.IoC.Modules;
 using StockAdvisor.Infrastructure.Mappers;
 using StockAdvisor.Infrastructure.Repositories;
 using StockAdvisor.Infrastructure.Services;
@@ -20,15 +23,16 @@ namespace StockAdvisor.Api
 {
     public class Startup
     {
+        public IConfiguration Configuration { get; }
+        public IContainer ApplicationContainer {get; private set; }
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
 
-        public IConfiguration Configuration { get; }
-
         // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
+        public IServiceProvider ConfigureServices(IServiceCollection services)
         {
             services.AddScoped<IUserRepository, InMemoryUserRepository>();
             services.AddScoped<IUserService, UserService>();
@@ -37,10 +41,19 @@ namespace StockAdvisor.Api
             services.AddSingleton(AutoMapperConfig.Initailize());
 
             services.AddControllers();
+
+            var builder = new ContainerBuilder();
+            builder.Populate(services);
+            builder.RegisterModule<CommandModule>();
+            
+            ApplicationContainer = builder.Build();
+
+            return new AutofacServiceProvider(ApplicationContainer);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, 
+            IHostApplicationLifetime hostApplicationLifetime)
         {
             if (env.IsDevelopment())
             {
@@ -57,6 +70,9 @@ namespace StockAdvisor.Api
             {
                 endpoints.MapControllers();
             });
+
+            hostApplicationLifetime.ApplicationStopped.Register(() => 
+                ApplicationContainer.Dispose());
         }
     }
 }

@@ -37,7 +37,7 @@ namespace StockAdvisor.Infrastructure.Services
 
             if (investor != null)
             {
-                throw new ServiceException(ErrorCodes.InvestorExists,
+                throw new ServiceException(ServiceErrorCodes.InvestorExists,
                     $"Cannot register investor related with user with id {userId}, " +
                     "because it already exists.");
             }

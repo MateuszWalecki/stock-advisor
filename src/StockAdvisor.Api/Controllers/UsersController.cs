@@ -4,18 +4,22 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using StockAdvisor.Core.Exceptions;
+using StockAdvisor.Infrastructure.Commands;
 using StockAdvisor.Infrastructure.Commands.Users;
 using StockAdvisor.Infrastructure.DTO;
+using StockAdvisor.Infrastructure.Exceptions;
 using StockAdvisor.Infrastructure.Services;
 
 namespace StockAdvisor.Api.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
-    public class UsersController : ControllerBase
+    public class UsersController : ApiControllerBase
     {
         private readonly IUserService _userService;
-        public UsersController(IUserService userService)
+
+        public UsersController(IUserService userService, ICommandDispatcher commandDistatcher)
+            : base(commandDistatcher)
         {
             _userService = userService;
         }
@@ -35,20 +39,22 @@ namespace StockAdvisor.Api.Controllers
 
         // FromBody attribute provides conversion from the json request to the CreateUser command
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody]CreateUserCommand user)
+        public async Task<IActionResult> Register([FromBody]CreateUserCommand command)
         {
-            var repositoryUser = await _userService.GetAsync(user.Email);
-
-            if (repositoryUser != null)
+            try
             {
-                return Conflict($"Given email {user.Email} is already used.");
+                await CommandDistatcher.DispatchAsync(command);
             }
-            
-            await _userService.RegisterAsync(user.Email, user.FirstName, user.SurName,
-                user.Password);
-                
+            catch (ServiceException e)
+            {
+                if (e.Code == ServiceErrorCodes.EmailInUse)
+                {
+                    return Conflict(e.Message);
+                }
+            }
+
             // can add created user in the last parameter that is null in current implementation
-            return CreatedAtAction(nameof(Get), new { email = user.Email }, null);
+            return CreatedAtAction(nameof(Get), new { email = command.Email }, null);
         }
     }
 }

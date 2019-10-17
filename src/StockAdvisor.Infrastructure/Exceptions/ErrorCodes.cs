@@ -1,6 +1,6 @@
 namespace StockAdvisor.Infrastructure.Exceptions
 {
-    public static class ErrorCodes
+    public static class ServiceErrorCodes
     {
         public static string UserNotFound => "user_not_found";
         public static string InvestorNotFound => "investor_not_found";
