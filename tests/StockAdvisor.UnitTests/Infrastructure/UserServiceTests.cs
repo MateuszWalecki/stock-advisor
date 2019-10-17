@@ -76,7 +76,7 @@ namespace StockAdvisor.UnitTests.Infrastructure
         }
 
         [Fact]
-        public async Task get_async_throws_service_exception_if_user_does_not_exists()
+        public async Task get_async_returns_null_if_user_does_not_exists()
         {
             //Given
             var userRepositoryMock = new Mock<IUserRepository>();
@@ -88,10 +88,10 @@ namespace StockAdvisor.UnitTests.Infrastructure
             var userService = new UserService(userRepositoryMock.Object, mapperMock.Object);
 
             //When
-            Func<Task<UserDto>> act = () => userService.GetAsync(_email);
+            var user = await userService.GetAsync(_email);
 
             //Then
-            await Assert.ThrowsAsync<ServiceException>(act);
+            user.Should().BeNull();
         }
 
         [Fact]

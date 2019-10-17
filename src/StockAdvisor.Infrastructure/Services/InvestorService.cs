@@ -28,12 +28,6 @@ namespace StockAdvisor.Infrastructure.Services
         {
             var investor = await _investorRepository.GetAsync(userId);
 
-            if (investor == null)
-            {
-                throw new ServiceException(ErrorCodes.InvestorNotFound,
-                    $"Investor related with user with id {userId} does not exist.");
-            }
-
             return _mapper.Map<Investor, InvestorDto>(investor);
         }
 
