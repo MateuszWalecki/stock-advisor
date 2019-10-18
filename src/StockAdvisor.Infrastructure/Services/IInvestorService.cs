@@ -4,7 +4,7 @@ using StockAdvisor.Infrastructure.DTO;
 
 namespace StockAdvisor.Infrastructure.Services
 {
-    public interface IInvestorService
+    public interface IInvestorService : IService
     {
         Task<InvestorDto> GetAsync(Guid userId);
         Task RegisterAsync(Guid userId);

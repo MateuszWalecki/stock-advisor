@@ -4,12 +4,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using StockAdvisor.Core.Exceptions;
 using StockAdvisor.Infrastructure.Commands;
 using StockAdvisor.Infrastructure.Commands.Users;
 using StockAdvisor.Infrastructure.DTO;
 using StockAdvisor.Infrastructure.Exceptions;
 using StockAdvisor.Infrastructure.Services;
+using StockAdvisor.Infrastructure.Settings;
 
 namespace StockAdvisor.Api.Controllers
 {

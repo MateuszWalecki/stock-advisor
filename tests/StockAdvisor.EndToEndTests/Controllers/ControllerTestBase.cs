@@ -1,23 +1,22 @@
 using System.Net.Http;
 using System.Text;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Newtonsoft.Json;
 using StockAdvisor.Api;
+using Xunit;
 
 namespace StockAdvisor.EndToEndTests.Controllers
 {
     public class ControllerTestBase
+        : IClassFixture<WebApplicationFactory<Startup>>
     {
-        protected readonly TestServer Server;
-        protected readonly HttpClient Client;
+        protected readonly WebApplicationFactory<Startup> _factory;
 
-        protected ControllerTestBase()
+        protected ControllerTestBase(WebApplicationFactory<Startup> factory)
         {
-            Server = new TestServer(new WebHostBuilder()
-                .UseStartup<Startup>());
-            
-            Client = Server.CreateClient();
+            _factory = factory;
         }
 
         

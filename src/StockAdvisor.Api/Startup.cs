@@ -14,10 +14,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using StockAdvisor.Core.Repositories;
-using StockAdvisor.Infrastructure.IoC.Modules;
+using StockAdvisor.Infrastructure.IoC;
 using StockAdvisor.Infrastructure.Mappers;
 using StockAdvisor.Infrastructure.Repositories;
 using StockAdvisor.Infrastructure.Services;
+using StockAdvisor.Infrastructure.Settings;
 
 namespace StockAdvisor.Api
 {
@@ -32,23 +33,14 @@ namespace StockAdvisor.Api
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public IServiceProvider ConfigureServices(IServiceCollection services)
+        public void ConfigureServices(IServiceCollection services)
         {
-            services.AddScoped<IUserRepository, InMemoryUserRepository>();
-            services.AddScoped<IUserService, UserService>();
-            services.AddScoped<IInvestorRepository, InMemoryInvestorRepository>();
-            services.AddScoped<IInvestorService, InvestorService>();
-            services.AddSingleton(AutoMapperConfig.Initailize());
-
             services.AddControllers();
+        }
 
-            var builder = new ContainerBuilder();
-            builder.Populate(services);
-            builder.RegisterModule<CommandModule>();
-            
-            ApplicationContainer = builder.Build();
-
-            return new AutofacServiceProvider(ApplicationContainer);
+        public void ConfigureContainer(ContainerBuilder builder)
+        {
+            builder.RegisterModule(new ContainerModule(Configuration));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

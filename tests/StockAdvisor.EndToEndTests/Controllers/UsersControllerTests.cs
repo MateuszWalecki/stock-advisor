@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Newtonsoft.Json;
 using StockAdvisor.Api;
@@ -15,14 +16,20 @@ namespace StockAdvisor.EndToEndTests.Controllers
 {
     public class UsersControllerTests : ControllerTestBase
     {
+        public UsersControllerTests(WebApplicationFactory<Startup> factory)
+            : base(factory)
+        {
+        }
+        
         [Fact]
         public async Task given_valid_email_user_is_returned()
         {
             //Given
+            var client = _factory.CreateClient();
             var email = "first@example.com";
 
             //When
-            var response = await Client.GetAsync($"users/{email}");
+            var response = await client.GetAsync($"users/{email}");
             var responseString = await response.Content.ReadAsStringAsync();
             var user = JsonConvert.DeserializeObject<UserDto>(responseString);
             
@@ -35,10 +42,11 @@ namespace StockAdvisor.EndToEndTests.Controllers
         public async Task given_invalid_email_user_is_not_returned()
         {
             //Given
+            var client = _factory.CreateClient();
             var email = "bademail@example.com";
 
             //When
-            var response = await Client.GetAsync($"users/{email}");
+            var response = await client.GetAsync($"users/{email}");
             
             //Then
             response.StatusCode.Should().BeEquivalentTo(HttpStatusCode.NotFound);
@@ -48,6 +56,7 @@ namespace StockAdvisor.EndToEndTests.Controllers
         public async Task given_unused_email_user_is_created_and_user_location_is_returen_with_status_created()
         {
             //Given
+            var client = _factory.CreateClient();
             string email = "new_user@email.com",
 	            firstName = "Luis",
 	            surName = "Suarez",
@@ -64,14 +73,14 @@ namespace StockAdvisor.EndToEndTests.Controllers
             var payload = GetPayload(creauteUserRequest);
 
             //When
-            var response = await Client.PostAsync("users", payload);
+            var response = await client.PostAsync("users", payload);
             var resopnseString = await response.Content.ReadAsStringAsync();
 
             //Then
             response.StatusCode.Should().BeEquivalentTo(HttpStatusCode.Created);
             response.Headers.Location.AbsolutePath.Should().BeEquivalentTo($"/users/{email}");
 
-            var user = await GetUserAsync(email);
+            var user = await GetUserAsync(client, email);
             user.Email.Should().BeEquivalentTo(email);
         }
 
@@ -79,6 +88,7 @@ namespace StockAdvisor.EndToEndTests.Controllers
         public async Task trying_to_create_user_with_currently_used_email_returns_conflict_status()
         {
             //Given
+            var client = _factory.CreateClient();
             string usedEmail = "first@example.com";
             var creauteUserRequest = new CreateUserCommand
             {
@@ -90,7 +100,7 @@ namespace StockAdvisor.EndToEndTests.Controllers
             var payload = GetPayload(creauteUserRequest);
 
             //When
-            var response = await Client.PostAsync("users", payload);
+            var response = await client.PostAsync("users", payload);
 
             //Then
             response.StatusCode.Should().BeEquivalentTo(HttpStatusCode.Conflict);
@@ -125,9 +135,10 @@ namespace StockAdvisor.EndToEndTests.Controllers
         //     
         // }
 
-        private async Task<UserDto> GetUserAsync(string email)
+        private static async Task<UserDto> GetUserAsync(HttpClient client,
+            string email)
         {
-            var response = await Client.GetAsync($"users/{email}");
+            var response = await client.GetAsync($"users/{email}");
             var responseString = await response.Content.ReadAsStringAsync();
             return JsonConvert.DeserializeObject<UserDto>(responseString); 
         }
