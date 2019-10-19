@@ -20,7 +20,7 @@ namespace StockAdvisor.Infrastructure.Handlers.Users
 
             if (repositoryUser != null)
             {
-                throw new ServiceException(ServiceErrorCodes.EmailInUse,
+                throw new ServiceException(ErrorCodes.EmailInUse,
                     $"Given email {command.Email} is already used.");
             }
 

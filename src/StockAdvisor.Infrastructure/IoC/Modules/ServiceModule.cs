@@ -16,6 +16,14 @@ namespace StockAdvisor.Infrastructure.IoC.Modules
                    .Where(x => x.IsAssignableTo<IService>())
                    .AsImplementedInterfaces()
                    .InstancePerLifetimeScope();
+
+            builder.RegisterType<Encrypter>()
+                    .As<IEncrypter>()
+                    .SingleInstance();
+
+            builder.RegisterType<JwtHandler>()
+                    .As<IJwtHandler>()
+                    .SingleInstance();
         }
     }
 }

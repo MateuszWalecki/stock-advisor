@@ -34,7 +34,7 @@ namespace StockAdvisor.Infrastructure.Repositories
         {
             if (!_investors.Contains(investor))
             {
-                throw new ServiceException(ServiceErrorCodes.InvestorNotFound,
+                throw new ServiceException(ErrorCodes.InvestorNotFound,
                     "Investor cannot be removed from the repository, because it does not exists there.");
             }
 

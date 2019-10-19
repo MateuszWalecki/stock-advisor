@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -26,6 +27,7 @@ namespace StockAdvisor.Api.Controllers
             _userService = userService;
         }
 
+        [Authorize]
         [HttpGet("{email}")]
         public async Task<IActionResult> Get(string email)
         {
@@ -49,9 +51,9 @@ namespace StockAdvisor.Api.Controllers
             }
             catch (ServiceException e)
             {
-                if (e.Code == ServiceErrorCodes.EmailInUse)
+                if (e.Code == Infrastructure.Exceptions.ErrorCodes.EmailInUse)
                 {
-                    return Conflict(e.Message);
+                    return base.Conflict(e.Message);
                 }
             }
 

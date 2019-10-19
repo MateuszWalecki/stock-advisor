@@ -12,7 +12,7 @@ namespace StockAdvisor.Core.Domain
         public string Email { get; protected set; }
         public string FirstName { get; protected set; }
         public string SurName { get; protected set; }
-        public string Password { get; protected set; }
+        public string PasswordHash { get; protected set; }
         public string Salt { get; protected set; }
         public DateTime CreatedAt { get; protected set; }
         public DateTime UpdatedAt { get; protected set; }
@@ -93,27 +93,29 @@ namespace StockAdvisor.Core.Domain
             UpdatedAt = DateTime.UtcNow;
         }
 
-        public void ChangePassword(string newPassword, string oldPassword,
+        public void ChangePassword(string newPasswordHash, string oldPasswordHash,
             string salt)
         {
-            if (oldPassword != newPassword)
+            if (oldPasswordHash != newPasswordHash)
             {
                 throw new DomainException(ErrorCodes.PasswordDoesNotMach,
                     "Current password does not match.");
             }
 
-            if (newPassword == Password)
+            if (newPasswordHash == PasswordHash)
             {
                 throw new DomainException(ErrorCodes.PasswordsSame,
                     "This password is currently used.");
             }
 
-            SetPassword(newPassword, salt);
+            SetPassword(newPasswordHash, salt);
         }
 
-        private void SetPassword(string password, string salt)
+        private void SetPassword(string passwordHash, string salt)
         {
-            if (string.IsNullOrWhiteSpace(password))
+            //TODO: move this to user service (here we have hash that and following
+            // reuiqremnts do not concearn that).
+            if (string.IsNullOrWhiteSpace(passwordHash))
             {
                 throw new DomainException(ErrorCodes.InvalidPassword, 
                     "Password can not be empty.");
@@ -123,23 +125,23 @@ namespace StockAdvisor.Core.Domain
                 throw new DomainException(ErrorCodes.InvalidPassword, 
                     "Salt can not be empty.");
             }
-            if (password.Length < 4) 
+            if (passwordHash.Length < 4) 
             {
                 throw new DomainException(ErrorCodes.InvalidPassword, 
                     "Password must contain at least 4 characters.");
             }
-            if (password.Length > 100) 
+            if (passwordHash.Length > 100) 
             {
                 throw new DomainException(ErrorCodes.InvalidPassword, 
                     "Password can not contain more than 100 characters.");
             }
-            if (Password == password)
+            if (PasswordHash == passwordHash)
             {
                 throw new DomainException(ErrorCodes.InvalidPassword, 
                     "New password cannot be equal to the currently used.");
             }
 
-            Password = password;
+            PasswordHash = passwordHash;
             Salt = salt;
             UpdatedAt = DateTime.UtcNow;
         }

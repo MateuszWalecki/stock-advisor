@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using StockAdvisor.Core.Exceptions;
@@ -17,11 +18,22 @@ namespace StockAdvisor.Api.Controllers
     public class AccountController : ApiControllerBase
     {
         private readonly IUserService _userService;
+        private readonly IJwtHandler _jwtHandler;
 
-        public AccountController(IUserService userService, ICommandDispatcher commandDistatcher)
+        public AccountController(ICommandDispatcher commandDistatcher,
+            IJwtHandler jwtHandler)
             : base(commandDistatcher)
         {
-            _userService = userService;
+            _jwtHandler = jwtHandler;
+        }
+
+        [HttpGet]
+        [Route("token")]
+        public async Task<IActionResult> GetToken()
+        {
+            var token = _jwtHandler.CreateToken("first@example.com", "user");
+
+            return await Task.FromResult(Ok(token));
         }
 
         [HttpPut]

@@ -12,11 +12,14 @@ namespace StockAdvisor.Infrastructure.Services
     public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
+        private readonly IEncrypter _encrypter;
         private readonly IMapper _mapper;
 
-        public UserService(IUserRepository userRepository, IMapper mapper)
+        public UserService(IUserRepository userRepository, IEncrypter encrypter,
+            IMapper mapper)
         {
             _userRepository = userRepository;
+            _encrypter = encrypter;
             _mapper = mapper;
         }
 
@@ -35,6 +38,25 @@ namespace StockAdvisor.Infrastructure.Services
             return _mapper.Map<User, UserDto>(user);
         }
 
+        public async Task LoginAsync(string email, string password)
+        {
+            var user = await _userRepository.GetAsync(email);
+
+            if (user == null)
+            {
+                throw new ServiceException(ErrorCodes.InvalidCredentials,
+                    "Invalid credentials.");
+            }
+
+            var hash = _encrypter.GetHash(password, user.Salt);
+
+            if (hash != user.PasswordHash)
+            {
+                throw new ServiceException(ErrorCodes.InvalidCredentials,
+                    "Invalid credentials.");
+            }
+        }
+
         public async Task RegisterAsync(string email, string firstName,
             string surName, string password)
         {
@@ -42,12 +64,15 @@ namespace StockAdvisor.Infrastructure.Services
 
             if (existingUser != null)
             {
-                throw new ServiceException(ServiceErrorCodes.EmailInUse,
+                throw new ServiceException(ErrorCodes.EmailInUse,
                     "Given email is in use.");
             }
 
+            var salt = _encrypter.GetSalt(password);
+            var hash = _encrypter.GetHash(password, salt);
+
             User newUser = new User(Guid.NewGuid(), email, firstName,
-                surName, password, "salt");
+                surName, hash, salt);
             await _userRepository.AddAsync(newUser);
         }
     }

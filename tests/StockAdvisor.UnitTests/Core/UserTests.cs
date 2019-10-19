@@ -30,7 +30,7 @@ namespace StockAdvisor.UnitTests.Core
             Assert.Equal(user.Email, validEmail);
             Assert.Equal(user.FirstName, validFirstName);
             Assert.Equal(user.SurName, validSurName);
-            Assert.Equal(user.Password, validPassword);
+            Assert.Equal(user.PasswordHash, validPassword);
         }
 
         [Fact]
