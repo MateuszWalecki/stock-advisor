@@ -14,9 +14,6 @@ namespace StockAdvisor.UnitTests.Core
             validPassword = "Example1";
         Guid guid = Guid.NewGuid();
 
-        public User GetValidUser()
-            => new User(guid, validEmail, validFirstName, validSurName, validPassword, "salt");
-        
         [Fact]
         public void user_can_be_created_if_given_data_is_valid()
         {
@@ -141,6 +138,34 @@ namespace StockAdvisor.UnitTests.Core
             Assert.Equal(newSurname, user.SurName);
         }
         
+        [Fact]
+        public void created_user_role_is_normal_user_by_default()
+        {
+            //Given
+            var user = GetValidUser();
+
+            //When
+            
+            //Then
+            user.Role.Should().BeEquivalentTo(UserRole.User.ToString());
+        }
+        
+        [Fact]
+        public void user_role_can_be_changed()
+        {
+            //Given
+            var user = GetValidUser();
+            var defaultRole = user.Role;
+
+            //When
+            user.SetRole(UserRole.Admin);
+            var newRole = user.Role;
+            
+            //Then
+            user.Role.Should().BeEquivalentTo(UserRole.Admin.ToString());
+            newRole.Should().NotBe(defaultRole);
+        }
+
         // [Fact]
         // public void users_password_can_be_changed()
         // {
@@ -154,5 +179,8 @@ namespace StockAdvisor.UnitTests.Core
         //     //Then
         //     Assert.Equal(newPw, user.Password);
         // }
+
+        private User GetValidUser()
+            => new User(guid, validEmail, validFirstName, validSurName, validPassword, "salt");
     }
 }

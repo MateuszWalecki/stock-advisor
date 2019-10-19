@@ -18,27 +18,15 @@ namespace StockAdvisor.Api.Controllers
     public class AccountController : ApiControllerBase
     {
         private readonly IUserService _userService;
-        private readonly IJwtHandler _jwtHandler;
 
-        public AccountController(ICommandDispatcher commandDistatcher,
-            IJwtHandler jwtHandler)
+        public AccountController(ICommandDispatcher commandDistatcher)
             : base(commandDistatcher)
         {
-            _jwtHandler = jwtHandler;
-        }
-
-        [HttpGet]
-        [Route("token")]
-        public async Task<IActionResult> GetToken()
-        {
-            var token = _jwtHandler.CreateToken("first@example.com", "user");
-
-            return await Task.FromResult(Ok(token));
         }
 
         [HttpPut]
         [Route("password")]
-        public async Task<IActionResult> ChangePassword([FromBody]ChangeUserPasswordCommand command)
+        public async Task<IActionResult> ChangePasswordAsync([FromBody]ChangeUserPasswordCommand command)
         {
             await CommandDistatcher.DispatchAsync(command);
 

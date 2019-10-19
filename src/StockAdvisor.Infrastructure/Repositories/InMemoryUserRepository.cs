@@ -5,17 +5,19 @@ using System.Threading.Tasks;
 using StockAdvisor.Core.Domain;
 using StockAdvisor.Core.Repositories;
 using StockAdvisor.Infrastructure.Exceptions;
+using StockAdvisor.Infrastructure.Services;
 
 namespace StockAdvisor.Infrastructure.Repositories
 {
     public class InMemoryUserRepository : IUserRepository
     {
+        private static readonly IEncrypter _encrypter = new Encrypter();
         private static readonly ISet<User> _users = new HashSet<User>
         {
-            new User(Guid.NewGuid(), "first@example.com", "John", "Rambo", "Password1", "salt"),
-            new User(Guid.NewGuid(), "second@example.com", "Sylvester", "Stalone", "Password2", "salt"),
-            new User(Guid.NewGuid(), "third@example.com", "Johny", "Depp", "Password1", "salt"),
-            new User(Guid.NewGuid(), "fourth@example.com", "John", "Travolta", "Password3", "salt")
+            RegisterUser("first@example.com", "John", "Rambo", "Password1"),
+            RegisterUser("second@example.com", "Sylvester", "Stalone", "Password2"),
+            RegisterUser("third@example.com", "Johny", "Depp", "Password1"),
+            RegisterUser("fourth@example.com", "John", "Travolta", "Password3")
         };
 
         public async Task AddAsync(User user)
@@ -53,5 +55,13 @@ namespace StockAdvisor.Infrastructure.Repositories
             // Current user is in app memory, so no need to update database etc.
 			await Task.CompletedTask;
 		}
+        private static User RegisterUser(string emailAddress, string firstName, 
+             string surName, string password)
+        {
+            string salt = _encrypter.GetSalt();
+            string hash = _encrypter.GetHash(password, salt);
+
+            return new User(Guid.NewGuid(), emailAddress, firstName, surName, hash, salt);
+        }
     }
 }

@@ -22,10 +22,25 @@ namespace StockAdvisor.EndToEndTests.Controllers
         }
         
         [Fact]
+        public async Task on_unathorized_get_user_request_unathorized_response_is_send()
+        {
+            //Given
+            var client = _factory.CreateClient();
+            var email = "first@example.com";
+
+            //When
+            var response = await client.GetAsync($"users/{email}");
+            
+            //Then
+            response.StatusCode.Should().BeEquivalentTo(HttpStatusCode.Unauthorized);
+        }        
+
+        [Fact]
         public async Task given_valid_email_user_is_returned()
         {
             //Given
             var client = _factory.CreateClient();
+            client.DefaultRequestHeaders.Add("Authorization", await GetValidBearerTokenHeader(client));
             var email = "first@example.com";
 
             //When
@@ -43,6 +58,7 @@ namespace StockAdvisor.EndToEndTests.Controllers
         {
             //Given
             var client = _factory.CreateClient();
+            client.DefaultRequestHeaders.Add("Authorization", await GetValidBearerTokenHeader(client));
             var email = "bademail@example.com";
 
             //When
@@ -57,6 +73,7 @@ namespace StockAdvisor.EndToEndTests.Controllers
         {
             //Given
             var client = _factory.CreateClient();
+            client.DefaultRequestHeaders.Add("Authorization", await GetValidBearerTokenHeader(client));
             string email = "new_user@email.com",
 	            firstName = "Luis",
 	            surName = "Suarez",

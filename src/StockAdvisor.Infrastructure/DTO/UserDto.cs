@@ -8,6 +8,7 @@ namespace StockAdvisor.Infrastructure.DTO
         public string Email { get; set; }
         public string FirstName { get; set; }
         public string SurName { get; set; }
+        public string Role { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
     }

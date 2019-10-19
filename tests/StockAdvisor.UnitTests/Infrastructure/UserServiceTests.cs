@@ -58,6 +58,7 @@ namespace StockAdvisor.UnitTests.Infrastructure
                 Email = user.Email,
                 FirstName = user.FirstName,
                 SurName = user.SurName,
+                Role = user.Role,
                 CreatedAt = user.CreatedAt,
                 UpdatedAt = user.UpdatedAt,
             };
