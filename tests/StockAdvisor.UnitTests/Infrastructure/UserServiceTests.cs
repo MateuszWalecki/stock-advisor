@@ -19,7 +19,9 @@ namespace StockAdvisor.UnitTests.Infrastructure
             _firstname = "Leo",
             _surname = "Messi",
             _password = "secret",
-            _salt = "salt";
+            _salt = "someSaltValue",
+            _passwordHash = "somePasswordHashValue";
+
         readonly Guid _id = Guid.NewGuid();
 
         [Fact]
@@ -34,7 +36,10 @@ namespace StockAdvisor.UnitTests.Infrastructure
 
             var mapperMock = new Mock<IMapper>();
 
-            var userService = new UserService(userRepositoryMock.Object, mapperMock.Object);
+            var encrypterMock = new Mock<IEncrypter>();
+
+            var userService = new UserService(userRepositoryMock.Object,
+                encrypterMock.Object, mapperMock.Object);
             await userService.GetAsync(_email);
 
             //When 
@@ -64,7 +69,10 @@ namespace StockAdvisor.UnitTests.Infrastructure
             mapperMock.Setup(x => x.Map<User, UserDto>(It.IsAny<User>()))
                       .Returns(expectedUserDto);
 
-            var userService = new UserService(userRepositoryMock.Object, mapperMock.Object);
+            var encrypterMock = new Mock<IEncrypter>();
+
+            var userService = new UserService(userRepositoryMock.Object,
+                encrypterMock.Object, mapperMock.Object);
 
             //When
             var userDto = await userService.GetAsync(_email);
@@ -85,7 +93,10 @@ namespace StockAdvisor.UnitTests.Infrastructure
             
             var mapperMock = new Mock<IMapper>();
 
-            var userService = new UserService(userRepositoryMock.Object, mapperMock.Object);
+            var encrypterMock = new Mock<IEncrypter>();
+
+            var userService = new UserService(userRepositoryMock.Object,
+                encrypterMock.Object, mapperMock.Object);
 
             //When
             var user = await userService.GetAsync(_email);
@@ -98,11 +109,20 @@ namespace StockAdvisor.UnitTests.Infrastructure
         public async Task register_async_should_invoke_add_async_on_repository()
         {
             //Given
+            User registeredUser = null;
+
             var userRepositoryMock = new Mock<IUserRepository>();
+            userRepositoryMock.Setup(x => x.AddAsync(It.IsAny<User>()))
+                              .Callback<User>(u => registeredUser = u)
+                              .Returns(Task.CompletedTask);     
             
             var mapperMock = new Mock<IMapper>();
 
-            var userService = new UserService(userRepositoryMock.Object, mapperMock.Object);
+            var encrypterMock = GetConfiguredEncrypter();
+
+            var userService = new UserService(userRepositoryMock.Object,
+                encrypterMock.Object, mapperMock.Object);       
+
 
             //When 
             await userService.RegisterAsync(_email, _firstname,
@@ -110,6 +130,32 @@ namespace StockAdvisor.UnitTests.Infrastructure
 
             //Then
             userRepositoryMock.Verify(x => x.AddAsync(It.IsAny<User>()), Times.Once);
+            registeredUser.Should().NotBeNull();
+            Assert.Equal(_email, registeredUser.Email);
+            Assert.Equal(_firstname, registeredUser.FirstName);
+            Assert.Equal(_surname, registeredUser.SurName);
+        }
+
+        [Fact]
+        public async Task register_async_should_invoke_HetSalt_and_GetHash_on_enrypter()
+        {
+            //Given
+            var userRepositoryMock = new Mock<IUserRepository>();
+            
+            var mapperMock = new Mock<IMapper>();
+
+            var encrypterMock = GetConfiguredEncrypter();
+
+            var userService = new UserService(userRepositoryMock.Object,
+                encrypterMock.Object, mapperMock.Object);
+
+            //When 
+            await userService.RegisterAsync(_email, _firstname,
+                _surname, _password);
+
+            //Then
+            encrypterMock.Verify(x => x.GetSalt(), Times.Once);
+            encrypterMock.Verify(x => x.GetHash(_password, _salt), Times.Once);
         }
 
         [Fact]
@@ -122,7 +168,10 @@ namespace StockAdvisor.UnitTests.Infrastructure
             
             var mapperMock = new Mock<IMapper>();
 
-            var userService = new UserService(userRepositoryMock.Object, mapperMock.Object);
+            var encrypterMock = new Mock<IEncrypter>();
+
+            var userService = new UserService(userRepositoryMock.Object,
+                encrypterMock.Object, mapperMock.Object);
 
             //When 
             Func<Task> act = () => userService.RegisterAsync(_email, _firstname, _surname, _password); 
@@ -132,6 +181,17 @@ namespace StockAdvisor.UnitTests.Infrastructure
         }
 
         private User GetDefaultUser()
-            => new User(_id, _email, _firstname, _surname, _password, _salt);
+            => new User(_id, _email, _firstname, _surname, _passwordHash, _salt);
+
+        private Mock<IEncrypter> GetConfiguredEncrypter()
+        {
+            var encrypterMock = new Mock<IEncrypter>();
+            encrypterMock.Setup(x => x.GetSalt())
+                         .Returns(_salt);
+            encrypterMock.Setup(x => x.GetHash(It.IsAny<string>(), It.IsAny<string>()))
+                         .Returns(_passwordHash);
+
+                         return encrypterMock;
+        }
     }
 }

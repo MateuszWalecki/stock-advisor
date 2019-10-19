@@ -68,7 +68,7 @@ namespace StockAdvisor.Infrastructure.Services
                     "Given email is in use.");
             }
 
-            var salt = _encrypter.GetSalt(password);
+            var salt = _encrypter.GetSalt();
             var hash = _encrypter.GetHash(password, salt);
 
             User newUser = new User(Guid.NewGuid(), email, firstName,

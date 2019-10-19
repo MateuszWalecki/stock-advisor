@@ -11,13 +11,8 @@ namespace StockAdvisor.Infrastructure.Services
         private static readonly int DeriveBytesIterationsCount = 10000;
         private static readonly int SaltSize = 40;
 
-        public string GetSalt(string value)
+        public string GetSalt()
         {
-            if (value.Empty())
-            {
-                throw new ArgumentException("Can not generate salt from an empty value.", nameof(value));
-            }
-
             var random = new Random();
             var saltBytes = new byte[SaltSize];
             var rng = RandomNumberGenerator.Create();
@@ -26,18 +21,18 @@ namespace StockAdvisor.Infrastructure.Services
             return Convert.ToBase64String(saltBytes);
         }
 
-        public string GetHash(string value, string salt)
+        public string GetHash(string password, string salt)
         {
-            if (value.Empty())
+            if (password.Empty())
             {
-                throw new ArgumentException("Can not generate hash from an empty value.", nameof(value));
+                throw new ArgumentException("Can not generate hash from an empty value.", nameof(password));
             }
             if (salt.Empty())
             {
-                throw new ArgumentException("Can not use an empty salt from hashing value.", nameof(value));
+                throw new ArgumentException("Can not use an empty salt from hashing value.", nameof(password));
             }
 
-            var pbkdf2 = new Rfc2898DeriveBytes(value, GetBytes(salt), DeriveBytesIterationsCount);
+            var pbkdf2 = new Rfc2898DeriveBytes(password, GetBytes(salt), DeriveBytesIterationsCount);
 
             return Convert.ToBase64String(pbkdf2.GetBytes(SaltSize));
         }
