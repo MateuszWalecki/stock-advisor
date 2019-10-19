@@ -121,7 +121,5 @@ namespace StockAdvisor.UnitTests.Infrastructure
             //Then
             hash1.Should().NotBe(hash2);
         }
-
-        //TODO: test loginasync
     }
 }

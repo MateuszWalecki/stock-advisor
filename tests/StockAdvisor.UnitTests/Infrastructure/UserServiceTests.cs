@@ -181,6 +181,78 @@ namespace StockAdvisor.UnitTests.Infrastructure
             await Assert.ThrowsAsync<ServiceException>(act);
         }
 
+        [Fact]
+        public async Task loginasync_throws_exception_if_repo_getasync_returns_null()
+        {
+            //Given
+            var userRepositoryMock = new Mock<IUserRepository>();
+            userRepositoryMock.Setup(x => x.GetAsync(It.IsAny<string>()))
+                              .Returns(Task.FromResult((User)null));
+            
+            var mapperMock = new Mock<IMapper>();
+
+            var encrypterMock = new Mock<IEncrypter>();
+
+            var userService = new UserService(userRepositoryMock.Object,
+                encrypterMock.Object, mapperMock.Object);
+
+            //When
+            Func<Task> act = () => userService.LoginAsync(_email, _password);
+            
+            //Then
+            await Assert.ThrowsAsync<ServiceException>(act);
+        }
+
+        [Fact]
+        public async Task loginasync_calls_encrypter_gethash_method()
+        {
+            //Given
+            var userRepositoryMock = new Mock<IUserRepository>();
+            userRepositoryMock.Setup(x => x.GetAsync(It.IsAny<string>()))
+                              .Returns(Task.FromResult(GetDefaultUser()));
+            
+            var mapperMock = new Mock<IMapper>();
+
+            var encrypterMock = new Mock<IEncrypter>();
+            encrypterMock.Setup(x => x.GetHash(It.IsAny<string>(), It.IsAny<string>()))
+                         .Returns(_passwordHash);
+
+            var userService = new UserService(userRepositoryMock.Object,
+                encrypterMock.Object, mapperMock.Object);
+
+            //When
+            await userService.LoginAsync(_email, _password);
+            
+            //Then
+            encrypterMock.Verify(x => x.GetHash(It.IsAny<string>(),
+                                                It.IsAny<string>()),
+                                 Times.Once);
+        }
+
+        [Fact]
+        public async Task if_password_is_incorrect_exception_is_thrown()
+        {
+            //Given
+            var userRepositoryMock = new Mock<IUserRepository>();
+            userRepositoryMock.Setup(x => x.GetAsync(It.IsAny<string>()))
+                              .Returns(Task.FromResult(GetDefaultUser()));
+            
+            var mapperMock = new Mock<IMapper>();
+
+            var encrypterMock = new Mock<IEncrypter>();
+            encrypterMock.Setup(x => x.GetHash(It.IsAny<string>(), It.IsAny<string>()))
+                         .Returns("differntHash");
+
+            var userService = new UserService(userRepositoryMock.Object,
+                encrypterMock.Object, mapperMock.Object);
+
+            //When
+            Func<Task> act = () => userService.LoginAsync(_email, _password);
+            
+            //Then
+            await Assert.ThrowsAsync<ServiceException>(act);
+        }
+
         private User GetDefaultUser()
             => new User(_id, _email, _firstname, _surname, _passwordHash, _salt);
 
