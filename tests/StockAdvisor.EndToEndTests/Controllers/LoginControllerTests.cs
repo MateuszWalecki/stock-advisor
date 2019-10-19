@@ -1,3 +1,4 @@
+using System;
 using System.Net;
 using System.Threading.Tasks;
 using FluentAssertions;
@@ -43,6 +44,46 @@ namespace StockAdvisor.EndToEndTests.Controllers
             jwtToken.Should().NotBeNull();
             jwtToken.Token.Should().NotBeNullOrEmpty();
             jwtToken.ExpiryTicks.Should().NotBe(0);
+        }
+
+        [Fact]
+        public async Task given_invalid_email_unathorized_code_is_returned()
+        {
+            //Given
+            var client = _factory.CreateClient();
+
+            var command = new LoginCommand
+            {
+                Email = "wrong_email",
+                Password = _validPassword    
+            };
+            var payload = GetPayload(command);
+
+            //When
+            var response = await client.PostAsync("/login", payload);
+
+            //Then
+            response.StatusCode.Should().BeEquivalentTo(HttpStatusCode.Unauthorized);
+        }
+
+        [Fact]
+        public async Task given_invalid_password_unathorized_code_is_returned()
+        {
+            //Given
+            var client = _factory.CreateClient();
+
+            var command = new LoginCommand
+            {
+                Email = _validEmail,
+                Password = "invalid password"    
+            };
+            var payload = GetPayload(command);
+
+            //When
+            var response = await client.PostAsync("/login", payload);
+
+            //Then
+            response.StatusCode.Should().BeEquivalentTo(HttpStatusCode.Unauthorized);
         }
     }
 }

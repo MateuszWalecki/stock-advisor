@@ -16,7 +16,6 @@ using StockAdvisor.Infrastructure.Settings;
 
 namespace StockAdvisor.Api.Controllers
 {
-    [ApiController]
     public class UsersController : ApiControllerBase
     {
         private readonly IUserService _userService;

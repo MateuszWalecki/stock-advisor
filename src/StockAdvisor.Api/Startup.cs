@@ -57,6 +57,8 @@ namespace StockAdvisor.Api
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Key))
                     };
                 });
+
+            services.AddMemoryCache();
         }
 
         public void ConfigureContainer(ContainerBuilder builder)
