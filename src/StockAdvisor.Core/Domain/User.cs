@@ -102,52 +102,27 @@ namespace StockAdvisor.Core.Domain
             _role = role;
         }
 
-        public void ChangePassword(string newPasswordHash, string oldPasswordHash,
-            string salt)
+        public void SetPassword(string passwordHash, string salt)
         {
-            if (oldPasswordHash != newPasswordHash)
-            {
-                throw new DomainException(ErrorCodes.PasswordDoesNotMach,
-                    "Current password does not match.");
-            }
-
-            if (newPasswordHash == PasswordHash)
-            {
-                throw new DomainException(ErrorCodes.PasswordsSame,
-                    "This password is currently used.");
-            }
-
-            SetPassword(newPasswordHash, salt);
-        }
-
-        private void SetPassword(string passwordHash, string salt)
-        {
-            //TODO: move this to user service (here we have hash that and following
-            // reuiqremnts do not concearn that).
             if (string.IsNullOrWhiteSpace(passwordHash))
             {
                 throw new DomainException(ErrorCodes.InvalidPassword, 
-                    "Password can not be empty.");
+                    "Password hash can not be empty.");
             }
             if (string.IsNullOrWhiteSpace(salt))
             {
                 throw new DomainException(ErrorCodes.InvalidPassword, 
                     "Salt can not be empty.");
             }
-            if (passwordHash.Length < 4) 
+            if (Salt == salt)
             {
                 throw new DomainException(ErrorCodes.InvalidPassword, 
-                    "Password must contain at least 4 characters.");
-            }
-            if (passwordHash.Length > 100) 
-            {
-                throw new DomainException(ErrorCodes.InvalidPassword, 
-                    "Password can not contain more than 100 characters.");
+                    "New and old salts cannot be equal.");
             }
             if (PasswordHash == passwordHash)
             {
                 throw new DomainException(ErrorCodes.InvalidPassword, 
-                    "New password cannot be equal to the currently used.");
+                    "New and old password hashes cannot be equal.");
             }
 
             PasswordHash = passwordHash;

@@ -8,11 +8,13 @@ namespace StockAdvisor.UnitTests.Core
 {
     public class UserTests
     {
-        string validEmail = "valid@example.com",
-            validFirstName = "John",
-            validSurName = "Rambo",
-            validPassword = "Example1";
-        Guid guid = Guid.NewGuid();
+        private readonly string _validEmail = "valid@example.com",
+            _validFirstName = "John",
+            _validSurName = "Rambo",
+            _validPasswordHash = "passwordfgsadgfg54664d1fg65daf65gd6sfg46",
+            _validPasswordSalt = "saltg4fd8g4ds9f84g";
+
+        private readonly Guid guid = Guid.NewGuid();
 
         [Fact]
         public void user_can_be_created_if_given_data_is_valid()
@@ -20,14 +22,15 @@ namespace StockAdvisor.UnitTests.Core
             //Given
 
             //When
-            var user = new User(guid, validEmail, validFirstName, validSurName, validPassword, "salt");
+            var user = new User(guid, _validEmail, _validFirstName, _validSurName,
+                _validPasswordHash, _validPasswordSalt);
 
             //Then
             Assert.Equal(user.Id, guid);
-            Assert.Equal(user.Email, validEmail);
-            Assert.Equal(user.FirstName, validFirstName);
-            Assert.Equal(user.SurName, validSurName);
-            Assert.Equal(user.PasswordHash, validPassword);
+            Assert.Equal(user.Email, _validEmail);
+            Assert.Equal(user.FirstName, _validFirstName);
+            Assert.Equal(user.SurName, _validSurName);
+            Assert.Equal(user.PasswordHash, _validPasswordHash);
         }
 
         [Fact]
@@ -37,7 +40,8 @@ namespace StockAdvisor.UnitTests.Core
             
             //When
             Action act = () =>
-                new User(guid, "invalidEmail", validFirstName, validSurName, validPassword, "salt");
+                new User(guid, "invalidEmail", _validFirstName, _validSurName,
+                    _validPasswordHash, _validPasswordSalt);
 
             //Then
             Assert.Throws<DomainException>(act);
@@ -50,7 +54,7 @@ namespace StockAdvisor.UnitTests.Core
             
             //When
             Action act = () =>
-                new User(guid, validEmail, "", validSurName, validPassword, "salt");
+                new User(guid, _validEmail, "", _validSurName, _validPasswordHash, _validPasswordSalt);
 
             //Then
             Assert.Throws<DomainException>(act);
@@ -63,20 +67,20 @@ namespace StockAdvisor.UnitTests.Core
             
             //When
             Action act = () =>
-                new User(guid, validEmail, validFirstName, "", validPassword, "salt");
+                new User(guid, _validEmail, _validFirstName, "", _validPasswordHash, _validPasswordSalt);
 
             //Then
             Assert.Throws<DomainException>(act);
         }
 
         [Fact]
-        public void given_invalid_password_while_creating_user_throws_domain_exception()
+        public void given_invalid_password_hash_while_creating_user_throws_domain_exception()
         {
             //Given
             
             //When
             Action act = () =>
-                new User(guid, validEmail, validFirstName, validSurName, "", "salt");
+                new User(guid, _validEmail, _validFirstName, _validSurName, "", _validPasswordSalt);
 
             //Then
             Assert.Throws<DomainException>(act);
@@ -166,21 +170,99 @@ namespace StockAdvisor.UnitTests.Core
             newRole.Should().NotBe(defaultRole);
         }
 
-        // [Fact]
-        // public void users_password_can_be_changed()
-        // {
-        //     //Given
-        //     var user = GetValidUser();
-        //     string newPw = "newPassword2";
+        [Fact]
+        public void users_password_can_be_changed()
+        {
+            //Given
+            var user = GetValidUser();
+            string newPwHash = "newPasswordHash646464465";
+            string newSalt = "newSalt4465d4saf654sd6f";
 
-        //     //When
-        //     user.SetPassword(newPw, "newSalt");
+            //When
+            user.SetPassword(newPwHash, newSalt);
 
-        //     //Then
-        //     Assert.Equal(newPw, user.Password);
-        // }
+            //Then
+            Assert.Equal(newPwHash, user.PasswordHash);
+            Assert.Equal(newSalt, user.Salt);
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        public void given_invalid_hash_while_changing_password_func_throws_exception(string newPwHash)
+        {
+            //Given
+            var user = GetValidUser();
+            string newSalt = "newSalt4465d4saf654sd6f";
+
+            //When
+            Action act = () => user.SetPassword(newPwHash, newSalt);
+
+            //Then
+            Assert.Throws<DomainException>(act);
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        public void given_invalid_salt_while_changing_password_func_throws_exception(string newSalt)
+        {
+            //Given
+            var user = GetValidUser();
+            string newPwHash = "newSalt4465d4saf654sd6f";
+
+            //When
+            Action act = () => user.SetPassword(newPwHash, newSalt);
+
+            //Then
+            Assert.Throws<DomainException>(act);
+        }
+
+        [Fact]
+        public void when_given_hash_is_equal_to_current_while_changing_pw_func_throws_exception()
+        {
+            //Given
+            var user = GetValidUser();
+            string newPwHash = "newSalt4465d4saf654sd6f";
+
+            //When
+            Action act = () => user.SetPassword(newPwHash, _validPasswordSalt);
+
+            //Then
+            Assert.Throws<DomainException>(act);
+        }
+
+        [Fact]
+        public void when_given_salt_is_equal_to_current_while_changing_pw_func_throws_exception()
+        {
+            //Given
+            var user = GetValidUser();
+            string newSalt = "newSalt4465d4saf654sd6f";
+
+            //When
+            Action act = () => user.SetPassword(_validPasswordHash, newSalt);
+
+            //Then
+            Assert.Throws<DomainException>(act);
+        }
+
+        [Fact]
+        public void given_empy_null_hash_while_changing_it_throws_exception()
+        {
+            //Given
+            var user = GetValidUser();
+            string newPwHash = "";
+            string newSalt = "newSalt4465d4saf654sd6f";
+
+            //When
+            Action act = () => user.SetPassword(newPwHash, newSalt);
+
+            //Then
+            Assert.Throws<DomainException>(act);
+        }
 
         private User GetValidUser()
-            => new User(guid, validEmail, validFirstName, validSurName, validPassword, "salt");
+            => new User(guid, _validEmail, _validFirstName, _validSurName,
+                _validPasswordHash, _validPasswordSalt);
     }
 }

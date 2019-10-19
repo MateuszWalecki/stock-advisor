@@ -26,9 +26,42 @@ namespace StockAdvisor.Infrastructure.Services
         public async Task ChangeUserPasswordAsync(Guid userId,
             string newPassword, string oldPassword)
         {
+            if (string.IsNullOrWhiteSpace(newPassword))
+            {
+                throw new ServiceException(ErrorCodes.InvalidPassword, 
+                    "Password can not be empty.");
+            }
+            if (newPassword.Length < 4) 
+            {
+                throw new ServiceException(ErrorCodes.InvalidPassword, 
+                    "Password must contain at least 4 characters.");
+            }
+            if (newPassword.Length > 100) 
+            {
+                throw new ServiceException(ErrorCodes.InvalidPassword, 
+                    "Password can not contain more than 100 characters.");
+            }
+
             var user = await _userRepository.GetAsync(userId);
-            
-            user.ChangePassword(newPassword, oldPassword, "salt");
+
+            var oldPasswordHash = _encrypter.GetHash(oldPassword, user.Salt);
+
+            if (oldPasswordHash != user.PasswordHash)
+            {
+                throw new ServiceException(ErrorCodes.InvalidPassword, 
+                    "Given currently used password is invalid");
+            }
+
+            if (oldPassword == newPassword)
+            {
+                throw new ServiceException(ErrorCodes.InvalidPassword, 
+                    "Old and new passwords cannot be the same");
+            }
+
+            var salt = _encrypter.GetSalt();
+            var newPasswordHash = _encrypter.GetHash(newPassword, salt);
+
+            user.SetPassword(newPasswordHash, salt);
         }
 
         public async Task<UserDto> GetAsync(string email)
