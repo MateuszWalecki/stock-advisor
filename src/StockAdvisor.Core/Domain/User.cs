@@ -106,23 +106,23 @@ namespace StockAdvisor.Core.Domain
         {
             if (string.IsNullOrWhiteSpace(passwordHash))
             {
-                throw new DomainException(ErrorCodes.InvalidPassword, 
+                throw new DomainException(ErrorCodes.InvalidHash, 
                     "Password hash can not be empty.");
             }
             if (string.IsNullOrWhiteSpace(salt))
             {
-                throw new DomainException(ErrorCodes.InvalidPassword, 
+                throw new DomainException(ErrorCodes.InvalidSalt, 
                     "Salt can not be empty.");
-            }
-            if (Salt == salt)
-            {
-                throw new DomainException(ErrorCodes.InvalidPassword, 
-                    "New and old salts cannot be equal.");
             }
             if (PasswordHash == passwordHash)
             {
-                throw new DomainException(ErrorCodes.InvalidPassword, 
+                throw new DomainException(ErrorCodes.InvalidHash, 
                     "New and old password hashes cannot be equal.");
+            }
+            if (Salt == salt)
+            {
+                throw new DomainException(ErrorCodes.InvalidSalt, 
+                    "New and old salts cannot be equal.");
             }
 
             PasswordHash = passwordHash;
