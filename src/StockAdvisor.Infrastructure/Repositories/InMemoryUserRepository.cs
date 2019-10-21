@@ -11,8 +11,8 @@ namespace StockAdvisor.Infrastructure.Repositories
 {
     public class InMemoryUserRepository : IUserRepository
     {
-        private static readonly IEncrypter _encrypter = new Encrypter();
-        private static readonly ISet<User> _users = new HashSet<User>();
+        private readonly IEncrypter _encrypter = new Encrypter();
+        private readonly ISet<User> _users = new HashSet<User>();
 
         public async Task AddAsync(User user)
         {

@@ -29,7 +29,26 @@ namespace StockAdvisor.Api.Controllers
         {
             var investors = await _investorService.BrowseAsync();
 
+            if (investors == null || !investors.Any())
+            {
+                return NotFound($"Not found any investor.");
+            }
+
             return Ok(investors);
+        }
+        
+        [HttpGet("{email}")]
+        public async Task<IActionResult> Get(string email)
+        {
+            var investor = await _investorService.GetAsync(email);
+
+            if (investor == null)
+            {
+                return NotFound($"Investor realted with user with email {email } " +
+                    "cannot be found.");
+            }
+
+            return Ok(investor);
         }
 
         [HttpPost]

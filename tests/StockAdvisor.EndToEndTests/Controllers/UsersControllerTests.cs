@@ -128,6 +128,21 @@ namespace StockAdvisor.EndToEndTests.Controllers
             response.Headers.Location.Should().BeNull();
         }
 
+        [Fact]
+        public async Task get_all_users_returns_all_from_repo_with_status_ok()
+        {
+            //Given
+            var client = Factory.CreateClient();
+
+            //When
+            var response = await client.GetAsync("users");
+            var responseString = await response.Content.ReadAsStringAsync();
+
+            //Then
+            response.StatusCode.Should().BeEquivalentTo(HttpStatusCode.OK);
+            responseString.Should().NotBeNullOrEmpty();
+        }
+
         //TODO: when exception is thrown from the core or infrastructore
         // [Fact]
         // public async Task short_name()

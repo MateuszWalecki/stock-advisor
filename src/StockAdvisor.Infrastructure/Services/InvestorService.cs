@@ -34,6 +34,20 @@ namespace StockAdvisor.Infrastructure.Services
             return _mapper.Map<Investor, InvestorDto>(investor);
         }
 
+        public async Task<InvestorDto> GetAsync(string email)
+        {
+            var user = await _userRepository.GetAsync(email);
+            
+            if (user == null)
+            {
+                return null;
+            }
+
+            var investor = await _investorRepository.GetAsync(user.Id);
+
+            return _mapper.Map<Investor, InvestorDto>(investor);
+        }
+
         public async Task<IEnumerable<InvestorDto>> BrowseAsync()
         {
             var investors = await _investorRepository.BrowseAsync();

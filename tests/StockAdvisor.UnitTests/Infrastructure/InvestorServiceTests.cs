@@ -449,8 +449,9 @@ namespace StockAdvisor.UnitTests.Infrastructure
         public async Task browse_async_returns_mapping_result()
         {
             //Given
-            var userRepositoryMock = new Mock<IUserRepository>();
             IEnumerable<InvestorDto> investors = new List<InvestorDto>();
+
+            var userRepositoryMock = new Mock<IUserRepository>();
 
             var mapperMock = new Mock<IMapper>();
             mapperMock.Setup(x =>
@@ -468,6 +469,98 @@ namespace StockAdvisor.UnitTests.Infrastructure
             //Then
             returnedInvestors.Should().BeSameAs(investors);
         }
+
+        [Fact]
+        public async Task get_async_using_mail_returns_null_if_user_does_not_exist()
+        {
+            //Given
+            var user = GetDefaultUser();
+            var investor = new Investor(user);
+
+            var userRepositoryMock = new Mock<IUserRepository>();
+            userRepositoryMock.Setup(x => x.GetAsync(user.Email))
+                              .Returns(Task.FromResult((User)null));
+
+            var mapperMock = new Mock<IMapper>();
+
+            var investorRepositoryMock = new Mock<IInvestorRepository>();
+            investorRepositoryMock.Setup(x => x.GetAsync(user.Id))
+                                  .Returns(Task.FromResult(investor));
+
+            var investorService = new InvestorService(userRepositoryMock.Object,
+                investorRepositoryMock.Object, mapperMock.Object);
+
+            //When
+            var returnedInvestorDto = await investorService.GetAsync(user.Email);
+            
+            //Then
+            userRepositoryMock.Verify(x => x.GetAsync(user.Email), Times.Once);
+            returnedInvestorDto.Should().BeNull();
+        }
+
+        [Fact]
+        public async Task get_async_using_mail_returns_null_if_related_investor_does_not_exist()
+        {
+            //Given
+            var user = GetDefaultUser();
+            var investor = new Investor(user);
+
+            var userRepositoryMock = new Mock<IUserRepository>();
+            userRepositoryMock.Setup(x => x.GetAsync(user.Email))
+                              .Returns(Task.FromResult(user));
+
+            var mapperMock = new Mock<IMapper>();
+
+            var investorRepositoryMock = new Mock<IInvestorRepository>();
+            investorRepositoryMock.Setup(x => x.GetAsync(user.Id))
+                                  .Returns(Task.FromResult((Investor)null));
+
+            var investorService = new InvestorService(userRepositoryMock.Object,
+                investorRepositoryMock.Object, mapperMock.Object);
+
+            //When
+            var returnedInvestorDto = await investorService.GetAsync(user.Email);
+            
+            //Then
+            userRepositoryMock.Verify(x => x.GetAsync(user.Email), Times.Once);
+            investorRepositoryMock.Verify(x => x.GetAsync(user.Id), Times.Once);
+            returnedInvestorDto.Should().BeNull();
+        }
+
+        [Fact]
+        public async Task get_async_using_mail_returns_mapping_result()
+        {
+            //Given
+            var user = GetDefaultUser();
+            var investor = new Investor(user);
+            var investorDto = new InvestorDto();
+
+            var userRepositoryMock = new Mock<IUserRepository>();
+            userRepositoryMock.Setup(x => x.GetAsync(user.Email))
+                              .Returns(Task.FromResult(user));
+
+            var investorRepositoryMock = new Mock<IInvestorRepository>();
+            investorRepositoryMock.Setup(x => x.GetAsync(user.Id))
+                                  .Returns(Task.FromResult(investor));
+            
+            var mapperMock = new Mock<IMapper>();
+            mapperMock.Setup(x => x.Map<Investor, InvestorDto>(investor))
+                      .Returns(investorDto);
+
+            var investorService = new InvestorService(userRepositoryMock.Object,
+                investorRepositoryMock.Object, mapperMock.Object);
+            
+            //When
+            var returnedInvestorDto = await investorService.GetAsync(user.Email);
+            
+            //Then
+            userRepositoryMock.Verify(x => x.GetAsync(user.Email), Times.Once);
+            investorRepositoryMock.Verify(x => x.GetAsync(user.Id), Times.Once);
+            mapperMock.Verify(x => x.Map<Investor, InvestorDto>(investor), Times.Once);
+            returnedInvestorDto.Should().BeSameAs(investorDto);
+        }
+
+
 
         private Investor GetDefaultInvestor()
         {

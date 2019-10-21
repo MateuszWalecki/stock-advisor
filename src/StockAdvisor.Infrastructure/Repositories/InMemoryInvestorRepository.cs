@@ -10,7 +10,7 @@ namespace StockAdvisor.Infrastructure.Repositories
 {
     public class InMemoryInvestorRepository : IInvestorRepository
     {
-        private static readonly ISet<Investor> _investors = new HashSet<Investor>();
+        private readonly ISet<Investor> _investors = new HashSet<Investor>();
 
         public async Task AddAsync(Investor investor)
         {
