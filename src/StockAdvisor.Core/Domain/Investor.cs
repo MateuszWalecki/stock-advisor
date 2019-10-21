@@ -18,9 +18,9 @@ namespace StockAdvisor.Core.Domain
         {
         }
 
-        public Investor(Guid userId)
+        public Investor(User user)
         {
-            UserId = userId;
+            UserId = user.Id;
         }
 
         public void AddToFavouriteCompanies(string companySymbol)

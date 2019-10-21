@@ -36,8 +36,8 @@ namespace StockAdvisor.EndToEndTests.Controllers
         {
             var command = new LoginCommand
             {
-                Email = "first@example.com",
-                Password = "Password1"    
+                Email = "user1@test.com",
+                Password = "Secret1"    
             };
             var payload = GetPayload(command);
 

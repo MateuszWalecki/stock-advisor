@@ -12,13 +12,7 @@ namespace StockAdvisor.Infrastructure.Repositories
     public class InMemoryUserRepository : IUserRepository
     {
         private static readonly IEncrypter _encrypter = new Encrypter();
-        private static readonly ISet<User> _users = new HashSet<User>
-        {
-            RegisterUser("first@example.com", "John", "Rambo", "Password1"),
-            RegisterUser("second@example.com", "Sylvester", "Stalone", "Password2"),
-            RegisterUser("third@example.com", "Johny", "Depp", "Password1"),
-            RegisterUser("fourth@example.com", "John", "Travolta", "Password3")
-        };
+        private static readonly ISet<User> _users = new HashSet<User>();
 
         public async Task AddAsync(User user)
         {
@@ -26,7 +20,7 @@ namespace StockAdvisor.Infrastructure.Repositories
             await Task.CompletedTask;
         }
 
-        public async Task<IEnumerable<User>> GetAllAsync()
+        public async Task<IEnumerable<User>> BrowseAsync()
             => await Task.FromResult(_users);
 
         public async Task<User> GetAsync(Guid id)
@@ -55,13 +49,5 @@ namespace StockAdvisor.Infrastructure.Repositories
             // Current user is in app memory, so no need to update database etc.
 			await Task.CompletedTask;
 		}
-        private static User RegisterUser(string emailAddress, string firstName, 
-             string surName, string password)
-        {
-            string salt = _encrypter.GetSalt();
-            string hash = _encrypter.GetHash(password, salt);
-
-            return new User(Guid.NewGuid(), emailAddress, firstName, surName, hash, salt);
-        }
     }
 }

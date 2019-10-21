@@ -26,6 +26,14 @@ namespace StockAdvisor.Api.Controllers
             _userService = userService;
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Get()
+        {
+            var users = await _userService.BrowseAsync();
+
+            return Ok(users);
+        }
+
         [Authorize]
         [HttpGet("{email}")]
         public async Task<IActionResult> Get(string email)

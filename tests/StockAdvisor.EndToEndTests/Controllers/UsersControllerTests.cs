@@ -41,7 +41,7 @@ namespace StockAdvisor.EndToEndTests.Controllers
             //Given
             var client = _factory.CreateClient();
             client.DefaultRequestHeaders.Add("Authorization", await GetValidBearerTokenHeader(client));
-            var email = "first@example.com";
+            var email = "user1@test.com";
 
             //When
             var response = await client.GetAsync($"users/{email}");
@@ -106,7 +106,7 @@ namespace StockAdvisor.EndToEndTests.Controllers
         {
             //Given
             var client = _factory.CreateClient();
-            string usedEmail = "first@example.com";
+            string usedEmail = "user1@test.com";
             var creauteUserRequest = new CreateUserCommand
             {
                 Email = usedEmail,

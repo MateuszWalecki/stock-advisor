@@ -29,7 +29,7 @@ namespace StockAdvisor.Api
     public class Startup
     {
         public IConfiguration Configuration { get; }
-        public IContainer ApplicationContainer {get; private set; }
+        public IContainer ApplicationContainer { get; private set; }
 
         public Startup(IConfiguration configuration)
         {
@@ -59,6 +59,7 @@ namespace StockAdvisor.Api
                 });
 
             services.AddMemoryCache();
+            services.AddLogging();
         }
 
         public void ConfigureContainer(ContainerBuilder builder)
@@ -68,8 +69,9 @@ namespace StockAdvisor.Api
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, 
-            IHostApplicationLifetime hostApplicationLifetime)
+            IHostApplicationLifetime hostApplicationLifetime, ILogger<Startup> logger)
         {
+            logger.LogTrace("STARTUP - Configure mathod");
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -88,8 +90,20 @@ namespace StockAdvisor.Api
                 endpoints.MapControllers();
             });
 
+            var generalSetting = Configuration.GetSettings<GeneralSettings>();
+            if (generalSetting.SeedData)
+            {
+                logger.LogTrace("STARTUP - initializing");
+
+                var dataInitializer = app.ApplicationServices.GetService<IDataInitializer>();
+                dataInitializer.SeedAsync();
+                logger.LogTrace("STARTUP - initialized");
+                
+            }
+
             hostApplicationLifetime.ApplicationStopped.Register(() => 
                 ApplicationContainer.Dispose());
+            logger.LogTrace("COnfigure end - initializing");
         }
     }
 }

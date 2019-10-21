@@ -22,6 +22,20 @@ namespace StockAdvisor.Infrastructure.Services
             _encrypter = encrypter;
             _mapper = mapper;
         }
+        
+        public async Task<UserDto> GetAsync(string email)
+        {
+            var user = await _userRepository.GetAsync(email);
+
+            return _mapper.Map<User, UserDto>(user);
+        }
+        
+        public async Task<IEnumerable<UserDto>> BrowseAsync()
+        {
+            var users = await _userRepository.BrowseAsync();
+
+            return _mapper.Map<IEnumerable<User>, IEnumerable<UserDto>>(users);
+        }
 
         public async Task ChangeUserPasswordAsync(Guid userId,
             string newPassword, string oldPassword)
@@ -64,13 +78,6 @@ namespace StockAdvisor.Infrastructure.Services
             user.SetPassword(newPasswordHash, salt);
         }
 
-        public async Task<UserDto> GetAsync(string email)
-        {
-            var user = await _userRepository.GetAsync(email);
-
-            return _mapper.Map<User, UserDto>(user);
-        }
-
         public async Task LoginAsync(string email, string password)
         {
             var user = await _userRepository.GetAsync(email);
@@ -90,8 +97,8 @@ namespace StockAdvisor.Infrastructure.Services
             }
         }
 
-        public async Task RegisterAsync(string email, string firstName,
-            string surName, string password)
+        public async Task RegisterAsync(Guid userId, string email, string firstName,
+            string surName, string password, UserRole userRole)
         {
             User existingUser = await _userRepository.GetAsync(email);
 
@@ -104,8 +111,8 @@ namespace StockAdvisor.Infrastructure.Services
             var salt = _encrypter.GetSalt();
             var hash = _encrypter.GetHash(password, salt);
 
-            User newUser = new User(Guid.NewGuid(), email, firstName,
-                surName, hash, salt);
+            User newUser = new User(userId, email, firstName,
+                surName, hash, salt, userRole);
             await _userRepository.AddAsync(newUser);
         }
     }

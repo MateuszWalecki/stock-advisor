@@ -13,8 +13,9 @@ namespace StockAdvisor.UnitTests.Core
             _validSurName = "Rambo",
             _validPasswordHash = "passwordfgsadgfg54664d1fg65daf65gd6sfg46",
             _validPasswordSalt = "saltg4fd8g4ds9f84g";
+        private readonly UserRole _role = UserRole.User;
 
-        private readonly Guid guid = Guid.NewGuid();
+        private readonly Guid _guid = Guid.NewGuid();
 
         [Fact]
         public void user_can_be_created_if_given_data_is_valid()
@@ -22,15 +23,16 @@ namespace StockAdvisor.UnitTests.Core
             //Given
 
             //When
-            var user = new User(guid, _validEmail, _validFirstName, _validSurName,
-                _validPasswordHash, _validPasswordSalt);
+            var user = new User(_guid, _validEmail, _validFirstName, _validSurName,
+                _validPasswordHash, _validPasswordSalt, _role);
 
             //Then
-            Assert.Equal(user.Id, guid);
-            Assert.Equal(user.Email, _validEmail);
-            Assert.Equal(user.FirstName, _validFirstName);
-            Assert.Equal(user.SurName, _validSurName);
-            Assert.Equal(user.PasswordHash, _validPasswordHash);
+            Assert.Equal(_guid, user.Id);
+            Assert.Equal(_validEmail, user.Email);
+            Assert.Equal(_validFirstName, user.FirstName);
+            Assert.Equal(_validSurName, user.SurName);
+            Assert.Equal(_validPasswordHash, user.PasswordHash);
+            Assert.Equal(_role.ToString(), user.Role);
         }
 
         [Fact]
@@ -40,8 +42,8 @@ namespace StockAdvisor.UnitTests.Core
             
             //When
             Action act = () =>
-                new User(guid, "invalidEmail", _validFirstName, _validSurName,
-                    _validPasswordHash, _validPasswordSalt);
+                new User(_guid, "invalidEmail", _validFirstName, _validSurName,
+                    _validPasswordHash, _validPasswordSalt, _role);
 
             //Then
             Assert.Throws<DomainException>(act);
@@ -54,7 +56,8 @@ namespace StockAdvisor.UnitTests.Core
             
             //When
             Action act = () =>
-                new User(guid, _validEmail, "", _validSurName, _validPasswordHash, _validPasswordSalt);
+                new User(_guid, _validEmail, "", _validSurName, _validPasswordHash,
+                    _validPasswordSalt, _role);
 
             //Then
             Assert.Throws<DomainException>(act);
@@ -67,7 +70,8 @@ namespace StockAdvisor.UnitTests.Core
             
             //When
             Action act = () =>
-                new User(guid, _validEmail, _validFirstName, "", _validPasswordHash, _validPasswordSalt);
+                new User(_guid, _validEmail, _validFirstName, "", _validPasswordHash,
+                    _validPasswordSalt, _role);
 
             //Then
             Assert.Throws<DomainException>(act);
@@ -80,7 +84,8 @@ namespace StockAdvisor.UnitTests.Core
             
             //When
             Action act = () =>
-                new User(guid, _validEmail, _validFirstName, _validSurName, "", _validPasswordSalt);
+                new User(_guid, _validEmail, _validFirstName, _validSurName, "",
+                    _validPasswordSalt, _role);
 
             //Then
             Assert.Throws<DomainException>(act);
@@ -142,16 +147,19 @@ namespace StockAdvisor.UnitTests.Core
             Assert.Equal(newSurname, user.SurName);
         }
         
-        [Fact]
-        public void created_user_role_is_normal_user_by_default()
+        [Theory]
+        [InlineData(UserRole.User)]
+        [InlineData(UserRole.Admin)]
+        public void user_role_can_be_set_while_creating_user(UserRole role)
         {
             //Given
-            var user = GetValidUser();
+            var user = new User(_guid, _validEmail, _validFirstName, _validSurName,
+                _validPasswordHash, _validPasswordSalt, role);
 
             //When
             
             //Then
-            user.Role.Should().BeEquivalentTo(UserRole.User.ToString());
+            user.Role.Should().BeEquivalentTo(role.ToString());
         }
         
         [Fact]
@@ -262,7 +270,7 @@ namespace StockAdvisor.UnitTests.Core
         }
 
         private User GetValidUser()
-            => new User(guid, _validEmail, _validFirstName, _validSurName,
-                _validPasswordHash, _validPasswordSalt);
+            => new User(_guid, _validEmail, _validFirstName, _validSurName,
+                _validPasswordHash, _validPasswordSalt, _role);
     }
 }

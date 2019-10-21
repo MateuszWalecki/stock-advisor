@@ -10,13 +10,7 @@ namespace StockAdvisor.Infrastructure.Repositories
 {
     public class InMemoryInvestorRepository : IInvestorRepository
     {
-        private static readonly ISet<Investor> _investors = new HashSet<Investor>()
-        {
-            new Investor(Guid.NewGuid()),
-            new Investor(Guid.NewGuid()),
-            new Investor(Guid.NewGuid()),
-            new Investor(Guid.NewGuid())
-        };
+        private static readonly ISet<Investor> _investors = new HashSet<Investor>();
 
         public async Task AddAsync(Investor investor)
         {
@@ -24,7 +18,7 @@ namespace StockAdvisor.Infrastructure.Repositories
             await Task.CompletedTask;
         }
 
-        public async Task<IEnumerable<Investor>> GetAllAsync()
+        public async Task<IEnumerable<Investor>> BrowseAsync()
             => await Task.FromResult(_investors);
 
         public async Task<Investor> GetAsync(Guid userId)

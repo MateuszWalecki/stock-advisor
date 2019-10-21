@@ -22,7 +22,8 @@ namespace StockAdvisor.UnitTests.Infrastructure
             _salt = "someSaltValue",
             _passwordHash = "somePasswordHashValue";
 
-        readonly Guid _id = Guid.NewGuid();
+        private readonly Guid _id = Guid.NewGuid();
+        private readonly UserRole _role = UserRole.User;
 
         [Fact]
         public async Task get_async_should_invoke_get_async_on_repository()
@@ -126,19 +127,21 @@ namespace StockAdvisor.UnitTests.Infrastructure
 
 
             //When 
-            await userService.RegisterAsync(_email, _firstname,
-                _surname, _password);
+            await userService.RegisterAsync(_id, _email, _firstname,
+                _surname, _password, _role);
 
             //Then
             userRepositoryMock.Verify(x => x.AddAsync(It.IsAny<User>()), Times.Once);
             registeredUser.Should().NotBeNull();
+            Assert.Equal(_id, registeredUser.Id);
             Assert.Equal(_email, registeredUser.Email);
             Assert.Equal(_firstname, registeredUser.FirstName);
             Assert.Equal(_surname, registeredUser.SurName);
+            Assert.Equal(_role.ToString(), registeredUser.Role);
         }
 
         [Fact]
-        public async Task register_async_should_invoke_HetSalt_and_GetHash_on_enrypter()
+        public async Task register_async_should_invoke_GetSalt_and_GetHash_on_enrypter()
         {
             //Given
             var userRepositoryMock = new Mock<IUserRepository>();
@@ -151,8 +154,8 @@ namespace StockAdvisor.UnitTests.Infrastructure
                 encrypterMock.Object, mapperMock.Object);
 
             //When 
-            await userService.RegisterAsync(_email, _firstname,
-                _surname, _password);
+            await userService.RegisterAsync(_id, _email, _firstname,
+                _surname, _password, _role);
 
             //Then
             encrypterMock.Verify(x => x.GetSalt(), Times.Once);
@@ -175,7 +178,8 @@ namespace StockAdvisor.UnitTests.Infrastructure
                 encrypterMock.Object, mapperMock.Object);
 
             //When 
-            Func<Task> act = () => userService.RegisterAsync(_email, _firstname, _surname, _password); 
+            Func<Task> act = () => userService.RegisterAsync(_id, _email, _firstname, _surname,
+                _password, _role); 
 
             // Then
             await Assert.ThrowsAsync<ServiceException>(act);
@@ -253,8 +257,74 @@ namespace StockAdvisor.UnitTests.Infrastructure
             await Assert.ThrowsAsync<ServiceException>(act);
         }
 
+        [Fact]
+        public async Task browse_async_invokes_browseasync_on_repo()
+        {
+            //Given
+            var userRepositoryMock = new Mock<IUserRepository>();
+            
+            var mapperMock = new Mock<IMapper>();
+
+            var encrypterMock = new Mock<IEncrypter>();
+
+            var userService = new UserService(userRepositoryMock.Object,
+                encrypterMock.Object, mapperMock.Object);
+
+            //When
+            var returnedUsers = await userService.BrowseAsync();
+            
+            //Then
+            userRepositoryMock.Verify(x => x.BrowseAsync(), Times.Once);
+        }
+
+        [Fact]
+        public async Task browse_async_invokes_map_on_mapper()
+        {
+            //Given
+            var userRepositoryMock = new Mock<IUserRepository>();
+            
+            var mapperMock = new Mock<IMapper>();
+
+            var encrypterMock = new Mock<IEncrypter>();
+
+            var userService = new UserService(userRepositoryMock.Object,
+                encrypterMock.Object, mapperMock.Object);
+
+            //When
+            var returnedUsers = await userService.BrowseAsync();
+            
+            //Then
+            mapperMock.Verify(x =>
+                x.Map<IEnumerable<User>, IEnumerable<UserDto>>(It.IsAny<IEnumerable<User>>()),
+                                                               Times.Once);
+        }
+        
+        [Fact]
+        public async Task browse_async_returns_mapping_result()
+        {
+            //Given
+            var userRepositoryMock = new Mock<IUserRepository>();
+            IEnumerable<UserDto> users = new List<UserDto>();
+
+            var mapperMock = new Mock<IMapper>();
+            mapperMock.Setup(x =>
+                x.Map<IEnumerable<User>, IEnumerable<UserDto>>(It.IsAny<IEnumerable<User>>()))
+                      .Returns(users);
+
+            var encrypterMock = new Mock<IEncrypter>();
+
+            var userService = new UserService(userRepositoryMock.Object,
+                encrypterMock.Object, mapperMock.Object);
+
+            //When
+            var returnedUsers = await userService.BrowseAsync();
+            
+            //Then
+            returnedUsers.Should().BeSameAs(users);
+        }
+
         private User GetDefaultUser()
-            => new User(_id, _email, _firstname, _surname, _passwordHash, _salt);
+            => new User(_id, _email, _firstname, _surname, _passwordHash, _salt, _role);
 
         private Mock<IEncrypter> GetConfiguredEncrypter()
         {

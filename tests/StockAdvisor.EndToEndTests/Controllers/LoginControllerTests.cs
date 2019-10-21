@@ -13,8 +13,8 @@ namespace StockAdvisor.EndToEndTests.Controllers
 {
     public class LoginControllerTests : ControllerTestBase
     {
-        private readonly string _validEmail = "first@example.com",
-            _validPassword = "Password1";
+        private readonly string _validEmail = "user1@test.com",
+            _validPassword = "Secret1";
 
         public LoginControllerTests(WebApplicationFactory<Startup> factory)
             : base(factory)

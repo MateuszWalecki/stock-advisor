@@ -25,14 +25,14 @@ namespace StockAdvisor.Core.Domain
         }
 
         public User(Guid userId, string emailAddress, string firstName, 
-             string surName, string password, string salt)
+             string surName, string passwordHash, string salt, UserRole userRole)
         {
             Id = userId;
             SetEmail(emailAddress);
             SetFirstName(firstName);
             SetSurName(surName);
-            SetPassword(password, salt);
-            SetRole(UserRole.User);
+            SetPassword(passwordHash, salt);
+            SetRole(userRole);
             UpdatedAt = CreatedAt = DateTime.UtcNow;
         }
 

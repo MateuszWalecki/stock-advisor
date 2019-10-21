@@ -16,8 +16,6 @@ namespace StockAdvisor.Api.Controllers
 {
     public class AccountController : ApiControllerBase
     {
-        private readonly IUserService _userService;
-
         public AccountController(ICommandDispatcher commandDistatcher)
             : base(commandDistatcher)
         {

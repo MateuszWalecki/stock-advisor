@@ -11,6 +11,7 @@ namespace StockAdvisor.Infrastructure.Services
 {
     public class InvestorService : IInvestorService
     {
+        private readonly IUserRepository _userRepository;
         private readonly IInvestorRepository _investorRepository;
         private readonly IMapper _mapper;
 
@@ -18,8 +19,10 @@ namespace StockAdvisor.Infrastructure.Services
         {
         }
 
-        public InvestorService(IInvestorRepository investorRepository, IMapper mapper)
+        public InvestorService(IUserRepository userRepository,
+            IInvestorRepository investorRepository, IMapper mapper)
         {
+            _userRepository = userRepository;
             _investorRepository = investorRepository;
             _mapper = mapper;
         }
@@ -31,18 +34,59 @@ namespace StockAdvisor.Infrastructure.Services
             return _mapper.Map<Investor, InvestorDto>(investor);
         }
 
+        public async Task<IEnumerable<InvestorDto>> BrowseAsync()
+        {
+            var investors = await _investorRepository.BrowseAsync();
+
+            return _mapper.Map<IEnumerable<Investor>, IEnumerable<InvestorDto>>(investors);
+        }
+
         public async Task RegisterAsync(Guid userId)
         {
-            var investor = await _investorRepository.GetAsync(userId);
+            var user = await _userRepository.GetAsync(userId);
+            if (user == null)
+            {
+                throw new ServiceException(ErrorCodes.UserNotFound,
+                    $"User with id {userId} was not found.");
+            }
 
+            var investor = await _investorRepository.GetAsync(userId);
             if (investor != null)
             {
                 throw new ServiceException(ErrorCodes.InvestorExists,
-                    $"Cannot register investor related with user with id {userId}, " +
-                    "because it already exists.");
+                    $"Investor with id {userId} already exists.");
             }
-            investor = new Investor(userId);
+            
+            investor = new Investor(user);
             await _investorRepository.AddAsync(investor);
+        }
+
+        public async Task AddToFavouriteCompanies(Guid userId, string company)
+        {
+            var investor = await _investorRepository.GetAsync(userId);
+            if (investor == null)
+            {
+                throw new ServiceException(ErrorCodes.InvestorNotFound,
+                    $"Investor with id {userId} was not found.");
+            }
+
+            investor.AddToFavouriteCompanies(company);
+
+            await _investorRepository.UpdateAsync(investor);
+        }
+
+        public async Task RemoveFromFavouriteCompanies(Guid userId, string company)
+        {
+            var investor = await _investorRepository.GetAsync(userId);
+            if (investor == null)
+            {
+                throw new ServiceException(ErrorCodes.InvestorNotFound,
+                    $"Investor with id {userId} was not found.");
+            }
+
+            investor.RemoveFromFavouriteCompanies(company);
+            
+            await _investorRepository.UpdateAsync(investor);
         }
     }
 }

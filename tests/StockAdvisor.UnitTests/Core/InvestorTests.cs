@@ -76,6 +76,11 @@ namespace StockAdvisor.UnitTests.Core
         
 
         private Investor GetValidInvestor()
-            => new Investor(Guid.NewGuid());
+        {
+            var user = new User(Guid.NewGuid(), "email@email.com", "Firstname",
+                "Surname", "PasswordHash1", "Salt1", UserRole.User);
+
+            return new Investor(user);
+        }
     }
 }

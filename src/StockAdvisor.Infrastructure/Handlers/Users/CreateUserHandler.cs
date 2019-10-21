@@ -1,4 +1,6 @@
+using System;
 using System.Threading.Tasks;
+using StockAdvisor.Core.Domain;
 using StockAdvisor.Infrastructure.Commands;
 using StockAdvisor.Infrastructure.Commands.Users;
 using StockAdvisor.Infrastructure.Exceptions;
@@ -24,8 +26,8 @@ namespace StockAdvisor.Infrastructure.Handlers.Users
                     $"Given email {command.Email} is already used.");
             }
 
-            await _userService.RegisterAsync(command.Email, command.FirstName, command.SurName,
-                command.Password);
+            await _userService.RegisterAsync(Guid.NewGuid(), command.Email, command.FirstName, command.SurName,
+                command.Password, UserRole.User);
         }
     }
 }
