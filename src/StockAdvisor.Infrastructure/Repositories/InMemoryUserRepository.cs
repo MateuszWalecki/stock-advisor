@@ -16,6 +16,12 @@ namespace StockAdvisor.Infrastructure.Repositories
 
         public async Task AddAsync(User user)
         {
+            if (_users.Any(x => x.Email == user.Email))
+            {
+                throw new ServiceException(ErrorCodes.EmailInUse,
+                    $"Email {user.Email} is in use.");
+            }
+            
             _users.Add(user);
             await Task.CompletedTask;
         }

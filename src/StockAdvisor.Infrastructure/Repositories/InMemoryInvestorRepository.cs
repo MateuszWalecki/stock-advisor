@@ -14,6 +14,12 @@ namespace StockAdvisor.Infrastructure.Repositories
 
         public async Task AddAsync(Investor investor)
         {
+            if (_investors.Any(x => x.UserId == investor.UserId))
+            {
+                throw new ServiceException(ErrorCodes.UserIdInUse,
+                    $"User with id {investor.UserId} is in use.");
+            }
+
             _investors.Add(investor);
             await Task.CompletedTask;
         }

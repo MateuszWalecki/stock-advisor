@@ -11,13 +11,15 @@ using StockAdvisor.Api;
 using StockAdvisor.Infrastructure.Commands.Users;
 using StockAdvisor.Infrastructure.DTO;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace StockAdvisor.EndToEndTests.Controllers
 {
     public class AccountControllerTests : ControllerTestBase
     {
-        public AccountControllerTests(WebApplicationFactory<Startup> factory)
-            : base(factory)
+        public AccountControllerTests(WebApplicationFactory<Startup> factory,
+            ITestOutputHelper output)
+            : base(factory, output)
         {
         }
 
@@ -25,7 +27,7 @@ namespace StockAdvisor.EndToEndTests.Controllers
         public async Task given_valid_current_password_and_new_password_current_should_be_changed()
         {
             //Given
-            var client = _factory.CreateClient();
+            var client = Factory.CreateClient();
             var command = new ChangeUserPasswordCommand()
             {
                 Email = "new_email@example.com",

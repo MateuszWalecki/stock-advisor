@@ -1,5 +1,6 @@
 using System.Net.Http;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -9,17 +10,21 @@ using StockAdvisor.Api;
 using StockAdvisor.Infrastructure.Commands.Login;
 using StockAdvisor.Infrastructure.DTO;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace StockAdvisor.EndToEndTests.Controllers
 {
     public class ControllerTestBase
         : IClassFixture<WebApplicationFactory<Startup>>
     {
-        protected readonly WebApplicationFactory<Startup> _factory;
+        protected readonly WebApplicationFactory<Startup> Factory;
+        protected readonly ITestOutputHelper Output;
 
-        protected ControllerTestBase(WebApplicationFactory<Startup> factory)
+        protected ControllerTestBase(WebApplicationFactory<Startup> factory,
+            ITestOutputHelper output)
         {
-            _factory = factory;
+            Factory = factory;
+            Output = output;
         }
 
         
@@ -29,8 +34,6 @@ namespace StockAdvisor.EndToEndTests.Controllers
 
             return new StringContent(json, Encoding.UTF8, "application/json");
         }
-
-        
 
         protected async Task<string> GetValidBearerTokenHeader(HttpClient client)
         {

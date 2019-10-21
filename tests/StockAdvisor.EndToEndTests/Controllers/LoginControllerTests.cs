@@ -8,6 +8,7 @@ using StockAdvisor.Api;
 using StockAdvisor.Infrastructure.Commands.Login;
 using StockAdvisor.Infrastructure.DTO;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace StockAdvisor.EndToEndTests.Controllers
 {
@@ -16,8 +17,8 @@ namespace StockAdvisor.EndToEndTests.Controllers
         private readonly string _validEmail = "user1@test.com",
             _validPassword = "Secret1";
 
-        public LoginControllerTests(WebApplicationFactory<Startup> factory)
-            : base(factory)
+        public LoginControllerTests(WebApplicationFactory<Startup> factory,
+            ITestOutputHelper output) : base(factory, output)
         {
         }
 
@@ -25,7 +26,7 @@ namespace StockAdvisor.EndToEndTests.Controllers
         public async Task given_valid_credentials_ok_status_with_jwt_are_returned()
         {
             //Given
-            var client = _factory.CreateClient();
+            var client = Factory.CreateClient();
 
             var command = new LoginCommand
             {
@@ -50,12 +51,12 @@ namespace StockAdvisor.EndToEndTests.Controllers
         public async Task given_invalid_email_unathorized_code_is_returned()
         {
             //Given
-            var client = _factory.CreateClient();
+            var client = Factory.CreateClient();
 
             var command = new LoginCommand
             {
                 Email = "wrong_email",
-                Password = _validPassword    
+                Password = _validPassword 
             };
             var payload = GetPayload(command);
 
@@ -70,7 +71,7 @@ namespace StockAdvisor.EndToEndTests.Controllers
         public async Task given_invalid_password_unathorized_code_is_returned()
         {
             //Given
-            var client = _factory.CreateClient();
+            var client = Factory.CreateClient();
 
             var command = new LoginCommand
             {

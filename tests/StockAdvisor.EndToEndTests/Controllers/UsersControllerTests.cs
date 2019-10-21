@@ -11,13 +11,15 @@ using StockAdvisor.Api;
 using StockAdvisor.Infrastructure.Commands.Users;
 using StockAdvisor.Infrastructure.DTO;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace StockAdvisor.EndToEndTests.Controllers
 {
     public class UsersControllerTests : ControllerTestBase
     {
-        public UsersControllerTests(WebApplicationFactory<Startup> factory)
-            : base(factory)
+        public UsersControllerTests(WebApplicationFactory<Startup> factory,
+            ITestOutputHelper output)
+            : base(factory, output)
         {
         }
         
@@ -25,7 +27,7 @@ namespace StockAdvisor.EndToEndTests.Controllers
         public async Task on_unathorized_get_user_request_unathorized_response_is_send()
         {
             //Given
-            var client = _factory.CreateClient();
+            var client = Factory.CreateClient();
             var email = "first@example.com";
 
             //When
@@ -39,10 +41,10 @@ namespace StockAdvisor.EndToEndTests.Controllers
         public async Task given_valid_email_user_is_returned()
         {
             //Given
-            var client = _factory.CreateClient();
-            client.DefaultRequestHeaders.Add("Authorization", await GetValidBearerTokenHeader(client));
+            var client = Factory.CreateClient();
+            var authorizationHeader =  await GetValidBearerTokenHeader(client);
+            client.DefaultRequestHeaders.Add("Authorization", authorizationHeader);
             var email = "user1@test.com";
-
             //When
             var response = await client.GetAsync($"users/{email}");
             var responseString = await response.Content.ReadAsStringAsync();
@@ -57,8 +59,9 @@ namespace StockAdvisor.EndToEndTests.Controllers
         public async Task given_invalid_email_user_is_not_returned()
         {
             //Given
-            var client = _factory.CreateClient();
-            client.DefaultRequestHeaders.Add("Authorization", await GetValidBearerTokenHeader(client));
+            var client = Factory.CreateClient();
+            var authorizationHeader =  await GetValidBearerTokenHeader(client);
+            client.DefaultRequestHeaders.Add("Authorization", authorizationHeader);
             var email = "bademail@example.com";
 
             //When
@@ -72,8 +75,9 @@ namespace StockAdvisor.EndToEndTests.Controllers
         public async Task given_unused_email_user_is_created_and_user_location_is_returen_with_status_created()
         {
             //Given
-            var client = _factory.CreateClient();
-            client.DefaultRequestHeaders.Add("Authorization", await GetValidBearerTokenHeader(client));
+            var client = Factory.CreateClient();
+            var authorizationHeader =  await GetValidBearerTokenHeader(client);
+            client.DefaultRequestHeaders.Add("Authorization", authorizationHeader);
             string email = "new_user@email.com",
 	            firstName = "Luis",
 	            surName = "Suarez",
@@ -105,7 +109,7 @@ namespace StockAdvisor.EndToEndTests.Controllers
         public async Task trying_to_create_user_with_currently_used_email_returns_conflict_status()
         {
             //Given
-            var client = _factory.CreateClient();
+            var client = Factory.CreateClient();
             string usedEmail = "user1@test.com";
             var creauteUserRequest = new CreateUserCommand
             {
