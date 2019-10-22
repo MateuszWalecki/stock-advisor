@@ -26,14 +26,26 @@ namespace StockAdvisor.Infrastructure.Repositories
             return companies.SymbolsList;
         }
 
-        public Task<Company> GetAsync(string companySymbol)
+        public async Task<IEnumerable<HistoricalPrice>> GetAsync(string companySymbol)
         {
-            throw new System.NotImplementedException();
+            var response = await _client.GetAsync(
+                $"/api/v3/historical-price-full/{companySymbol}?serietype=line");
+            response.EnsureSuccessStatusCode();
+            var stringResponse = await response.Content.ReadAsStringAsync();
+
+            var historical = JsonConvert.DeserializeObject<HistoricalJson>(stringResponse);
+            return historical.Historical;
         }
 
         private class CompaniesJson
         {
-            public List<Company> SymbolsList { get; set; }
+            public IEnumerable<Company> SymbolsList { get; set; }
+        }
+
+        private class HistoricalJson
+        {
+            public string Symbol { get; set; }
+            public IEnumerable<HistoricalPrice> Historical { get; set; }
         }
     }
 }

@@ -7,7 +7,7 @@ namespace StockAdvisor.Core.Repositories
 {
     public interface ICompanyRepository : IRepository
     {
-        Task<Company> GetAsync(string companySymbol); 
+        Task<IEnumerable<HistoricalPrice>> GetAsync(string companySymbol); 
         Task<IEnumerable<Company>> BrowseAsync();
     }
 }

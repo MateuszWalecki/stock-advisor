@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace StockAdvisor.Infrastructure.DTO
 {
@@ -6,6 +8,7 @@ namespace StockAdvisor.Infrastructure.DTO
     {
         public string Symbol { get; set; }
         public string Name { get; set; }
-        public decimal Price { get; set; }
+        public decimal CurrentPrice { get; set; }
+        public IEnumerable<HistoricalPriceDto> HistoricalPrice { get; set; }
     }
 }

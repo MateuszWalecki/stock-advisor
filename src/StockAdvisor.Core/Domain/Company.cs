@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using StockAdvisor.Core.Repositories;
 
 namespace StockAdvisor.Core.Domain
@@ -8,13 +9,18 @@ namespace StockAdvisor.Core.Domain
     {
         public string Symbol { get; protected set; }
         public string Name { get; protected set; }
-        public decimal Price { get; protected set; }
-
-        public Company(string symbol, string name, decimal price)
+        [JsonProperty("price")]
+        public decimal CurrentPrice { get; protected set; }
+        [JsonProperty("historical")]
+        public IEnumerable<HistoricalPrice> HistoricalPrice {get; protected set; }
+        
+        public Company(string symbol, string name, decimal currentPrice,
+            IEnumerable<HistoricalPrice> historical)
         {
             Symbol = symbol;
             Name = name;
-            Price = price;
+            CurrentPrice = currentPrice;
+            HistoricalPrice = historical;
         }
     }
 }
