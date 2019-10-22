@@ -16,8 +16,8 @@ namespace StockAdvisor.Api.Controllers
 {
     public class AccountController : ApiControllerBase
     {
-        public AccountController(ICommandDispatcher commandDistatcher)
-            : base(commandDistatcher)
+        public AccountController(ICommandDispatcher commandDispatcher)
+            : base(commandDispatcher)
         {
         }
 
@@ -25,7 +25,7 @@ namespace StockAdvisor.Api.Controllers
         [Route("password")]
         public async Task<IActionResult> ChangePasswordAsync([FromBody]ChangeUserPasswordCommand command)
         {
-            await CommandDistatcher.DispatchAsync(command);
+            await CommandDispatcher.DispatchAsync(command);
 
             return NoContent();
         }

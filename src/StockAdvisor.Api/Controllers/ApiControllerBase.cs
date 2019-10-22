@@ -6,11 +6,11 @@ namespace StockAdvisor.Api.Controllers
     [Route("[controller]")]
     public class ApiControllerBase : ControllerBase
     {
-        protected readonly ICommandDispatcher CommandDistatcher;
+        protected readonly ICommandDispatcher CommandDispatcher;
 
-        protected ApiControllerBase(ICommandDispatcher commandDistatcher)
+        protected ApiControllerBase(ICommandDispatcher commandDispatcher)
         {
-            CommandDistatcher = commandDistatcher;
+            CommandDispatcher = commandDispatcher;
         }
     }
 }

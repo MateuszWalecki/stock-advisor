@@ -15,8 +15,8 @@ namespace StockAdvisor.Api.Controllers
         private readonly IJwtHandler _jwtHandler;
         private readonly IMemoryCache _cache;
         
-        public LoginController(ICommandDispatcher commandDistatcher,
-            IMemoryCache userService, IJwtHandler jwtHandler) : base(commandDistatcher)
+        public LoginController(ICommandDispatcher commandDispatcher,
+            IMemoryCache userService, IJwtHandler jwtHandler) : base(commandDispatcher)
         {
             _cache = userService;
             _jwtHandler = jwtHandler;
@@ -29,7 +29,7 @@ namespace StockAdvisor.Api.Controllers
             
             try
             {
-                await CommandDistatcher.DispatchAsync(loginCommand);
+                await CommandDispatcher.DispatchAsync(loginCommand);
             }
             catch(StockAdvisorException e)
             {

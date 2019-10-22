@@ -1,11 +1,24 @@
+using System;
+using System.Linq;
+using System.Net.Http;
 using System.Reflection;
 using Autofac;
+using Microsoft.Extensions.Configuration;
+using StockAdvisor.Infrastructure.Extensions;
 using StockAdvisor.Infrastructure.Services;
+using StockAdvisor.Infrastructure.Settings;
 
 namespace StockAdvisor.Infrastructure.IoC.Modules
 {
     public class ServiceModule : Autofac.Module
     {
+        private readonly IConfiguration _configuration;
+        
+        public ServiceModule(IConfiguration configuration)
+        {
+            _configuration = configuration;    
+        }
+        
         protected override void Load(Autofac.ContainerBuilder builder)
         {
             var assembly = typeof(ServiceModule)
@@ -23,6 +36,13 @@ namespace StockAdvisor.Infrastructure.IoC.Modules
 
             builder.RegisterType<JwtHandler>()
                     .As<IJwtHandler>()
+                    .SingleInstance();
+
+            var financialSettings = _configuration.GetSettings<FinancialModelingPrepSettings>();
+            builder.Register(x => new HttpClient()
+                    {
+                        BaseAddress = new Uri(financialSettings.Uri)
+                    })
                     .SingleInstance();
         }
     }

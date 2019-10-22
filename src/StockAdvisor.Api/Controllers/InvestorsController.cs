@@ -18,8 +18,8 @@ namespace StockAdvisor.Api.Controllers
     {
         private readonly IInvestorService _investorService;
         
-        public InvestorsController(ICommandDispatcher commandDistatcher,
-            IInvestorService investorService) : base(commandDistatcher)
+        public InvestorsController(ICommandDispatcher commandDispatcher,
+            IInvestorService investorService) : base(commandDispatcher)
         {
             _investorService = investorService;
         }
@@ -54,7 +54,7 @@ namespace StockAdvisor.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody]CreateInvestorCommand command)
         {
-            await CommandDistatcher.DispatchAsync(command);
+            await CommandDispatcher.DispatchAsync(command);
 
             return NoContent();
         }

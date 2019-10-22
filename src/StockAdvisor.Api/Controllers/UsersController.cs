@@ -20,8 +20,8 @@ namespace StockAdvisor.Api.Controllers
     {
         private readonly IUserService _userService;
 
-        public UsersController(IUserService userService, ICommandDispatcher commandDistatcher)
-            : base(commandDistatcher)
+        public UsersController(IUserService userService, ICommandDispatcher commandDispatcher)
+            : base(commandDispatcher)
         {
             _userService = userService;
         }
@@ -54,7 +54,7 @@ namespace StockAdvisor.Api.Controllers
         {
             try
             {
-                await CommandDistatcher.DispatchAsync(command);
+                await CommandDispatcher.DispatchAsync(command);
             }
             catch (ServiceException e)
             {

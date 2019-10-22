@@ -20,7 +20,7 @@ namespace StockAdvisor.Infrastructure.IoC
                 .SingleInstance();
 
             builder.RegisterModule(new RepositoryModule(_configuration));
-            builder.RegisterModule<ServiceModule>();
+            builder.RegisterModule(new ServiceModule(_configuration));
             builder.RegisterModule<CommandModule>();
             builder.RegisterModule(new SettingsModule(_configuration));
         }
