@@ -25,11 +25,11 @@ namespace StockAdvisor.Infrastructure.Services
             return _mapper.Map<IEnumerable<Company>, IEnumerable<CompanyDto>>(companies);
         }
 
-        public async Task<IEnumerable<HistoricalPriceDto>> GetHistoricalAsync(string companySymbol)
+        public async Task<IEnumerable<CompanyPriceDto>> GetHistoricalAsync(string companySymbol)
         {
-            var company = await _companyRepository.GetAsync(companySymbol);
+            var company = await _companyRepository.GetHistoricalAsync(companySymbol);
 
-            return _mapper.Map<IEnumerable<HistoricalPrice>, IEnumerable<HistoricalPriceDto>>(company);
+            return _mapper.Map<IEnumerable<CompanyPrice>, IEnumerable<CompanyPriceDto>>(company);
         }
     }
 }

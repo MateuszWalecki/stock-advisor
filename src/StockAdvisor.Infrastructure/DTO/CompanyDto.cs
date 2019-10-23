@@ -9,6 +9,6 @@ namespace StockAdvisor.Infrastructure.DTO
         public string Symbol { get; set; }
         public string Name { get; set; }
         public decimal CurrentPrice { get; set; }
-        public IEnumerable<HistoricalPriceDto> HistoricalPrice { get; set; }
+        public IEnumerable<CompanyPriceDto> HistoricalPrice { get; set; }
     }
 }

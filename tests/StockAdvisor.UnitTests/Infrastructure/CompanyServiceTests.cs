@@ -80,8 +80,6 @@ namespace StockAdvisor.UnitTests.Infrastructure
             returnedCollection.Should().BeSameAs(mappedCompanies);
         }
 
-        ///////////////////////////////
-        
         [Fact]
         public async Task get_hitorical_asyc_calls_get_async_on_copmanies_repo()
         {
@@ -97,7 +95,7 @@ namespace StockAdvisor.UnitTests.Infrastructure
             await comapnyService.GetHistoricalAsync(companySymbol);
 
             //Then
-            companyRepoMock.Verify(x => x.GetAsync(companySymbol), Times.Once);
+            companyRepoMock.Verify(x => x.GetHistoricalAsync(companySymbol), Times.Once);
         }
 
         [Fact]
@@ -105,26 +103,26 @@ namespace StockAdvisor.UnitTests.Infrastructure
         {
             //Given
             string companySymbol = "AAPL";
-            IEnumerable<HistoricalPrice> historicalFromRepo = new List<HistoricalPrice>();
-            IEnumerable<HistoricalPrice> companiesGivenToMap = null;
+            IEnumerable<CompanyPrice> historicalFromRepo = new List<CompanyPrice>();
+            IEnumerable<CompanyPrice> companiesGivenToMap = null;
 
             var companyRepoMock = new Mock<ICompanyRepository>();
-            companyRepoMock.Setup(x => x.GetAsync(companySymbol))
+            companyRepoMock.Setup(x => x.GetHistoricalAsync(companySymbol))
                            .ReturnsAsync(historicalFromRepo);
 
             var mapperMock = new Mock<IMapper>();
-            mapperMock.Setup(x => x.Map<IEnumerable<HistoricalPrice>, IEnumerable<HistoricalPriceDto>>(
+            mapperMock.Setup(x => x.Map<IEnumerable<CompanyPrice>, IEnumerable<CompanyPriceDto>>(
                                 historicalFromRepo))
-                      .Callback<IEnumerable<HistoricalPrice>>(x => companiesGivenToMap = x);
+                      .Callback<IEnumerable<CompanyPrice>>(x => companiesGivenToMap = x);
 
             var comapnyService = new CompanyService(companyRepoMock.Object,
                 mapperMock.Object);
 
             //When
-            await comapnyService.BrowseAsync();
+            await comapnyService.GetHistoricalAsync(companySymbol);
 
             //Then
-            mapperMock.Verify(x => x.Map<IEnumerable<HistoricalPrice>, IEnumerable<HistoricalPriceDto>>(
+            mapperMock.Verify(x => x.Map<IEnumerable<CompanyPrice>, IEnumerable<CompanyPriceDto>>(
                                     historicalFromRepo),
                               Times.Once);
             historicalFromRepo.Should().BeSameAs(companiesGivenToMap);
@@ -136,13 +134,13 @@ namespace StockAdvisor.UnitTests.Infrastructure
             //Given
             string companySymbol = "AAPL";
 
-            IEnumerable<HistoricalPriceDto> mappedCompanies = new List<HistoricalPriceDto>();
+            IEnumerable<CompanyPriceDto> mappedCompanies = new List<CompanyPriceDto>();
 
             var companyRepoMock = new Mock<ICompanyRepository>();
 
             var mapperMock = new Mock<IMapper>();
-            mapperMock.Setup(x => x.Map<IEnumerable<HistoricalPrice>, IEnumerable<HistoricalPriceDto>>(
-                            It.IsAny<IEnumerable<HistoricalPrice>>()))
+            mapperMock.Setup(x => x.Map<IEnumerable<CompanyPrice>, IEnumerable<CompanyPriceDto>>(
+                            It.IsAny<IEnumerable<CompanyPrice>>()))
                       .Returns(mappedCompanies);
 
             var comapnyService = new CompanyService(companyRepoMock.Object,
