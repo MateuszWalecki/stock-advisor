@@ -25,7 +25,7 @@ namespace StockAdvisor.Api.Controllers
         [Route("password")]
         public async Task<IActionResult> ChangePasswordAsync([FromBody]ChangeUserPasswordCommand command)
         {
-            await CommandDispatcher.DispatchAsync(command);
+            await DispatchAsync(command);
 
             return NoContent();
         }

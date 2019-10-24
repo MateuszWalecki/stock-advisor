@@ -54,7 +54,7 @@ namespace StockAdvisor.Api.Controllers
         {
             try
             {
-                await CommandDispatcher.DispatchAsync(command);
+                await DispatchAsync(command);
             }
             catch (ServiceException e)
             {

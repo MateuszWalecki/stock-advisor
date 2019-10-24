@@ -29,7 +29,7 @@ namespace StockAdvisor.Api.Controllers
             
             try
             {
-                await CommandDispatcher.DispatchAsync(loginCommand);
+                await DispatchAsync(loginCommand);
             }
             catch(StockAdvisorException e)
             {

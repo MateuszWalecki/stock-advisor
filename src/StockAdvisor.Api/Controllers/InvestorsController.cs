@@ -54,7 +54,7 @@ namespace StockAdvisor.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody]CreateInvestorCommand command)
         {
-            await CommandDispatcher.DispatchAsync(command);
+            await DispatchAsync(command);
 
             return NoContent();
         }

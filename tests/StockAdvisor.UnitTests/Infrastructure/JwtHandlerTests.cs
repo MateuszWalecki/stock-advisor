@@ -16,8 +16,9 @@ namespace StockAdvisor.UnitTests.Infrastructure
         {
             //Given
             var now = DateTime.UtcNow;
-            string email = "test@email.com",
-                role = "User";
+            string role = "User";
+            Guid userId = new Guid();
+
             var lessThanExpiryMinutes = now.AddMinutes(expiryMinutes - 1).ToTimeStamp();
             var moreThanExpiryMinutes = now.AddMinutes(expiryMinutes + 1).ToTimeStamp();
 
@@ -31,7 +32,7 @@ namespace StockAdvisor.UnitTests.Infrastructure
             var jwtHandler = new JwtHandler(settings);
 
             //When
-            var jwt = jwtHandler.CreateToken(email, role);
+            var jwt = jwtHandler.CreateToken(userId, role);
 
             //Then
             jwt.Should().NotBeNull();
