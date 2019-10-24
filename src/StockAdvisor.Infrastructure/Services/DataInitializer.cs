@@ -29,14 +29,24 @@ namespace StockAdvisor.Infrastructure.Services
             for (int i = 1; i <= 10; i++)
             {
                 var userId = Guid.NewGuid();
-                var userName = $"user{i}";
                 var email = $"user{i}@test.com";
                 
                 tasks.Add(_userService.RegisterAsync(userId, email, 
                     $"Firstname{i}", $"Surname{i}", $"Secret{i}", UserRole.User));
                 tasks.Add(_investorService.RegisterAsync(userId));
 
-                _logger.LogTrace($"Created driver for the email: {email}.");
+                _logger.LogTrace($"Created user and investor for the email: {email}.");
+            }
+
+            for (int i = 1; i <= 5; i++)
+            {
+                var userId = Guid.NewGuid();
+                var email = $"without_investor{i}@test.com";
+                
+                tasks.Add(_userService.RegisterAsync(userId, email, 
+                    $"Firstname{i}", $"Surname{i}", $"Secret{i}", UserRole.User));
+
+                _logger.LogTrace($"Created user for the email: {email}.");
             }
 
             for (int i = 1; i <= 3; i++)

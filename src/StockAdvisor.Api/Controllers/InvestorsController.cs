@@ -24,6 +24,7 @@ namespace StockAdvisor.Api.Controllers
             _investorService = investorService;
         }
 
+        // TODO: for admin only
         [HttpGet]
         public async Task<IActionResult> Get()
         {
@@ -37,23 +38,35 @@ namespace StockAdvisor.Api.Controllers
             return Ok(investors);
         }
         
-        [HttpGet("{email}")]
-        public async Task<IActionResult> Get(string email)
+        [Authorize]
+        [Route("current")]
+        [HttpGet]
+        public async Task<IActionResult> GetCurrentIvestor()
         {
-            var investor = await _investorService.GetAsync(email);
+            var userId = UserId;
+
+            if (userId == Guid.Empty)
+            {
+                return NotFound($"User with id {userId} cannot be found.");
+            }
+
+            var investor = await _investorService.GetAsync(userId);
 
             if (investor == null)
             {
-                return NotFound($"Investor realted with user with email {email } " +
+                return NotFound($"Investor realted with user with id {userId} " +
                     "cannot be found.");
             }
 
             return Ok(investor);
         }
 
+        [Authorize]
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody]CreateInvestorCommand command)
+        public async Task<IActionResult> Post()
         {
+            var command = new CreateInvestorCommand();
+
             await DispatchAsync(command);
 
             return NoContent();

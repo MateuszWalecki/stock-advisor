@@ -35,12 +35,13 @@ namespace StockAdvisor.EndToEndTests.Controllers
             return new StringContent(json, Encoding.UTF8, "application/json");
         }
 
-        protected async Task<string> GetValidBearerTokenHeader(HttpClient client)
+        protected async Task<string> GetValidBearerTokenHeader(HttpClient client,
+            string email = "user1@test.com", string password = "Secret1")
         {
             var command = new LoginCommand
             {
-                Email = "user1@test.com",
-                Password = "Secret1"    
+                Email = email,
+                Password = password    
             };
             var payload = GetPayload(command);
 
