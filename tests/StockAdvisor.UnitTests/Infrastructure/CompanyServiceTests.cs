@@ -81,7 +81,7 @@ namespace StockAdvisor.UnitTests.Infrastructure
         }
 
         [Fact]
-        public async Task get_hitorical_asyc_calls_get_async_on_copmanies_repo()
+        public async Task get_value_status_asyc_calls_get_async_on_copmanies_repo()
         {
             //Given
             string companySymbol = "AAPL";
@@ -92,62 +92,62 @@ namespace StockAdvisor.UnitTests.Infrastructure
                 mapperMock.Object);
 
             //When
-            await comapnyService.GetHistoricalAsync(companySymbol);
+            await comapnyService.GetValueStatusAsync(companySymbol);
 
             //Then
-            companyRepoMock.Verify(x => x.GetHistoricalAsync(companySymbol), Times.Once);
+            companyRepoMock.Verify(x => x.GetCompanyValueStatusAsync(companySymbol), Times.Once);
         }
 
         [Fact]
-        public async Task get_hitorical_asyc_calls_mappers_map_method_using_repos_get_async_result()
+        public async Task get_value_status_asyc_calls_mappers_map_method_using_repos_get_async_result()
         {
             //Given
             string companySymbol = "AAPL";
-            IEnumerable<CompanyPrice> historicalFromRepo = new List<CompanyPrice>();
-            IEnumerable<CompanyPrice> companiesGivenToMap = null;
+            var historicalFromRepo = new Mock<CompanyValueStatus>();
+            CompanyValueStatus givenToMap = null;
 
             var companyRepoMock = new Mock<ICompanyRepository>();
-            companyRepoMock.Setup(x => x.GetHistoricalAsync(companySymbol))
-                           .ReturnsAsync(historicalFromRepo);
+            companyRepoMock.Setup(x => x.GetCompanyValueStatusAsync(companySymbol))
+                           .ReturnsAsync(historicalFromRepo.Object);
 
             var mapperMock = new Mock<IMapper>();
-            mapperMock.Setup(x => x.Map<IEnumerable<CompanyPrice>, IEnumerable<CompanyPriceDto>>(
-                                historicalFromRepo))
-                      .Callback<IEnumerable<CompanyPrice>>(x => companiesGivenToMap = x);
+            mapperMock.Setup(x => x.Map<CompanyValueStatus, CompanyValueStatusDto>(
+                                historicalFromRepo.Object))
+                      .Callback<CompanyValueStatus>(x => givenToMap = x);
 
             var comapnyService = new CompanyService(companyRepoMock.Object,
                 mapperMock.Object);
 
             //When
-            await comapnyService.GetHistoricalAsync(companySymbol);
+            await comapnyService.GetValueStatusAsync(companySymbol);
 
             //Then
-            mapperMock.Verify(x => x.Map<IEnumerable<CompanyPrice>, IEnumerable<CompanyPriceDto>>(
-                                    historicalFromRepo),
+            mapperMock.Verify(x => x.Map<CompanyValueStatus, CompanyValueStatusDto>(
+                                    historicalFromRepo.Object),
                               Times.Once);
-            historicalFromRepo.Should().BeSameAs(companiesGivenToMap);
+            historicalFromRepo.Object.Should().BeSameAs(givenToMap);
         }
 
         [Fact]
-        public async Task get_hitorical_asyc_returns_mappers_map_result()
+        public async Task get_value_status_asyc_returns_mappers_map_result()
         {
             //Given
             string companySymbol = "AAPL";
 
-            IEnumerable<CompanyPriceDto> mappedCompanies = new List<CompanyPriceDto>();
+            CompanyValueStatusDto mappedCompanies = new CompanyValueStatusDto();
 
             var companyRepoMock = new Mock<ICompanyRepository>();
 
             var mapperMock = new Mock<IMapper>();
-            mapperMock.Setup(x => x.Map<IEnumerable<CompanyPrice>, IEnumerable<CompanyPriceDto>>(
-                            It.IsAny<IEnumerable<CompanyPrice>>()))
+            mapperMock.Setup(x => x.Map<CompanyValueStatus, CompanyValueStatusDto>(
+                            It.IsAny<CompanyValueStatus>()))
                       .Returns(mappedCompanies);
 
             var comapnyService = new CompanyService(companyRepoMock.Object,
                 mapperMock.Object);
 
             //When
-            var returnedCollection = await comapnyService.GetHistoricalAsync(companySymbol);
+            var returnedCollection = await comapnyService.GetValueStatusAsync(companySymbol);
 
             //Then
             returnedCollection.Should().BeSameAs(mappedCompanies);

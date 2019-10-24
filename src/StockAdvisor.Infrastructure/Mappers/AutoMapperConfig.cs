@@ -12,7 +12,8 @@ namespace StockAdvisor.Infrastructure.Mappers
                 cfg.CreateMap<User, UserDto>();
                 cfg.CreateMap<Investor, InvestorDto>();
                 cfg.CreateMap<Company, CompanyDto>();
-                cfg.CreateMap<CompanyPrice, CompanyPriceDto>();
+                cfg.CreateMap<CompanyValue, CompanyValueDto>();
+                cfg.CreateMap<CompanyValueStatus, CompanyValueStatusDto>();
             })
             .CreateMapper();
     }

@@ -11,16 +11,12 @@ namespace StockAdvisor.Core.Domain
         public string Name { get; protected set; }
         [JsonProperty("price")]
         public decimal CurrentPrice { get; protected set; }
-        [JsonProperty("historical")]
-        public IEnumerable<CompanyPrice> HistoricalPrice {get; protected set; }
         
-        public Company(string symbol, string name, decimal currentPrice,
-            IEnumerable<CompanyPrice> historical)
+        public Company(string symbol, string name, decimal currentPrice)
         {
             Symbol = symbol;
             Name = name;
             CurrentPrice = currentPrice;
-            HistoricalPrice = historical;
         }
     }
 }

@@ -16,6 +16,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 using StockAdvisor.Core.Repositories;
 using StockAdvisor.Infrastructure.Extensions;
 using StockAdvisor.Infrastructure.IoC;
@@ -39,7 +40,9 @@ namespace StockAdvisor.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddControllers()
+                    .AddNewtonsoftJson(x =>
+                        x.SerializerSettings.Formatting = Formatting.Indented);
 
             var jwtSettings = Configuration.GetSettings<JwtSettings>();
             services.AddAuthentication(options =>

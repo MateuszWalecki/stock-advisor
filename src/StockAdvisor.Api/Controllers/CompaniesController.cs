@@ -40,7 +40,7 @@ namespace StockAdvisor.Api.Controllers
         [HttpGet("{symbol}")]
         public async Task<IActionResult> GetAllCompanies(string symbol)
         {
-            var company = await _companyService.GetHistoricalAsync(symbol);
+            var company = await _companyService.GetValueStatusAsync(symbol);
 
             if (company == null)
             {

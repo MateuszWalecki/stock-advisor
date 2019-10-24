@@ -6,7 +6,7 @@ namespace StockAdvisor.Infrastructure.Services
 {
     public interface ICompanyService : IService
     {
-        Task<IEnumerable<CompanyPriceDto>> GetHistoricalAsync(string companySymbol);
+        Task<CompanyValueStatusDto> GetValueStatusAsync(string companySymbol);
         Task<IEnumerable<CompanyDto>> BrowseAsync();
     }
 }

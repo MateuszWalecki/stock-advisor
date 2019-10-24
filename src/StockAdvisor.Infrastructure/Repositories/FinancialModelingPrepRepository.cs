@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Memory;
@@ -34,11 +35,11 @@ namespace StockAdvisor.Infrastructure.Repositories
             return companies;
         }
 
-        public async Task<IEnumerable<CompanyPrice>> GetHistoricalAsync(
+        public async Task<CompanyValueStatus> GetCompanyValueStatusAsync(
             string companySymbol)
         {
             var historicalPrice = 
-                _cache.Get<IEnumerable<CompanyPrice>>(GetStrictCompanyKey(companySymbol));
+                _cache.Get<IEnumerable<CompanyValue>>(GetStrictCompanyKey(companySymbol));
 
             if (historicalPrice == null)
             {
@@ -46,8 +47,11 @@ namespace StockAdvisor.Infrastructure.Repositories
 
                 _cache.Set(GetStrictCompanyKey(companySymbol), historicalPrice);
             }
-           
-            return historicalPrice;
+
+            var companiesInfo = await BrowseAsync();
+            var companyInfo = companiesInfo.SingleOrDefault(x => x.Symbol == companySymbol);
+            
+            return new CompanyValueStatus(companyInfo, historicalPrice);
         }
 
         private string GetStrictCompanyKey(string companySymbol)
@@ -63,7 +67,7 @@ namespace StockAdvisor.Infrastructure.Repositories
                 return jsonCompanies.SymbolsList;
         }
 
-        private async Task<IEnumerable<CompanyPrice>> GetHistoricalPriceFromExternalSource(
+        private async Task<IEnumerable<CompanyValue>> GetHistoricalPriceFromExternalSource(
             string companySymbol)
         {
             var response = await _client.GetAsync(
@@ -83,7 +87,7 @@ namespace StockAdvisor.Infrastructure.Repositories
         private class HistoricalJson
         {
             public string Symbol { get; set; }
-            public IEnumerable<CompanyPrice> Historical { get; set; }
+            public IEnumerable<CompanyValue> Historical { get; set; }
         }
     }
 }
