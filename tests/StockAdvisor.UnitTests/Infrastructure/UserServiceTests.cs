@@ -68,7 +68,7 @@ namespace StockAdvisor.UnitTests.Infrastructure
             userRepositoryMock.Setup(x => x.GetAsync(_email)).Returns(Task.FromResult(user));
 
             var mapperMock = new Mock<IMapper>();
-            mapperMock.Setup(x => x.Map<User, UserDto>(It.IsAny<User>()))
+            mapperMock.Setup(x => x.Map<UserDto>(It.IsAny<User>()))
                       .Returns(expectedUserDto);
 
             var encrypterMock = new Mock<IEncrypter>();
@@ -82,7 +82,7 @@ namespace StockAdvisor.UnitTests.Infrastructure
             //Then
             userDto.Should().BeEquivalentTo(expectedUserDto, options =>
                 options.ExcludingNestedObjects());
-            mapperMock.Verify(x => x.Map<User, UserDto>(It.IsAny<User>()), Times.Once);
+            mapperMock.Verify(x => x.Map<UserDto>(It.IsAny<User>()), Times.Once);
         }
 
         [Fact]
@@ -295,8 +295,8 @@ namespace StockAdvisor.UnitTests.Infrastructure
             
             //Then
             mapperMock.Verify(x =>
-                x.Map<IEnumerable<User>, IEnumerable<UserDto>>(It.IsAny<IEnumerable<User>>()),
-                                                               Times.Once);
+                x.Map<IEnumerable<UserDto>>(It.IsAny<IEnumerable<User>>()),
+                                            Times.Once);
         }
         
         [Fact]
@@ -308,7 +308,7 @@ namespace StockAdvisor.UnitTests.Infrastructure
 
             var mapperMock = new Mock<IMapper>();
             mapperMock.Setup(x =>
-                x.Map<IEnumerable<User>, IEnumerable<UserDto>>(It.IsAny<IEnumerable<User>>()))
+                x.Map<IEnumerable<UserDto>>(It.IsAny<IEnumerable<User>>()))
                       .Returns(users);
 
             var encrypterMock = new Mock<IEncrypter>();

@@ -31,7 +31,7 @@ namespace StockAdvisor.Infrastructure.Services
         {
             var investor = await _investorRepository.GetAsync(userId);
 
-            return _mapper.Map<Investor, InvestorDto>(investor);
+            return _mapper.Map<InvestorDto>(investor);
         }
 
         public async Task<InvestorDto> GetAsync(string email)
@@ -45,14 +45,14 @@ namespace StockAdvisor.Infrastructure.Services
 
             var investor = await _investorRepository.GetAsync(user.Id);
 
-            return _mapper.Map<Investor, InvestorDto>(investor);
+            return _mapper.Map<InvestorDto>(investor);
         }
 
         public async Task<IEnumerable<InvestorDto>> BrowseAsync()
         {
             var investors = await _investorRepository.BrowseAsync();
 
-            return _mapper.Map<IEnumerable<Investor>, IEnumerable<InvestorDto>>(investors);
+            return _mapper.Map<IEnumerable<InvestorDto>>(investors);
         }
 
         public async Task RegisterAsync(Guid userId)

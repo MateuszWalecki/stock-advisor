@@ -42,8 +42,8 @@ namespace StockAdvisor.UnitTests.Infrastructure
                            .ReturnsAsync(companiesFromRepo);
 
             var mapperMock = new Mock<IMapper>();
-            mapperMock.Setup(x => x.Map<IEnumerable<Company>, IEnumerable<CompanyDto>>(companiesFromRepo))
-                      .Callback<IEnumerable<Company>>(x => companiesGivenToMap = x);
+            mapperMock.Setup(x => x.Map<IEnumerable<CompanyDto>>(companiesFromRepo))
+                      .Callback<object>(x => companiesGivenToMap = x as IEnumerable<Company>);
 
             var comapnyService = new CompanyService(companyRepoMock.Object,
                 mapperMock.Object);
@@ -52,7 +52,7 @@ namespace StockAdvisor.UnitTests.Infrastructure
             await comapnyService.BrowseAsync();
 
             //Then
-            mapperMock.Verify(x => x.Map<IEnumerable<Company>, IEnumerable<CompanyDto>>(companiesFromRepo),
+            mapperMock.Verify(x => x.Map<IEnumerable<CompanyDto>>(companiesFromRepo),
                               Times.Once);
             companiesFromRepo.Should().BeSameAs(companiesGivenToMap);
         }
@@ -66,7 +66,7 @@ namespace StockAdvisor.UnitTests.Infrastructure
             var companyRepoMock = new Mock<ICompanyRepository>();
 
             var mapperMock = new Mock<IMapper>();
-            mapperMock.Setup(x => x.Map<IEnumerable<Company>, IEnumerable<CompanyDto>>(
+            mapperMock.Setup(x => x.Map<IEnumerable<CompanyDto>>(
                             It.IsAny<IEnumerable<Company>>()))
                       .Returns(mappedCompanies);
 
@@ -111,9 +111,9 @@ namespace StockAdvisor.UnitTests.Infrastructure
                            .ReturnsAsync(historicalFromRepo.Object);
 
             var mapperMock = new Mock<IMapper>();
-            mapperMock.Setup(x => x.Map<CompanyValueStatus, CompanyValueStatusDto>(
+            mapperMock.Setup(x => x.Map<CompanyValueStatusDto>(
                                 historicalFromRepo.Object))
-                      .Callback<CompanyValueStatus>(x => givenToMap = x);
+                      .Callback<object>(x => givenToMap = x as CompanyValueStatus);
 
             var comapnyService = new CompanyService(companyRepoMock.Object,
                 mapperMock.Object);
@@ -122,7 +122,7 @@ namespace StockAdvisor.UnitTests.Infrastructure
             await comapnyService.GetValueStatusAsync(companySymbol);
 
             //Then
-            mapperMock.Verify(x => x.Map<CompanyValueStatus, CompanyValueStatusDto>(
+            mapperMock.Verify(x => x.Map<CompanyValueStatusDto>(
                                     historicalFromRepo.Object),
                               Times.Once);
             historicalFromRepo.Object.Should().BeSameAs(givenToMap);
@@ -139,7 +139,7 @@ namespace StockAdvisor.UnitTests.Infrastructure
             var companyRepoMock = new Mock<ICompanyRepository>();
 
             var mapperMock = new Mock<IMapper>();
-            mapperMock.Setup(x => x.Map<CompanyValueStatus, CompanyValueStatusDto>(
+            mapperMock.Setup(x => x.Map<CompanyValueStatusDto>(
                             It.IsAny<CompanyValueStatus>()))
                       .Returns(mappedCompanies);
 

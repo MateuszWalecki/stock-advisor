@@ -62,7 +62,7 @@ namespace StockAdvisor.UnitTests.Infrastructure
 
 
             var mapperMock = new Mock<IMapper>();
-            mapperMock.Setup(x => x.Map<Investor, InvestorDto>(It.IsAny<Investor>()))
+            mapperMock.Setup(x => x.Map<InvestorDto>(It.IsAny<Investor>()))
                       .Returns(expectedInvestorDto);
 
             var investorService = new InvestorService(userRepositoryMock.Object,
@@ -73,7 +73,7 @@ namespace StockAdvisor.UnitTests.Infrastructure
 
             //Then
             occuredInvestorDto.Should().BeEquivalentTo(expectedInvestorDto);
-            mapperMock.Verify(x => x.Map<Investor, InvestorDto>(It.IsAny<Investor>()), Times.Once);
+            mapperMock.Verify(x => x.Map<InvestorDto>(It.IsAny<Investor>()), Times.Once);
         }
 
         [Fact]
@@ -441,8 +441,8 @@ namespace StockAdvisor.UnitTests.Infrastructure
             
             //Then
             mapperMock.Verify(x =>
-                x.Map<IEnumerable<Investor>, IEnumerable<InvestorDto>>(It.IsAny<IEnumerable<Investor>>()),
-                                                               Times.Once);
+                x.Map<IEnumerable<InvestorDto>>(It.IsAny<IEnumerable<Investor>>()),
+                                                Times.Once);
         }
         
         [Fact]
@@ -455,7 +455,7 @@ namespace StockAdvisor.UnitTests.Infrastructure
 
             var mapperMock = new Mock<IMapper>();
             mapperMock.Setup(x =>
-                x.Map<IEnumerable<Investor>, IEnumerable<InvestorDto>>(It.IsAny<IEnumerable<Investor>>()))
+                x.Map<IEnumerable<InvestorDto>>(It.IsAny<IEnumerable<Investor>>()))
                       .Returns(investors);
 
             var investorRepositoryMock = new Mock<IInvestorRepository>();
@@ -544,7 +544,7 @@ namespace StockAdvisor.UnitTests.Infrastructure
                                   .Returns(Task.FromResult(investor));
             
             var mapperMock = new Mock<IMapper>();
-            mapperMock.Setup(x => x.Map<Investor, InvestorDto>(investor))
+            mapperMock.Setup(x => x.Map<InvestorDto>(investor))
                       .Returns(investorDto);
 
             var investorService = new InvestorService(userRepositoryMock.Object,
@@ -556,7 +556,7 @@ namespace StockAdvisor.UnitTests.Infrastructure
             //Then
             userRepositoryMock.Verify(x => x.GetAsync(user.Email), Times.Once);
             investorRepositoryMock.Verify(x => x.GetAsync(user.Id), Times.Once);
-            mapperMock.Verify(x => x.Map<Investor, InvestorDto>(investor), Times.Once);
+            mapperMock.Verify(x => x.Map<InvestorDto>(investor), Times.Once);
             returnedInvestorDto.Should().BeSameAs(investorDto);
         }
 

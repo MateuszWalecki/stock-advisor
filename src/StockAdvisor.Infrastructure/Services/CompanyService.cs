@@ -22,14 +22,14 @@ namespace StockAdvisor.Infrastructure.Services
         {
             var companies = await _companyRepository.BrowseAsync();
 
-            return _mapper.Map<IEnumerable<Company>, IEnumerable<CompanyDto>>(companies);
+            return _mapper.Map<IEnumerable<CompanyDto>>(companies);
         }
 
         public async Task<CompanyValueStatusDto> GetValueStatusAsync(string companySymbol)
         {
             var company = await _companyRepository.GetCompanyValueStatusAsync(companySymbol);
 
-            return _mapper.Map<CompanyValueStatus, CompanyValueStatusDto>(company);
+            return _mapper.Map<CompanyValueStatusDto>(company);
         }
     }
 }
