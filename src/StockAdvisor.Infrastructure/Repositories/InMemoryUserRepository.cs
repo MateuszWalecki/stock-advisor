@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using StockAdvisor.Core.Domain;
 using StockAdvisor.Core.Repositories;
 using StockAdvisor.Infrastructure.Exceptions;
+using StockAdvisor.Infrastructure.Repositories.FakeDatabases;
 using StockAdvisor.Infrastructure.Services;
 
 namespace StockAdvisor.Infrastructure.Repositories
@@ -12,29 +13,34 @@ namespace StockAdvisor.Infrastructure.Repositories
     public class InMemoryUserRepository : IUserRepository
     {
         private readonly IEncrypter _encrypter = new Encrypter();
-        private readonly ISet<User> _users = new HashSet<User>();
+        private readonly IFakeUserDatabase _usersDB;
+
+        public InMemoryUserRepository(IFakeUserDatabase fakeUsersDatabase)
+        {
+            _usersDB = fakeUsersDatabase;
+        }
 
         public async Task AddAsync(User user)
         {
-            if (_users.Any(x => x.Email == user.Email))
+            if (_usersDB.GetAll().Any(x => x.Email == user.Email))
             {
                 throw new ServiceException(ErrorCodes.EmailInUse,
                     $"Email {user.Email} is in use.");
             }
             
-            _users.Add(user);
+            _usersDB.Add(user);
             await Task.CompletedTask;
         }
 
         public async Task<IEnumerable<User>> BrowseAsync()
-            => await Task.FromResult(_users);
+            => await Task.FromResult(_usersDB.GetAll());
 
         public async Task<User> GetAsync(Guid id)
-            => await Task.FromResult(_users.SingleOrDefault(x => x.Id == id));
+            => await Task.FromResult(_usersDB.GetAll().SingleOrDefault(x => x.Id == id));
 
         public async Task<User> GetAsync(string email)
             => await Task.FromResult(
-                _users.SingleOrDefault(x => x.Email == email.ToLowerInvariant()));
+                _usersDB.GetAll().SingleOrDefault(x => x.Email == email.ToLowerInvariant()));
 
         public async Task RemoveAsync(Guid id)
         {
@@ -46,7 +52,7 @@ namespace StockAdvisor.Infrastructure.Repositories
                     "User not found.");
             }
 
-            _users.Remove(userToDelte);
+            _usersDB.Remove(userToDelte);
             await Task.CompletedTask;
         }
 

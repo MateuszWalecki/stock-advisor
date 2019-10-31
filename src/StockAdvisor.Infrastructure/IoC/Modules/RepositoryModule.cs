@@ -3,6 +3,7 @@ using Autofac;
 using Microsoft.Extensions.Configuration;
 using StockAdvisor.Core.Repositories;
 using StockAdvisor.Infrastructure.Extensions;
+using StockAdvisor.Infrastructure.Repositories.FakeDatabases;
 using StockAdvisor.Infrastructure.Settings;
 
 namespace StockAdvisor.Infrastructure.IoC.Modules
@@ -24,21 +25,15 @@ namespace StockAdvisor.Infrastructure.IoC.Modules
 
             var settings = _configuration.GetSettings<GeneralSettings>();
 
-            if (settings.InMemoryRepositories)
-            {
-                //singleton to single initialize repository with data and to hold it their 
-                builder.RegisterAssemblyTypes(assembly)
-                       .Where(x => x.IsAssignableTo<IRepository>())
-                       .AsImplementedInterfaces()
-                       .SingleInstance();
-            }
-            else
-            {
-                builder.RegisterAssemblyTypes(assembly)
-                       .Where(x => x.IsAssignableTo<IRepository>())
-                       .AsImplementedInterfaces()
-                       .InstancePerLifetimeScope();
-            }
+            builder.RegisterAssemblyTypes(assembly)
+                   .Where(x => x.IsAssignableTo<IFakeDatabase>())
+                   .AsImplementedInterfaces()
+                   .SingleInstance();
+
+            builder.RegisterAssemblyTypes(assembly)
+                   .Where(x => x.IsAssignableTo<IRepository>())
+                   .AsImplementedInterfaces()
+                   .InstancePerLifetimeScope();
         }
     }
 }
