@@ -6,6 +6,7 @@ using StockAdvisor.Core.Domain;
 using StockAdvisor.Core.Repositories;
 using StockAdvisor.Infrastructure.DTO;
 using StockAdvisor.Infrastructure.Exceptions;
+using StockAdvisor.Infrastructure.Extensions;
 
 namespace StockAdvisor.Infrastructure.Services
 {
@@ -57,12 +58,7 @@ namespace StockAdvisor.Infrastructure.Services
 
         public async Task RegisterAsync(Guid userId)
         {
-            var user = await _userRepository.GetAsync(userId);
-            if (user == null)
-            {
-                throw new ServiceException(ErrorCodes.UserNotFound,
-                    $"User with id {userId} was not found.");
-            }
+            var user = await _userRepository.GetUserOrFailAsync(userId);
 
             var investor = await _investorRepository.GetAsync(userId);
             if (investor != null)
@@ -75,32 +71,29 @@ namespace StockAdvisor.Infrastructure.Services
             await _investorRepository.AddAsync(investor);
         }
 
-        public async Task AddToFavouriteCompanies(Guid userId, string company)
+        public async Task AddToFavouriteCompaniesAsync(Guid userId, string company)
         {
-            var investor = await _investorRepository.GetAsync(userId);
-            if (investor == null)
-            {
-                throw new ServiceException(ErrorCodes.InvestorNotFound,
-                    $"Investor with id {userId} was not found.");
-            }
+            var investor = await _investorRepository.GetInvestorOrFailAsync(userId);
 
             investor.AddToFavouriteCompanies(company);
 
             await _investorRepository.UpdateAsync(investor);
         }
 
-        public async Task RemoveFromFavouriteCompanies(Guid userId, string company)
+        public async Task RemoveFromFavouriteCompaniesAsync(Guid userId, string company)
         {
-            var investor = await _investorRepository.GetAsync(userId);
-            if (investor == null)
-            {
-                throw new ServiceException(ErrorCodes.InvestorNotFound,
-                    $"Investor with id {userId} was not found.");
-            }
+            var investor = await _investorRepository.GetInvestorOrFailAsync(userId);
 
             investor.RemoveFromFavouriteCompanies(company);
             
             await _investorRepository.UpdateAsync(investor);
+        }
+
+        public async Task RemoveAsync(Guid userId)
+        {
+            var investor = await _investorRepository.GetInvestorOrFailAsync(userId);
+
+            await _investorRepository.RemoveAsync(investor);
         }
     }
 }

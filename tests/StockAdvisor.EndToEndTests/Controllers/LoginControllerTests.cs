@@ -25,7 +25,7 @@ namespace StockAdvisor.EndToEndTests.Controllers
         [Fact]
         public async Task given_valid_credentials_ok_status_with_jwt_are_returned()
         {
-            //Given
+        //Given
             var client = Factory.CreateClient();
 
             var command = new LoginCommand
@@ -35,12 +35,12 @@ namespace StockAdvisor.EndToEndTests.Controllers
             };
             var payload = GetPayload(command);
 
-            //When
+        //When
             var response = await client.PostAsync("/login", payload);
             var stringResponse = await response.Content.ReadAsStringAsync();
             var jwtToken = JsonConvert.DeserializeObject<JwtDto>(stringResponse);
 
-            //Then
+        //Then
             response.StatusCode.Should().BeEquivalentTo(HttpStatusCode.OK);
             jwtToken.Should().NotBeNull();
             jwtToken.Token.Should().NotBeNullOrEmpty();
@@ -50,7 +50,7 @@ namespace StockAdvisor.EndToEndTests.Controllers
         [Fact]
         public async Task given_invalid_email_unathorized_code_is_returned()
         {
-            //Given
+        //Given
             var client = Factory.CreateClient();
 
             var command = new LoginCommand
@@ -60,17 +60,17 @@ namespace StockAdvisor.EndToEndTests.Controllers
             };
             var payload = GetPayload(command);
 
-            //When
+        //When
             var response = await client.PostAsync("/login", payload);
 
-            //Then
+        //Then
             response.StatusCode.Should().BeEquivalentTo(HttpStatusCode.Unauthorized);
         }
 
         [Fact]
         public async Task given_invalid_password_unathorized_code_is_returned()
         {
-            //Given
+        //Given
             var client = Factory.CreateClient();
 
             var command = new LoginCommand
@@ -80,10 +80,10 @@ namespace StockAdvisor.EndToEndTests.Controllers
             };
             var payload = GetPayload(command);
 
-            //When
+        //When
             var response = await client.PostAsync("/login", payload);
 
-            //Then
+        //Then
             response.StatusCode.Should().BeEquivalentTo(HttpStatusCode.Unauthorized);
         }
     }

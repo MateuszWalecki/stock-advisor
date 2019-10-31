@@ -20,7 +20,7 @@ namespace StockAdvisor.UnitTests.Infrastructure
         [Fact]
         public async Task browse_async_checks_if_cache_contains_proper_data()
         {
-            //Given
+        //Given
             var cacheResult = new List<Company>();
 
             var httpClientMock = new Mock<HttpClient>();
@@ -31,10 +31,10 @@ namespace StockAdvisor.UnitTests.Infrastructure
             var sut = new FinancialModelingPrepRepository(httpClientMock.Object,
                 memoryCacheMock.Object);
 
-            //When
+        //When
             var result = await sut.BrowseAsync();
 
-            //Then
+        //Then
             MockMemoryCacheService.GetMethodWasCalledOnce(memoryCacheMock);
             result.Should().BeSameAs(cacheResult);
         }
@@ -42,7 +42,7 @@ namespace StockAdvisor.UnitTests.Infrastructure
         [Fact]
         public async Task browse_async_calls_httpclient_with_defined_uri_if_cache_get_returns_null()
         {
-            //Given
+        //Given
             var expectedUri = new Uri("https://financialmodelingprep.com/api/v3/company/stock/list");
 
             var handlerMock = new Mock<HttpMessageHandler>(MockBehavior.Strict);
@@ -72,10 +72,10 @@ namespace StockAdvisor.UnitTests.Infrastructure
             var sut = new FinancialModelingPrepRepository(httpClinet,
                 memoryCacheMock.Object);
 
-            //When
+        //When
             var result = await sut.BrowseAsync();
 
-            //Then
+        //Then
             result.Should().NotBeNull();
             handlerMock.Protected().Verify(
                 "SendAsync",
@@ -92,7 +92,7 @@ namespace StockAdvisor.UnitTests.Infrastructure
         [Fact]
         public async Task browse_async_saves_http_request_result_to_cache_if_it_returns_null()
         {
-            //Given
+        //Given
             var handlerMock = new Mock<HttpMessageHandler>(MockBehavior.Strict);
             handlerMock.Protected()
                        // Setup the PROTECTED method to mock
@@ -120,17 +120,17 @@ namespace StockAdvisor.UnitTests.Infrastructure
             var sut = new FinancialModelingPrepRepository(httpClinet,
                 memoryCacheMock.Object);
 
-            //When
+        //When
             await sut.BrowseAsync();
 
-            //Then
+        //Then
             MockMemoryCacheService.SetMethodWasCalledOnce(memoryCacheMock);
         }
 
         [Fact]
         public async Task browse_async_does_not_call_httpclient_if_cache_get_method_returns_not_null()
         {
-            //Given
+        //Given
             var cacheResult = new List<Company>();
 
             var handlerMock = new Mock<HttpMessageHandler>(MockBehavior.Strict);
@@ -141,10 +141,10 @@ namespace StockAdvisor.UnitTests.Infrastructure
             var sut = new FinancialModelingPrepRepository(httpClinet,
                 memoryCacheMock.Object);
 
-            //When
+        //When
             var result = await sut.BrowseAsync();
 
-            //Then
+        //Then
             result.Should().BeSameAs(cacheResult);
             handlerMock.Protected().Verify(
                 "SendAsync",

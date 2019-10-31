@@ -11,15 +11,15 @@ namespace StockAdvisor.UnitTests.Core
         [Fact]
         public void when_company_is_not_in_favourites_it_could_be_added()
         {
-            //Given
+        //Given
             var investor = GetValidInvestor();
             string companySymbolToAdd = "ABCD";
             DateTime userUpdateTime = investor.UpdatedAt;
 
-            //When
+        //When
             investor.AddToFavouriteCompanies(companySymbolToAdd);
 
-            //Then
+        //Then
             Assert.Contains(companySymbolToAdd, investor.FavouriteCompanies);
             Assert.NotEqual(investor.UpdatedAt, userUpdateTime);
         }
@@ -27,16 +27,16 @@ namespace StockAdvisor.UnitTests.Core
         [Fact]
         public void when_company_is_in_favourites_trying_to_add_it_one_more_time_throws_domain_exception()
         {
-            //Given
+        //Given
             var investor = GetValidInvestor();
             string companySymbolToAdd = "ABCD";
             investor.AddToFavouriteCompanies(companySymbolToAdd);
             DateTime userUpdateTime = investor.UpdatedAt;
 
-            //When
+        //When
             Action act = () => investor.AddToFavouriteCompanies(companySymbolToAdd);
 
-            //Then
+        //Then
             Assert.Throws<DomainException>(act);
             Assert.Equal(investor.UpdatedAt, userUpdateTime);
         }
@@ -44,16 +44,16 @@ namespace StockAdvisor.UnitTests.Core
         [Fact]
         public void when_company_is_in_favourites_it_can_be_removed()
         {
-            //Given
+        //Given
             var investor = GetValidInvestor();
             string companySymbol = "ABCD";
             investor.AddToFavouriteCompanies(companySymbol);
             DateTime userUpdateTime = investor.UpdatedAt;
 
-            //When
+        //When
             investor.RemoveFromFavouriteCompanies(companySymbol);
 
-            //Then
+        //Then
             investor.FavouriteCompanies.Should().NotContain(companySymbol);
             Assert.NotEqual(investor.UpdatedAt, userUpdateTime);
         }
@@ -61,15 +61,15 @@ namespace StockAdvisor.UnitTests.Core
         [Fact]
         public void when_company_is_not_in_favourites_trying_to_remove_it_throws_domain_exception()
         {
-            //Given
+        //Given
             var investor = GetValidInvestor();
             string companySymbol = "ABCD";
             DateTime userUpdateTime = investor.UpdatedAt;
 
-            //When
+        //When
             Action act = () => investor.RemoveFromFavouriteCompanies(companySymbol);
 
-            //Then
+        //Then
             Assert.Throws<DomainException>(act);
             Assert.Equal(investor.UpdatedAt, userUpdateTime);
         }

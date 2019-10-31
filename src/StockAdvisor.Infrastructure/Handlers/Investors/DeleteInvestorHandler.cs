@@ -5,18 +5,18 @@ using StockAdvisor.Infrastructure.Services;
 
 namespace StockAdvisor.Infrastructure.Handlers.Investors
 {
-    public class CreateInvestorHandler : ICommandHandler<CreateInvestorCommand>
+    public class DeleteInvestorHandler : ICommandHandler<DeleteInvestorCommand>
     {
         private readonly IInvestorService _investorService;
         
-        public CreateInvestorHandler(IInvestorService investorService)
+        public DeleteInvestorHandler(IInvestorService investorService)
         {
             _investorService = investorService;
         }
-
-        public async Task HandleAsync(CreateInvestorCommand command)
+        
+        public async Task HandleAsync(DeleteInvestorCommand command)
         {
-            await _investorService.RegisterAsync(command.UserId);
+            await _investorService.RemoveAsync(command.UserId);
         }
     }
 }

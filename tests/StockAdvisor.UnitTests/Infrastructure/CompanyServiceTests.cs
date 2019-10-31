@@ -16,24 +16,24 @@ namespace StockAdvisor.UnitTests.Infrastructure
         [Fact]
         public async Task browse_asyc_calls_browse_async_on_copmanies_repo()
         {
-            //Given
+        //Given
             var companyRepoMock = new Mock<ICompanyRepository>();
             var mapperMock = new Mock<IMapper>();
 
             var comapnyService = new CompanyService(companyRepoMock.Object,
                 mapperMock.Object);
 
-            //When
+        //When
             await comapnyService.BrowseAsync();
 
-            //Then
+        //Then
             companyRepoMock.Verify(x => x.BrowseAsync(), Times.Once);
         }
 
         [Fact]
         public async Task browse_asyc_calls_mappers_map_method_using_repos_browse_async_result()
         {
-            //Given
+        //Given
             IEnumerable<Company> companiesFromRepo = new List<Company>();
             IEnumerable<Company> companiesGivenToMap = null;
 
@@ -48,10 +48,10 @@ namespace StockAdvisor.UnitTests.Infrastructure
             var comapnyService = new CompanyService(companyRepoMock.Object,
                 mapperMock.Object);
 
-            //When
+        //When
             await comapnyService.BrowseAsync();
 
-            //Then
+        //Then
             mapperMock.Verify(x => x.Map<IEnumerable<CompanyDto>>(companiesFromRepo),
                               Times.Once);
             companiesFromRepo.Should().BeSameAs(companiesGivenToMap);
@@ -60,7 +60,7 @@ namespace StockAdvisor.UnitTests.Infrastructure
         [Fact]
         public async Task browse_asyc_returns_mappers_map_result()
         {
-            //Given
+        //Given
             IEnumerable<CompanyDto> mappedCompanies = new List<CompanyDto>();
 
             var companyRepoMock = new Mock<ICompanyRepository>();
@@ -73,17 +73,17 @@ namespace StockAdvisor.UnitTests.Infrastructure
             var comapnyService = new CompanyService(companyRepoMock.Object,
                 mapperMock.Object);
 
-            //When
+        //When
             var returnedCollection = await comapnyService.BrowseAsync();
 
-            //Then
+        //Then
             returnedCollection.Should().BeSameAs(mappedCompanies);
         }
 
         [Fact]
         public async Task get_value_status_asyc_calls_get_async_on_copmanies_repo()
         {
-            //Given
+        //Given
             string companySymbol = "AAPL";
             var companyRepoMock = new Mock<ICompanyRepository>();
             var mapperMock = new Mock<IMapper>();
@@ -91,17 +91,17 @@ namespace StockAdvisor.UnitTests.Infrastructure
             var comapnyService = new CompanyService(companyRepoMock.Object,
                 mapperMock.Object);
 
-            //When
+        //When
             await comapnyService.GetValueStatusAsync(companySymbol);
 
-            //Then
+        //Then
             companyRepoMock.Verify(x => x.GetCompanyValueStatusAsync(companySymbol), Times.Once);
         }
 
         [Fact]
         public async Task get_value_status_asyc_calls_mappers_map_method_using_repos_get_async_result()
         {
-            //Given
+        //Given
             string companySymbol = "AAPL";
             var historicalFromRepo = new Mock<CompanyValueStatus>();
             CompanyValueStatus givenToMap = null;
@@ -118,10 +118,10 @@ namespace StockAdvisor.UnitTests.Infrastructure
             var comapnyService = new CompanyService(companyRepoMock.Object,
                 mapperMock.Object);
 
-            //When
+        //When
             await comapnyService.GetValueStatusAsync(companySymbol);
 
-            //Then
+        //Then
             mapperMock.Verify(x => x.Map<CompanyValueStatusDto>(
                                     historicalFromRepo.Object),
                               Times.Once);
@@ -131,7 +131,7 @@ namespace StockAdvisor.UnitTests.Infrastructure
         [Fact]
         public async Task get_value_status_asyc_returns_mappers_map_result()
         {
-            //Given
+        //Given
             string companySymbol = "AAPL";
 
             CompanyValueStatusDto mappedCompanies = new CompanyValueStatusDto();
@@ -146,10 +146,10 @@ namespace StockAdvisor.UnitTests.Infrastructure
             var comapnyService = new CompanyService(companyRepoMock.Object,
                 mapperMock.Object);
 
-            //When
+        //When
             var returnedCollection = await comapnyService.GetValueStatusAsync(companySymbol);
 
-            //Then
+        //Then
             returnedCollection.Should().BeSameAs(mappedCompanies);
         }
     }

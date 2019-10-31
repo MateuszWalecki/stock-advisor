@@ -39,7 +39,7 @@ namespace StockAdvisor.Api.Controllers
         }
         
         [Authorize]
-        [Route("current")]
+        [Route("me")]
         [HttpGet]
         public async Task<IActionResult> GetCurrentIvestor()
         {
@@ -68,6 +68,15 @@ namespace StockAdvisor.Api.Controllers
             var command = new CreateInvestorCommand();
 
             await DispatchAsync(command);
+
+            return NoContent();
+        }
+
+        [Authorize]
+        [HttpDelete("me")]
+        public async Task<IActionResult> Delete()
+        {
+            await DispatchAsync(new DeleteInvestorCommand());
 
             return NoContent();
         }

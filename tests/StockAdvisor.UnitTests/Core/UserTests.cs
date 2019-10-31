@@ -20,13 +20,13 @@ namespace StockAdvisor.UnitTests.Core
         [Fact]
         public void user_can_be_created_if_given_data_is_valid()
         {
-            //Given
+        //Given
 
-            //When
+        //When
             var user = new User(_guid, _validEmail, _validFirstName, _validSurName,
                 _validPasswordHash, _validPasswordSalt, _role);
 
-            //Then
+        //Then
             Assert.Equal(_guid, user.Id);
             Assert.Equal(_validEmail, user.Email);
             Assert.Equal(_validFirstName, user.FirstName);
@@ -38,112 +38,112 @@ namespace StockAdvisor.UnitTests.Core
         [Fact]
         public void given_invalid_email_while_creating_user_throws_domain_exception()
         {
-            //Given
+        //Given
             
-            //When
+        //When
             Action act = () =>
                 new User(_guid, "invalidEmail", _validFirstName, _validSurName,
                     _validPasswordHash, _validPasswordSalt, _role);
 
-            //Then
+        //Then
             Assert.Throws<DomainException>(act);
         }
 
         [Fact]
         public void given_invalid_firstname_while_creating_user_throws_domain_exception()
         {
-            //Given
+        //Given
             
-            //When
+        //When
             Action act = () =>
                 new User(_guid, _validEmail, "", _validSurName, _validPasswordHash,
                     _validPasswordSalt, _role);
 
-            //Then
+        //Then
             Assert.Throws<DomainException>(act);
         }
 
         [Fact]
         public void given_invalid_surname_while_creating_user_throws_domain_exception()
         {
-            //Given
+        //Given
             
-            //When
+        //When
             Action act = () =>
                 new User(_guid, _validEmail, _validFirstName, "", _validPasswordHash,
                     _validPasswordSalt, _role);
 
-            //Then
+        //Then
             Assert.Throws<DomainException>(act);
         }
 
         [Fact]
         public void given_invalid_password_hash_while_creating_user_throws_domain_exception()
         {
-            //Given
+        //Given
             
-            //When
+        //When
             Action act = () =>
                 new User(_guid, _validEmail, _validFirstName, _validSurName, "",
                     _validPasswordSalt, _role);
 
-            //Then
+        //Then
             Assert.Throws<DomainException>(act);
         }
 
         [Fact]
         public void users_email_can_be_changed()
         {
-            //Given
+        //Given
             var user = GetValidUser();
             string newEmail = "new@example.com";
 
-            //When
+        //When
             user.SetEmail(newEmail);
 
-            //Then
+        //Then
             Assert.Equal(newEmail, user.Email);
         }
 
         [Fact]
         public void users_email_are_saved_as_lower_invariant()
         {
-            //Given
+        //Given
             var user = GetValidUser();
             string newEmail = "New@example.com";
 
-            //When
+        //When
             user.SetEmail(newEmail);
 
-            //Then
+        //Then
             Assert.Equal(newEmail.ToLowerInvariant(), user.Email);
         }
 
         [Fact]
         public void users_first_name_can_be_changed()
         {
-            //Given
+        //Given
             var user = GetValidUser();
             string newFirstName = "Sylvester";
 
-            //When
+        //When
             user.SetFirstName(newFirstName);
 
-            //Then
+        //Then
             Assert.Equal(newFirstName, user.FirstName);
         }
 
         [Fact]
         public void users_surname_can_be_changed()
         {
-            //Given
+        //Given
             var user = GetValidUser();
             string newSurname = "Stalone";
 
-            //When
+        //When
             user.SetSurName(newSurname);
 
-            //Then
+        //Then
             Assert.Equal(newSurname, user.SurName);
         }
         
@@ -152,28 +152,28 @@ namespace StockAdvisor.UnitTests.Core
         [InlineData(UserRole.Admin)]
         public void user_role_can_be_set_while_creating_user(UserRole role)
         {
-            //Given
+        //Given
             var user = new User(_guid, _validEmail, _validFirstName, _validSurName,
                 _validPasswordHash, _validPasswordSalt, role);
 
-            //When
+        //When
             
-            //Then
+        //Then
             user.Role.Should().BeEquivalentTo(role.ToString());
         }
         
         [Fact]
         public void user_role_can_be_changed()
         {
-            //Given
+        //Given
             var user = GetValidUser();
             var defaultRole = user.Role;
 
-            //When
+        //When
             user.SetRole(UserRole.Admin);
             var newRole = user.Role;
             
-            //Then
+        //Then
             user.Role.Should().BeEquivalentTo(UserRole.Admin.ToString());
             newRole.Should().NotBe(defaultRole);
         }
@@ -181,15 +181,15 @@ namespace StockAdvisor.UnitTests.Core
         [Fact]
         public void users_password_can_be_changed()
         {
-            //Given
+        //Given
             var user = GetValidUser();
             string newPwHash = "newPasswordHash646464465";
             string newSalt = "newSalt4465d4saf654sd6f";
 
-            //When
+        //When
             user.SetPassword(newPwHash, newSalt);
 
-            //Then
+        //Then
             Assert.Equal(newPwHash, user.PasswordHash);
             Assert.Equal(newSalt, user.Salt);
         }
@@ -199,14 +199,14 @@ namespace StockAdvisor.UnitTests.Core
         [InlineData("")]
         public void given_invalid_hash_while_changing_password_func_throws_exception(string newPwHash)
         {
-            //Given
+        //Given
             var user = GetValidUser();
             string newSalt = "newSalt4465d4saf654sd6f";
 
-            //When
+        //When
             Action act = () => user.SetPassword(newPwHash, newSalt);
 
-            //Then
+        //Then
             Assert.Throws<DomainException>(act);
         }
 
@@ -215,57 +215,57 @@ namespace StockAdvisor.UnitTests.Core
         [InlineData("")]
         public void given_invalid_salt_while_changing_password_func_throws_exception(string newSalt)
         {
-            //Given
+        //Given
             var user = GetValidUser();
             string newPwHash = "newSalt4465d4saf654sd6f";
 
-            //When
+        //When
             Action act = () => user.SetPassword(newPwHash, newSalt);
 
-            //Then
+        //Then
             Assert.Throws<DomainException>(act);
         }
 
         [Fact]
         public void when_given_hash_is_equal_to_current_while_changing_pw_func_throws_exception()
         {
-            //Given
+        //Given
             var user = GetValidUser();
             string newPwHash = "newSalt4465d4saf654sd6f";
 
-            //When
+        //When
             Action act = () => user.SetPassword(newPwHash, _validPasswordSalt);
 
-            //Then
+        //Then
             Assert.Throws<DomainException>(act);
         }
 
         [Fact]
         public void when_given_salt_is_equal_to_current_while_changing_pw_func_throws_exception()
         {
-            //Given
+        //Given
             var user = GetValidUser();
             string newSalt = "newSalt4465d4saf654sd6f";
 
-            //When
+        //When
             Action act = () => user.SetPassword(_validPasswordHash, newSalt);
 
-            //Then
+        //Then
             Assert.Throws<DomainException>(act);
         }
 
         [Fact]
         public void given_empy_null_hash_while_changing_it_throws_exception()
         {
-            //Given
+        //Given
             var user = GetValidUser();
             string newPwHash = "";
             string newSalt = "newSalt4465d4saf654sd6f";
 
-            //When
+        //When
             Action act = () => user.SetPassword(newPwHash, newSalt);
 
-            //Then
+        //Then
             Assert.Throws<DomainException>(act);
         }
 

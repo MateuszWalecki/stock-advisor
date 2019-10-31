@@ -10,14 +10,14 @@ namespace StockAdvisor.UnitTests.Infrastructure
         [Fact]
         public void get_salt_method_returns_random_based_string()
         {
-            //Given
+        //Given
             var encrypter = new Encrypter();
 
-            //When
+        //When
             var salt1 = encrypter.GetSalt();
             var salt2 = encrypter.GetSalt();
             
-            //Then
+        //Then
             salt1.Should().NotBeNullOrWhiteSpace();
             salt2.Should().NotBeNullOrWhiteSpace();
             salt1.Should().NotBe(salt2);
@@ -26,14 +26,14 @@ namespace StockAdvisor.UnitTests.Infrastructure
         [Fact]
         public void get_hash_method_throws_argumentexception_if_given_password_is_empty()
         {
-            //Given
+        //Given
             var encrypter = new Encrypter();
             string salt = encrypter.GetSalt();
 
-            //When
+        //When
             Action act = () => encrypter.GetHash("", salt);
 
-            //Then
+        //Then
             Assert.Throws<ArgumentException>(act);
         }
 
@@ -41,30 +41,30 @@ namespace StockAdvisor.UnitTests.Infrastructure
         [Fact]
         public void get_hash_method_throws_argumentexception_if_given_salt_is_empty()
         {
-            //Given
+        //Given
             var encrypter = new Encrypter();
             string password = "Secret1.";
 
-            //When
+        //When
             Action act = () => encrypter.GetHash(password, "");
 
-            //Then
+        //Then
             Assert.Throws<ArgumentException>(act);
         }
 
         [Fact]
         public void get_hash_method_returns_hash_that_is_different_than_password_and_salt()
         {
-            //Given
+        //Given
             var encrypter = new Encrypter();
 
             string password = "Secret1.";
             string salt = encrypter.GetSalt();
 
-            //When
+        //When
             var hash = encrypter.GetHash(password, salt);
 
-            //Then
+        //Then
             hash.Should().NotBe(password);
             hash.Should().NotBe(salt);
         }
@@ -72,53 +72,53 @@ namespace StockAdvisor.UnitTests.Infrastructure
         [Fact]
         public void given_same_password_and_salt_to_GetHash_retuns_same_values()
         {
-            //Given
+        //Given
             var encrypter = new Encrypter();
 
             string password = "Secret1.";
             string salt = encrypter.GetSalt();
 
-            //When
+        //When
             var hash1 = encrypter.GetHash(password, salt);
             var hash2 = encrypter.GetHash(password, salt);
 
-            //Then
+        //Then
             hash1.Should().BeEquivalentTo(hash2);
         }
 
         [Fact]
         public void given_different_passwords_to_GetHash_retuns_different_hashes()
         {
-            //Given
+        //Given
             var encrypter = new Encrypter();
 
             string password1 = "Secret1.";
             string password2 = "Secret2.";
             string salt = encrypter.GetSalt();
 
-            //When
+        //When
             var hash1 = encrypter.GetHash(password1, salt);
             var hash2 = encrypter.GetHash(password2, salt);
 
-            //Then
+        //Then
             hash1.Should().NotBe(hash2);
         }
         
         [Fact]
         public void given_different_salts_to_GetHash_retuns_different_hashes()
         {
-            //Given
+        //Given
             var encrypter = new Encrypter();
 
             string password = "Secret1.";
             string salt1 = encrypter.GetSalt();
             string salt2 = encrypter.GetSalt();
 
-            //When
+        //When
             var hash1 = encrypter.GetHash(password, salt1);
             var hash2 = encrypter.GetHash(password, salt2);
 
-            //Then
+        //Then
             hash1.Should().NotBe(hash2);
         }
     }

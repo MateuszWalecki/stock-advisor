@@ -6,6 +6,7 @@ using StockAdvisor.Core.Domain;
 using StockAdvisor.Core.Repositories;
 using StockAdvisor.Infrastructure.DTO;
 using StockAdvisor.Infrastructure.Exceptions;
+using StockAdvisor.Infrastructure.Extensions;
 
 namespace StockAdvisor.Infrastructure.Services
 {
@@ -56,7 +57,7 @@ namespace StockAdvisor.Infrastructure.Services
                     "Password can not contain more than 100 characters.");
             }
 
-            var user = await _userRepository.GetAsync(userId);
+            var user = await _userRepository.GetUserOrFailAsync(userId);
 
             var oldPasswordHash = _encrypter.GetHash(oldPassword, user.Salt);
 

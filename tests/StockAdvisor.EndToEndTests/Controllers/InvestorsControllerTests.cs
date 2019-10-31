@@ -21,14 +21,14 @@ namespace StockAdvisor.EndToEndTests.Controllers
         [Fact]
         public async Task get_all_investors_returns_all_from_repo_with_status_ok()
         {
-            //Given
+        //Given
             var client = Factory.CreateClient();
 
-            //When
+        //When
             var response = await client.GetAsync("investors");
             var responseString = await response.Content.ReadAsStringAsync();
 
-            //Then
+        //Then
             response.StatusCode.Should().BeEquivalentTo(HttpStatusCode.OK);
             responseString.Should().NotBeNullOrEmpty();
         }
@@ -36,15 +36,15 @@ namespace StockAdvisor.EndToEndTests.Controllers
         [Fact]
         public async Task get_current_investor_requires_authorization()
         {
-            //Given
+        //Given
             var client = Factory.CreateClient();
             
-            //When
-            var response = await client.GetAsync($"investors/current");
+        //When
+            var response = await client.GetAsync($"investors/me");
             var responseString = await response.Content.ReadAsStringAsync();
             var investor = JsonConvert.DeserializeObject<InvestorDto>(responseString);
 
-            //Then
+        //Then
             response.StatusCode.Should().BeEquivalentTo(HttpStatusCode.Unauthorized);
             investor.Should().BeNull();
         }
@@ -52,17 +52,15 @@ namespace StockAdvisor.EndToEndTests.Controllers
         [Fact]
         public async Task get_current_investor_returns_it_if_exists()
         {
-            //Given
-            var client = Factory.CreateClient();
-            var authorizationHeader =  await GetValidBearerTokenHeader(client);
-            client.DefaultRequestHeaders.Add("Authorization", authorizationHeader);
+        //Given
+            var client = await CreateAuthorizedClient();
             
-            //When
-            var response = await client.GetAsync($"investors/current");
+        //When
+            var response = await client.GetAsync($"investors/me");
             var responseString = await response.Content.ReadAsStringAsync();
             var investor = JsonConvert.DeserializeObject<InvestorDto>(responseString);
 
-            //Then
+        //Then
             response.StatusCode.Should().BeEquivalentTo(HttpStatusCode.OK);
             investor.Should().NotBeNull();
         }
@@ -70,16 +68,14 @@ namespace StockAdvisor.EndToEndTests.Controllers
         [Fact]
         public async Task get_current_investor_returns_null_if_does_not_exist()
         {
-            //Given
-            var client = Factory.CreateClient();
-            var authorizationHeader =  await GetValidBearerTokenHeader(client, "without_investor1@test.com");
-            client.DefaultRequestHeaders.Add("Authorization", authorizationHeader);
+        //Given
+            var client = await CreateAuthorizedClient("without_investor1@test.com");
 
-            //When
-            var response = await client.GetAsync($"investors/current");
+        //When
+            var response = await client.GetAsync($"investors/me");
             var responseString = await response.Content.ReadAsStringAsync();
 
-            //Then
+        //Then
             response.StatusCode.Should().BeEquivalentTo(HttpStatusCode.NotFound);
         }
         
@@ -87,29 +83,53 @@ namespace StockAdvisor.EndToEndTests.Controllers
         [Fact]
         public async Task create_investor_returns_unathorized_if_user_is_not_logged_in()
         {
-            //Given
+        //Given
             var client = Factory.CreateClient();
             
-            //When
+        //When
             var response = await client.PostAsync($"investors", GetPayload(""));
 
-            //Then
+        //Then
             response.StatusCode.Should().BeEquivalentTo(HttpStatusCode.Unauthorized);
         }
 
         [Fact]
         public async Task create_investor_returns_no_content_if_user_is_logged_and_does_not_contain_assigned_investor()
         {
-            //Given
-            var client = Factory.CreateClient();
-            var authorizationHeader =  await GetValidBearerTokenHeader(client, "without_investor2@test.com", "Secret2");
-            client.DefaultRequestHeaders.Add("Authorization", authorizationHeader);
+        //Given
+            var client = await CreateAuthorizedClient("without_investor2@test.com", "Secret2");
             
-            //When
+        //When
             var response = await client.PostAsync($"investors", GetPayload(""));
 
-            //Then
+        //Then
             response.StatusCode.Should().BeEquivalentTo(HttpStatusCode.NoContent);
+        }
+
+        [Fact]
+        public async Task delete_investor_returns_no_content()
+        {
+        //Given
+            var client = await CreateAuthorizedClient("user2@test.com", "Secret2");
+
+        //When
+            var response = await client.DeleteAsync("investors/me");
+
+        //Then
+            response.StatusCode.Should().BeEquivalentTo(HttpStatusCode.NoContent);
+        }
+
+        [Fact]
+        public async Task delete_investor_on_unauthorized_user_returns_unathorized()
+        {
+        //Given
+            var client = Factory.CreateClient();
+
+        //When
+            var response = await client.DeleteAsync("investors/me");
+
+        //Then
+            response.StatusCode.Should().BeEquivalentTo(HttpStatusCode.Unauthorized);
         }
     }
 }

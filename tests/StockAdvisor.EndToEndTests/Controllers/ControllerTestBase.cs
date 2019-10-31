@@ -35,8 +35,8 @@ namespace StockAdvisor.EndToEndTests.Controllers
             return new StringContent(json, Encoding.UTF8, "application/json");
         }
 
-        protected async Task<string> GetValidBearerTokenHeader(HttpClient client,
-            string email = "user1@test.com", string password = "Secret1")
+        protected static async Task<string> GetValidBearerTokenHeader(HttpClient client,
+            string email, string password)
         {
             var command = new LoginCommand
             {
@@ -50,6 +50,17 @@ namespace StockAdvisor.EndToEndTests.Controllers
             var jwtToken = JsonConvert.DeserializeObject<JwtDto>(stringResponse);
 
             return "Bearer " + jwtToken.Token;
+        }
+
+        public async Task<HttpClient> CreateAuthorizedClient(
+            string email = "user1@test.com", string password = "Secret1")
+        {
+            var client = Factory.CreateClient();
+
+            var authorizationHeader =  await GetValidBearerTokenHeader(client, email, password);
+            client.DefaultRequestHeaders.Add("Authorization", authorizationHeader);
+
+            return client;
         }
     }
 }

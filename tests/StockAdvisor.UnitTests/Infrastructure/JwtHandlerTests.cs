@@ -14,7 +14,7 @@ namespace StockAdvisor.UnitTests.Infrastructure
         [InlineData(10)]
         public void creating_token_expiry_date_is_given_in_settings(int expiryMinutes)
         {
-            //Given
+        //Given
             var now = DateTime.UtcNow;
             string role = "User";
             Guid userId = new Guid();
@@ -31,10 +31,10 @@ namespace StockAdvisor.UnitTests.Infrastructure
 
             var jwtHandler = new JwtHandler(settings);
 
-            //When
+        //When
             var jwt = jwtHandler.CreateToken(userId, role);
 
-            //Then
+        //Then
             jwt.Should().NotBeNull();
             jwt.Token.Should().NotBeNull();
             jwt.ExpiryTicks.Should().BeGreaterThan(lessThanExpiryMinutes);

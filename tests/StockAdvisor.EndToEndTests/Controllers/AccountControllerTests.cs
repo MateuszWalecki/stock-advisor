@@ -26,7 +26,7 @@ namespace StockAdvisor.EndToEndTests.Controllers
         [Fact]
         public async Task given_valid_current_password_and_new_password_current_should_be_changed()
         {
-            //Given
+        //Given
             var client = Factory.CreateClient();
             var command = new ChangeUserPasswordCommand()
             {
@@ -36,10 +36,10 @@ namespace StockAdvisor.EndToEndTests.Controllers
             };
             var payload = GetPayload(command);
 
-            //When
+        //When
             var response = await client.PutAsync("account/password", payload);
             
-            //Then
+        //Then
             response.StatusCode.Should().BeEquivalentTo(HttpStatusCode.NoContent);
         }
     }

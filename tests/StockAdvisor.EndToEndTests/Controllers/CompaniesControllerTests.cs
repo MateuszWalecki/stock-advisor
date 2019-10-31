@@ -16,26 +16,26 @@ namespace StockAdvisor.EndToEndTests.Controllers
         [Fact]
         public async Task get_all_companies_returns_ok_status()
         {
-            //Given
+        //Given
             var client = Factory.CreateClient();
             
-            //When
+        //When
             var response = await client.GetAsync("Companies");
             
-            //Then
+        //Then
             response.EnsureSuccessStatusCode();
         }
 
         [Fact]
         public async Task get_company_historical_returns_ok_status()
         {
-            //Given
+        //Given
             var client = Factory.CreateClient();
             
-            //When
+        //When
             var response = await client.GetAsync("Companies/AAPL");
             
-            //Then
+        //Then
             response.EnsureSuccessStatusCode();
         }
     }

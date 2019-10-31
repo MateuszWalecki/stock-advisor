@@ -26,31 +26,30 @@ namespace StockAdvisor.EndToEndTests.Controllers
         [Fact]
         public async Task on_unathorized_get_user_request_unathorized_response_is_send()
         {
-            //Given
+        //Given
             var client = Factory.CreateClient();
             var email = "first@example.com";
 
-            //When
+        //When
             var response = await client.GetAsync($"users/{email}");
             
-            //Then
+        //Then
             response.StatusCode.Should().BeEquivalentTo(HttpStatusCode.Unauthorized);
         }        
 
         [Fact]
         public async Task given_valid_email_user_is_returned()
         {
-            //Given
-            var client = Factory.CreateClient();
-            var authorizationHeader =  await GetValidBearerTokenHeader(client);
-            client.DefaultRequestHeaders.Add("Authorization", authorizationHeader);
+        //Given
+            var client = await CreateAuthorizedClient();
             var email = "user1@test.com";
-            //When
+
+        //When
             var response = await client.GetAsync($"users/{email}");
             var responseString = await response.Content.ReadAsStringAsync();
             var user = JsonConvert.DeserializeObject<UserDto>(responseString);
             
-            //Then
+        //Then
             response.EnsureSuccessStatusCode();
             user.Email.Should().BeEquivalentTo(email);
         }
@@ -58,26 +57,23 @@ namespace StockAdvisor.EndToEndTests.Controllers
         [Fact]
         public async Task given_invalid_email_user_is_not_returned()
         {
-            //Given
-            var client = Factory.CreateClient();
-            var authorizationHeader =  await GetValidBearerTokenHeader(client);
-            client.DefaultRequestHeaders.Add("Authorization", authorizationHeader);
+        //Given
+            var client = await CreateAuthorizedClient();
             var email = "bademail@example.com";
 
-            //When
+        //When
             var response = await client.GetAsync($"users/{email}");
             
-            //Then
+        //Then
             response.StatusCode.Should().BeEquivalentTo(HttpStatusCode.NotFound);
         }
 
         [Fact]
         public async Task given_unused_email_user_is_created_and_user_location_is_returen_with_status_created()
         {
-            //Given
-            var client = Factory.CreateClient();
-            var authorizationHeader =  await GetValidBearerTokenHeader(client);
-            client.DefaultRequestHeaders.Add("Authorization", authorizationHeader);
+        //Given
+            var client = await CreateAuthorizedClient();
+            
             string email = "new_user@email.com",
 	            firstName = "Luis",
 	            surName = "Suarez",
@@ -93,11 +89,11 @@ namespace StockAdvisor.EndToEndTests.Controllers
             
             var payload = GetPayload(creauteUserRequest);
 
-            //When
+        //When
             var response = await client.PostAsync("users", payload);
             var resopnseString = await response.Content.ReadAsStringAsync();
 
-            //Then
+        //Then
             response.StatusCode.Should().BeEquivalentTo(HttpStatusCode.Created);
             response.Headers.Location.AbsolutePath.Should().BeEquivalentTo($"/users/{email}");
 
@@ -108,7 +104,7 @@ namespace StockAdvisor.EndToEndTests.Controllers
         [Fact]
         public async Task trying_to_create_user_with_currently_used_email_returns_conflict_status()
         {
-            //Given
+        //Given
             var client = Factory.CreateClient();
             string usedEmail = "user1@test.com";
             var creauteUserRequest = new CreateUserCommand
@@ -120,10 +116,10 @@ namespace StockAdvisor.EndToEndTests.Controllers
             };
             var payload = GetPayload(creauteUserRequest);
 
-            //When
+        //When
             var response = await client.PostAsync("users", payload);
 
-            //Then
+        //Then
             response.StatusCode.Should().BeEquivalentTo(HttpStatusCode.Conflict);
             response.Headers.Location.Should().BeNull();
         }
@@ -131,14 +127,14 @@ namespace StockAdvisor.EndToEndTests.Controllers
         [Fact]
         public async Task get_all_users_returns_all_from_repo_with_status_ok()
         {
-            //Given
+        //Given
             var client = Factory.CreateClient();
 
-            //When
+        //When
             var response = await client.GetAsync("users");
             var responseString = await response.Content.ReadAsStringAsync();
 
-            //Then
+        //Then
             response.StatusCode.Should().BeEquivalentTo(HttpStatusCode.OK);
             responseString.Should().NotBeNullOrEmpty();
         }

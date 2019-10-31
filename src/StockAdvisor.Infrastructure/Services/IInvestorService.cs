@@ -11,7 +11,8 @@ namespace StockAdvisor.Infrastructure.Services
         Task<InvestorDto> GetAsync(string email);
         Task<IEnumerable<InvestorDto>> BrowseAsync();
         Task RegisterAsync(Guid userId);
-        Task AddToFavouriteCompanies(Guid userId, string company);
-        Task RemoveFromFavouriteCompanies(Guid userId, string company);
+        Task AddToFavouriteCompaniesAsync(Guid userId, string company);
+        Task RemoveFromFavouriteCompaniesAsync(Guid userId, string company);
+        Task RemoveAsync(Guid userId);
     }
 }
