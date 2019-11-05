@@ -50,17 +50,15 @@ namespace StockAdvisor.Infrastructure.Services
         {
             if (string.IsNullOrWhiteSpace(newPassword))
             {
-                throw new ServiceException(ErrorCodes.InvalidPassword, 
-                    "Password can not be empty.");
+                throw new InvalidPasswordSerExc("Password can not be empty.");
             }
             if (newPassword.Length < 4) 
             {
-                throw new ServiceException(ErrorCodes.InvalidPassword, 
-                    "Password must contain at least 4 characters.");
+                throw new InvalidPasswordSerExc("Password must contain at least 4 characters.");
             }
             if (newPassword.Length > 100) 
             {
-                throw new ServiceException(ErrorCodes.InvalidPassword, 
+                throw new InvalidPasswordSerExc(
                     "Password can not contain more than 100 characters.");
             }
 
@@ -70,14 +68,12 @@ namespace StockAdvisor.Infrastructure.Services
 
             if (oldPasswordHash != user.PasswordHash)
             {
-                throw new ServiceException(ErrorCodes.InvalidPassword, 
-                    "Given currently used password is invalid");
+                throw new InvalidPasswordSerExc("Given currently used password is invalid");
             }
 
             if (oldPassword == newPassword)
             {
-                throw new ServiceException(ErrorCodes.InvalidPassword, 
-                    "Old and new passwords cannot be the same");
+                throw new InvalidPasswordSerExc("Old and new passwords cannot be the same");
             }
 
             var salt = _encrypter.GetSalt();
@@ -92,16 +88,14 @@ namespace StockAdvisor.Infrastructure.Services
 
             if (user == null)
             {
-                throw new ServiceException(ErrorCodes.InvalidCredentials,
-                    "Invalid credentials.");
+                throw new InvalidCredentialsSerExc("Invalid credentials.");
             }
 
             var hash = _encrypter.GetHash(password, user.Salt);
 
             if (hash != user.PasswordHash)
             {
-                throw new ServiceException(ErrorCodes.InvalidCredentials,
-                    "Invalid credentials.");
+                throw new InvalidCredentialsSerExc("Invalid credentials.");
             }
         }
 
@@ -112,8 +106,7 @@ namespace StockAdvisor.Infrastructure.Services
 
             if (existingUser != null)
             {
-                throw new ServiceException(ErrorCodes.EmailInUse,
-                    "Given email is in use.");
+                throw new EmailInUseSerExc($"Given email {email} is in use.");
             }
 
             var salt = _encrypter.GetSalt();

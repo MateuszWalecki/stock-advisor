@@ -63,8 +63,8 @@ namespace StockAdvisor.Infrastructure.Services
             var investor = await _investorRepository.GetAsync(userId);
             if (investor != null)
             {
-                throw new ServiceException(ErrorCodes.InvestorExists,
-                    $"Investor with id {userId} already exists.");
+                throw new InvestorExistsSerExc(
+                    $"Investor with user id {userId} already exists.");
             }
             
             investor = new Investor(user);

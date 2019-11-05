@@ -24,11 +24,11 @@ namespace StockAdvisor.Api.Framework
             }
             catch(Exception e)
             {
-                await HandleExceptionAsync(context, e);
+                await HandleException(context, e);
             }
         }
 
-        private static Task HandleExceptionAsync(HttpContext context, Exception exception)
+        private static Task HandleException(HttpContext context, Exception exception)
         {
             var errorCode = "error";
             var statusCode = HttpStatusCode.BadRequest;
@@ -40,8 +40,8 @@ namespace StockAdvisor.Api.Framework
                     statusCode = HttpStatusCode.Unauthorized;
                     break;
             
-                case ServiceException e when exceptionType == typeof(ServiceException):
-                    statusCode = HttpStatusCode.BadRequest;
+                case ServiceException e when exception is ServiceException:
+                    statusCode = e.CorrespondingStatusCode;
                     errorCode = e.Code;
                     break;
             
@@ -50,7 +50,7 @@ namespace StockAdvisor.Api.Framework
                     break;
             }
 
-            var response = new { code = errorCode, message =  exception.Message };
+            var response = new { code = errorCode };
             var payload = JsonConvert.SerializeObject(response);
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int)statusCode;

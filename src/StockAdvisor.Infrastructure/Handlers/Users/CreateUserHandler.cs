@@ -22,8 +22,7 @@ namespace StockAdvisor.Infrastructure.Handlers.Users
 
             if (repositoryUser != null)
             {
-                throw new ServiceException(ErrorCodes.EmailInUse,
-                    $"Given email {command.Email} is already used.");
+                throw new EmailInUseSerExc($"Given email {command.Email} is already used.");
             }
 
             await _userService.RegisterAsync(Guid.NewGuid(), command.Email, command.FirstName, command.SurName,

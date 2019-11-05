@@ -129,7 +129,7 @@ namespace StockAdvisor.UnitTests.Infrastructure
         }
 
         [Fact]
-        public async Task trying_to_register_investor_related_with_user_id_that_is_in_use_serviceexception_is_thrown()
+        public async Task trying_to_register_investor_related_with_user_id_that_is_in_use_exception_is_thrown()
         {
         //Given
             var user = GetDefaultUser();
@@ -153,11 +153,11 @@ namespace StockAdvisor.UnitTests.Infrastructure
             Func<Task> act = () => investorService.RegisterAsync(investor.UserId);
 
         //Then
-            await Assert.ThrowsAsync<ServiceException>(act);
+            await Assert.ThrowsAsync<InvestorExistsSerExc>(act);
         }
 
         [Fact]
-        public async Task trying_to_register_investor_related_with_fake_user_serviceexception_is_thrown()
+        public async Task trying_to_register_investor_related_with_fake_user_exception_is_thrown()
         {
         //Given
             var investor = GetDefaultInvestor();
@@ -180,7 +180,7 @@ namespace StockAdvisor.UnitTests.Infrastructure
             Func<Task> act = () => investorService.RegisterAsync(investor.UserId);
 
         //Then
-            await Assert.ThrowsAsync<ServiceException>(act);
+            await Assert.ThrowsAsync<UserNotFoundSerExc>(act);
         }
 
         [Fact]
@@ -212,7 +212,7 @@ namespace StockAdvisor.UnitTests.Infrastructure
         }
 
         [Fact]
-        public async Task service_excpetion_is_thrown_if_related_investor_does_not_exist_while_adding_to_favourite_companies()
+        public async Task excpetion_is_thrown_if_related_investor_does_not_exist_while_adding_to_favourite_companies()
         {
         //Given
             string companySymbol = "AAPL";
@@ -236,7 +236,7 @@ namespace StockAdvisor.UnitTests.Infrastructure
             Func<Task> act = () => investorService.AddToFavouriteCompaniesAsync(user.Id, companySymbol);
             
         //Then
-            await Assert.ThrowsAsync<ServiceException>(act);
+            await Assert.ThrowsAsync<InvestorNotFoundSerExc>(act);
         }
 
         [Fact]
@@ -322,7 +322,7 @@ namespace StockAdvisor.UnitTests.Infrastructure
         }
 
         [Fact]
-        public async Task service_excpetion_is_thrown_if_related_investor_does_not_exist_while_removing_from_favourite_companies()
+        public async Task exception_is_thrown_if_related_investor_does_not_exist_while_removing_from_favourite_companies()
         {
         //Given
             string companySymbol = "AAPL";
@@ -346,7 +346,7 @@ namespace StockAdvisor.UnitTests.Infrastructure
             Func<Task> act = () => investorService.RemoveFromFavouriteCompaniesAsync(user.Id, companySymbol);
             
         //Then
-            await Assert.ThrowsAsync<ServiceException>(act);
+            await Assert.ThrowsAsync<InvestorNotFoundSerExc>(act);
         }
 
         [Fact]
@@ -585,7 +585,7 @@ namespace StockAdvisor.UnitTests.Infrastructure
         }
 
         [Fact]
-        public async Task remove_async_throws_service_exception_if_investor_does_not_exist()
+        public async Task remove_async_throws_exception_if_investor_does_not_exist()
         {
         //Given
             var investor = GetDefaultInvestor();
@@ -604,7 +604,7 @@ namespace StockAdvisor.UnitTests.Infrastructure
             Func<Task> act = () => investorService.RemoveAsync(investor.UserId);
 
         //Then
-            await Assert.ThrowsAsync<ServiceException>(act);
+            await Assert.ThrowsAsync<InvestorNotFoundSerExc>(act);
         }
 
         [Fact]

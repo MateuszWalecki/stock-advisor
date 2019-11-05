@@ -1,4 +1,5 @@
 using System;
+using System.Net;
 using System.Threading.Tasks;
 using StockAdvisor.Core.Domain;
 using StockAdvisor.Core.Repositories;
@@ -15,8 +16,7 @@ namespace StockAdvisor.Infrastructure.Extensions
             
             if(user == null)
             {
-                throw new ServiceException(ErrorCodes.UserNotFound, 
-                    $"User with id: '{userId}' was not found.");
+                throw new UserNotFoundSerExc($"User with id: '{userId}' was not found.");
             }
 
             return user;            
@@ -28,8 +28,7 @@ namespace StockAdvisor.Infrastructure.Extensions
             var investor = await repository.GetAsync(userId);
             if(investor == null)
             {
-                throw new ServiceException(ErrorCodes.InvestorNotFound, 
-                    $"Investor with user id: '{userId}' was not found.");
+                throw new InvestorNotFoundSerExc($"Investor with user id: '{userId}' was not found.");
             }
 
             return investor;            

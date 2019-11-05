@@ -24,8 +24,7 @@ namespace StockAdvisor.Infrastructure.Repositories
         {
             if (_usersDB.GetAll().Any(x => x.Email == user.Email))
             {
-                throw new ServiceException(ErrorCodes.EmailInUse,
-                    $"Email {user.Email} is in use.");
+                throw new EmailInUseSerExc( $"Email {user.Email} is in use.");
             }
             
             _usersDB.Add(user);
@@ -48,8 +47,7 @@ namespace StockAdvisor.Infrastructure.Repositories
 
             if (userToDelte == null)
             {
-                throw new ServiceException(ErrorCodes.UserNotFound,
-                    "User not found.");
+                throw new UserNotFoundSerExc($"User with id {id} cannot be found.");
             }
 
             _usersDB.Remove(userToDelte);
