@@ -22,8 +22,7 @@ namespace StockAdvisor.Infrastructure.Handlers.Users
 
             if (user == null)
             {
-                throw new ServiceException(ErrorCodes.UserNotFound,
-                    $"User cannot be found using id {command.UserId}.");
+                throw new UserNotFoundSerExc($"User cannot be found using id {command.UserId}.");
             }
 
             await _userService.ChangeUserPasswordAsync(command.UserId,

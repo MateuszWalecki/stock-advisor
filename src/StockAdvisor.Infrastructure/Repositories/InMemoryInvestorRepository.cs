@@ -22,8 +22,7 @@ namespace StockAdvisor.Infrastructure.Repositories
         {
             if (_investorsDB.GetAll().Any(x => x.UserId == investor.UserId))
             {
-                throw new ServiceException(ErrorCodes.UserIdInUse,
-                    $"User with id {investor.UserId} is in use.");
+                throw new UserIdInUseSerExc($"User with id {investor.UserId} is in use.");
             }
 
             _investorsDB.Add(investor);
@@ -40,8 +39,8 @@ namespace StockAdvisor.Infrastructure.Repositories
         {
             if (!_investorsDB.GetAll().Contains(investor))
             {
-                throw new ServiceException(ErrorCodes.InvestorNotFound,
-                    "Investor cannot be removed from the repository, because it does not exists there.");
+                throw new InvestorNotFoundSerExc($"Investor cannot be removed from the repository, " +
+                    "because it does not exists there.");
             }
 
             _investorsDB.Remove(investor);

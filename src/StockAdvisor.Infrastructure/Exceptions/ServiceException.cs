@@ -1,34 +1,21 @@
 using System;
+using System.Net;
 using StockAdvisor.Core.Exceptions;
 
 namespace StockAdvisor.Infrastructure.Exceptions
 {
-    public class ServiceException : StockAdvisorException
+    public abstract class ServiceException : StockAdvisorException
     {
-        public ServiceException()
+        public abstract HttpStatusCode CorrespondingStatusCode { get; }
+
+        protected ServiceException(string message, params object[] args)
+            : base(message, args)
         {
         }
 
-        public ServiceException(string code) : base(code)
-        {
-        }
-
-        public ServiceException(string message, params object[] args) : base(string.Empty, message, args)
-        {
-        }
-
-        public ServiceException(string code, string message, params object[] args) : base(null, code, message, args)
-        {
-        }
-
-        public ServiceException(Exception innerException, string message, params object[] args)
-            : base(innerException, string.Empty, message, args)
-        {
-        }
-
-        public ServiceException(Exception innerException, string code, string message, params object[] args)
+        protected ServiceException(Exception innerException, string message, params object[] args)
             : base(string.Format(message, args), innerException)
         {
-        }    
+        }
     }
 }

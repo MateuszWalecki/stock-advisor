@@ -182,7 +182,7 @@ namespace StockAdvisor.UnitTests.Infrastructure
                 _password, _role); 
 
             // Then
-            await Assert.ThrowsAsync<ServiceException>(act);
+            await Assert.ThrowsAsync<EmailInUseSerExc>(act);
         }
 
         [Fact]
@@ -204,7 +204,7 @@ namespace StockAdvisor.UnitTests.Infrastructure
             Func<Task> act = () => userService.LoginAsync(_email, _password);
             
         //Then
-            await Assert.ThrowsAsync<ServiceException>(act);
+            await Assert.ThrowsAsync<InvalidCredentialsSerExc>(act);
         }
 
         [Fact]
@@ -254,7 +254,7 @@ namespace StockAdvisor.UnitTests.Infrastructure
             Func<Task> act = () => userService.LoginAsync(_email, _password);
             
         //Then
-            await Assert.ThrowsAsync<ServiceException>(act);
+            await Assert.ThrowsAsync<InvalidCredentialsSerExc>(act);
         }
 
         [Fact]

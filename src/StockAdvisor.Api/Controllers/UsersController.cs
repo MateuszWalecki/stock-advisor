@@ -52,17 +52,7 @@ namespace StockAdvisor.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> Register([FromBody]CreateUserCommand command)
         {
-            try
-            {
-                await DispatchAsync(command);
-            }
-            catch (ServiceException e)
-            {
-                if (e.Code == Infrastructure.Exceptions.ErrorCodes.EmailInUse)
-                {
-                    return base.Conflict(e.Message);
-                }
-            }
+            await DispatchAsync(command);
 
             // can add created user in the last parameter that is null in current implementation
             return CreatedAtAction(nameof(Get), new { email = command.Email }, null);
