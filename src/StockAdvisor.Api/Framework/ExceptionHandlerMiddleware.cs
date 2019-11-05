@@ -2,6 +2,7 @@ using System;
 using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using StockAdvisor.Infrastructure.Exceptions;
 
@@ -10,10 +11,13 @@ namespace StockAdvisor.Api.Framework
     public class ExceptionHandlerMiddleware
     {
         private readonly RequestDelegate _next;
+        private readonly ILogger<ExceptionHandlerMiddleware> _logger;
 
-        public ExceptionHandlerMiddleware(RequestDelegate next)
+        public ExceptionHandlerMiddleware(RequestDelegate next,
+            ILogger<ExceptionHandlerMiddleware> logger)
         {
             _next = next;
+            _logger = logger;
         }
 
         public async Task InvokeAsync(HttpContext context)
@@ -28,7 +32,7 @@ namespace StockAdvisor.Api.Framework
             }
         }
 
-        private static Task HandleException(HttpContext context, Exception exception)
+        private Task HandleException(HttpContext context, Exception exception)
         {
             var errorCode = "error";
             var statusCode = HttpStatusCode.BadRequest;
@@ -47,6 +51,7 @@ namespace StockAdvisor.Api.Framework
             
                 default:
                     statusCode = HttpStatusCode.InternalServerError;
+                    _logger.LogError(exception, "Unsupported exception");
                     break;
             }
 
