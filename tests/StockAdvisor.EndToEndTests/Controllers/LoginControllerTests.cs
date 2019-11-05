@@ -14,9 +14,6 @@ namespace StockAdvisor.EndToEndTests.Controllers
 {
     public class LoginControllerTests : ControllerTestBase
     {
-        private readonly string _validEmail = "user1@test.com",
-            _validPassword = "Secret1";
-
         public LoginControllerTests(WebApplicationFactory<Startup> factory,
             ITestOutputHelper output) : base(factory, output)
         {
@@ -27,11 +24,12 @@ namespace StockAdvisor.EndToEndTests.Controllers
         {
         //Given
             var client = Factory.CreateClient();
+            dynamic user = await AddUserWithInvestorToRepoAndGetAsync();
 
             var command = new LoginCommand
             {
-                Email = _validEmail,
-                Password = _validPassword    
+                Email = user.Email,
+                Password = user.Password    
             };
             var payload = GetPayload(command);
 
@@ -52,11 +50,12 @@ namespace StockAdvisor.EndToEndTests.Controllers
         {
         //Given
             var client = Factory.CreateClient();
+            dynamic user = await AddUserWithInvestorToRepoAndGetAsync();
 
             var command = new LoginCommand
             {
                 Email = "wrong_email",
-                Password = _validPassword 
+                Password = user.Password 
             };
             var payload = GetPayload(command);
 
@@ -72,10 +71,11 @@ namespace StockAdvisor.EndToEndTests.Controllers
         {
         //Given
             var client = Factory.CreateClient();
+            dynamic user = await AddUserWithInvestorToRepoAndGetAsync();
 
             var command = new LoginCommand
             {
-                Email = _validEmail,
+                Email = user.Email,
                 Password = "invalid password"    
             };
             var payload = GetPayload(command);

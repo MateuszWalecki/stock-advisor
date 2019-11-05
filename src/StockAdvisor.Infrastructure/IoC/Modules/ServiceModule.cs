@@ -38,6 +38,10 @@ namespace StockAdvisor.Infrastructure.IoC.Modules
                     .As<IJwtHandler>()
                     .SingleInstance();
 
+            builder.RegisterType<DataInitializer>()
+                    .As<IDataInitializer>()
+                    .SingleInstance();
+
             var financialSettings = _configuration.GetSettings<FinancialModelingPrepSettings>();
             builder.Register(x => new HttpClient()
                     {

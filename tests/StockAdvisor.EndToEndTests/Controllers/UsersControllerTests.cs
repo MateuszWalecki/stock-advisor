@@ -1,3 +1,4 @@
+using System.Dynamic;
 using System.Net;
 using System.Net.Http;
 using System.Text;
@@ -28,10 +29,11 @@ namespace StockAdvisor.EndToEndTests.Controllers
         {
         //Given
             var client = Factory.CreateClient();
-            var email = "first@example.com";
+
+            dynamic user = await AddUserWithInvestorToRepoAndGetAsync();
 
         //When
-            var response = await client.GetAsync($"users/{email}");
+            var response = await client.GetAsync($"users/{user.Email}");
             
         //Then
             response.StatusCode.Should().BeEquivalentTo(HttpStatusCode.Unauthorized);
@@ -42,16 +44,17 @@ namespace StockAdvisor.EndToEndTests.Controllers
         {
         //Given
             var client = await CreateAuthorizedClient();
-            var email = "user1@test.com";
+
+            dynamic user = await AddUserWithInvestorToRepoAndGetAsync();
 
         //When
-            var response = await client.GetAsync($"users/{email}");
+            var response = await client.GetAsync($"users/{user.Email}");
             var responseString = await response.Content.ReadAsStringAsync();
-            var user = JsonConvert.DeserializeObject<UserDto>(responseString);
+            var returnedEser = JsonConvert.DeserializeObject<UserDto>(responseString);
             
         //Then
             response.EnsureSuccessStatusCode();
-            user.Email.Should().BeEquivalentTo(email);
+            returnedEser.Email.Should().BeEquivalentTo(user.Email);
         }
 
         [Fact]
@@ -59,7 +62,7 @@ namespace StockAdvisor.EndToEndTests.Controllers
         {
         //Given
             var client = await CreateAuthorizedClient();
-            var email = "bademail@example.com";
+            var email = "bad@bad.email";
 
         //When
             var response = await client.GetAsync($"users/{email}");
@@ -106,7 +109,9 @@ namespace StockAdvisor.EndToEndTests.Controllers
         {
         //Given
             var client = Factory.CreateClient();
-            string usedEmail = "user1@test.com";
+            dynamic existingUser = await AddUserWithInvestorToRepoAndGetAsync();
+
+            string usedEmail = existingUser.Email;
             var creauteUserRequest = new CreateUserCommand
             {
                 Email = usedEmail,

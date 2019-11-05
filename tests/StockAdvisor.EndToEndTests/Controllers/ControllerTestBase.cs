@@ -1,3 +1,4 @@
+using System.Dynamic;
 using System.Net.Http;
 using System.Text;
 using System.Threading;
@@ -7,8 +8,10 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Newtonsoft.Json;
 using StockAdvisor.Api;
+using StockAdvisor.Core.Domain;
 using StockAdvisor.Infrastructure.Commands.Login;
 using StockAdvisor.Infrastructure.DTO;
+using StockAdvisor.Infrastructure.Services;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -53,14 +56,36 @@ namespace StockAdvisor.EndToEndTests.Controllers
         }
 
         public async Task<HttpClient> CreateAuthorizedClient(
-            string email = "user1@test.com", string password = "Secret1")
+            ExpandoObject userToAuthorize = null)
         {
             var client = Factory.CreateClient();
+            
+            dynamic userData = 
+                userToAuthorize == null ?
+                    await AddUserWithInvestorToRepoAndGetAsync() :
+                    userToAuthorize as dynamic;
 
-            var authorizationHeader =  await GetValidBearerTokenHeader(client, email, password);
+            var authorizationHeader =  await GetValidBearerTokenHeader(client, userData.Email,
+                userData.Password);
             client.DefaultRequestHeaders.Add("Authorization", authorizationHeader);
 
             return client;
+        }
+
+        public async Task<ExpandoObject> AddUserWithInvestorToRepoAndGetAsync()
+        {
+            var dataInitializer =
+                Factory.Server.Services.GetService(typeof(IDataInitializer)) as IDataInitializer;
+
+            return await dataInitializer.AddAndGetNextUserWithInvestor();
+        }
+
+        public async Task<ExpandoObject> AddUserWithoutInvestorToRepoAndGetAsync()
+        {
+            var dataInitializer =
+                Factory.Server.Services.GetService(typeof(IDataInitializer)) as IDataInitializer;
+
+            return await dataInitializer.AddAndGetNextUserWithoutInvestor();
         }
     }
 }

@@ -69,7 +69,8 @@ namespace StockAdvisor.EndToEndTests.Controllers
         public async Task get_current_investor_returns_null_if_does_not_exist()
         {
         //Given
-            var client = await CreateAuthorizedClient("without_investor1@test.com");
+            var userWithoutInvestor = await AddUserWithoutInvestorToRepoAndGetAsync();
+            var client = await CreateAuthorizedClient(userWithoutInvestor);
 
         //When
             var response = await client.GetAsync($"investors/me");
@@ -97,7 +98,8 @@ namespace StockAdvisor.EndToEndTests.Controllers
         public async Task create_investor_returns_no_content_if_user_is_logged_and_does_not_contain_assigned_investor()
         {
         //Given
-            var client = await CreateAuthorizedClient("without_investor2@test.com", "Secret2");
+            var userWithoutInvestor = await AddUserWithoutInvestorToRepoAndGetAsync();
+            var client = await CreateAuthorizedClient(userWithoutInvestor);
             
         //When
             var response = await client.PostAsync($"investors", GetPayload(""));
@@ -110,7 +112,7 @@ namespace StockAdvisor.EndToEndTests.Controllers
         public async Task delete_investor_returns_no_content()
         {
         //Given
-            var client = await CreateAuthorizedClient("user2@test.com", "Secret2");
+            var client = await CreateAuthorizedClient();
 
         //When
             var response = await client.DeleteAsync("investors/me");
