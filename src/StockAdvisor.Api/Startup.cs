@@ -102,7 +102,6 @@ namespace StockAdvisor.Api
                 dataInitializer.SeedAsync();
             }
 
-
             hostApplicationLifetime.ApplicationStopped.Register(() => 
                 ApplicationContainer.Dispose());
         }
