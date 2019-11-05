@@ -9,6 +9,7 @@ namespace StockAdvisor.Infrastructure.Services
     public interface IUserService : IService
     {
         Task<UserDto> GetAsync(string email);
+        Task<UserDto> GetAsync(Guid userId);
         Task<IEnumerable<UserDto>> BrowseAsync();
         Task RegisterAsync(Guid userId, string email, string firstName, string surName,
             string password, UserRole userRole);

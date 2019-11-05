@@ -18,17 +18,16 @@ namespace StockAdvisor.Infrastructure.Handlers.Users
         {
             await Task.CompletedTask;
             
-            // TODO: do change password logic
-            // var user = await _userService.GetAsync(command.Email);
+            var user = await _userService.GetAsync(command.UserId);
 
-            // if (user == null)
-            // {
-            //     throw new ServiceException(ServiceErrorCodes.UserNotFound,
-            //         $"User cannot be found by the email {command.Email}.");
-            // }
+            if (user == null)
+            {
+                throw new ServiceException(ErrorCodes.UserNotFound,
+                    $"User cannot be found using id {command.UserId}.");
+            }
 
-            // await _userService.ChangeUserPasswordAsync(user.Id,
-            //     command.NewPassword, command.CurrentPassword);
+            await _userService.ChangeUserPasswordAsync(command.UserId,
+                command.NewPassword, command.CurrentPassword);
         }
     }
 }

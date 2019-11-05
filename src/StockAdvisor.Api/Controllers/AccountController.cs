@@ -21,6 +21,7 @@ namespace StockAdvisor.Api.Controllers
         {
         }
 
+        [Authorize]
         [HttpPut]
         [Route("password")]
         public async Task<IActionResult> ChangePasswordAsync([FromBody]ChangeUserPasswordCommand command)

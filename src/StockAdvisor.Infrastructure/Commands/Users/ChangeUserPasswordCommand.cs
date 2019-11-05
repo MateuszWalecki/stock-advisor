@@ -2,9 +2,8 @@ using StockAdvisor.Infrastructure.Commands;
 
 namespace StockAdvisor.Infrastructure.Commands.Users
 {
-    public class ChangeUserPasswordCommand : ICommand
+    public class ChangeUserPasswordCommand : AuthenticatedCommandBase
     {
-        public string Email { get; set; }
         public string CurrentPassword { get; set; }
         public string NewPassword { get; set; }
     }

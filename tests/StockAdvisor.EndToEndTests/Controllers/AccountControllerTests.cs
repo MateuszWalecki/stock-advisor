@@ -1,3 +1,4 @@
+using System;
 using System.Net;
 using System.Net.Http;
 using System.Text;
@@ -8,6 +9,7 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Newtonsoft.Json;
 using StockAdvisor.Api;
+using StockAdvisor.Core.Domain;
 using StockAdvisor.Infrastructure.Commands.Users;
 using StockAdvisor.Infrastructure.DTO;
 using Xunit;
@@ -22,25 +24,15 @@ namespace StockAdvisor.EndToEndTests.Controllers
             : base(factory, output)
         {
         }
+    //TODO: test account cotroller
+    //     [Fact]
+    //     public async Task given_valid_current_password_and_new_password_current_should_be_changed()
+    //     {
+    //     //Given
 
-        [Fact]
-        public async Task given_valid_current_password_and_new_password_current_should_be_changed()
-        {
-        //Given
-            var client = Factory.CreateClient();
-            var command = new ChangeUserPasswordCommand()
-            {
-                Email = "new_email@example.com",
-                CurrentPassword = "secret",
-                NewPassword = "secret2"
-            };
-            var payload = GetPayload(command);
-
-        //When
-            var response = await client.PutAsync("account/password", payload);
+    //     //When
             
-        //Then
-            response.StatusCode.Should().BeEquivalentTo(HttpStatusCode.NoContent);
-        }
+    //     //Then
+    //     }
     }
 }
