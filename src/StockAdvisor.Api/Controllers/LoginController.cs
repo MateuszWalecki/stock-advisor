@@ -27,14 +27,7 @@ namespace StockAdvisor.Api.Controllers
         {
             loginCommand.TokenId = Guid.NewGuid();
             
-            try
-            {
-                await DispatchAsync(loginCommand);
-            }
-            catch(StockAdvisorException e)
-            {
-                return Unauthorized(e.Message);    
-            }
+            await DispatchAsync(loginCommand);
 
             var token = _cache.GetJwt(loginCommand.TokenId);
             return Ok(token);

@@ -17,6 +17,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
+using StockAdvisor.Api.Framework;
 using StockAdvisor.Core.Repositories;
 using StockAdvisor.Infrastructure.Extensions;
 using StockAdvisor.Infrastructure.IoC;
@@ -81,6 +82,8 @@ namespace StockAdvisor.Api
 
             app.UseHttpsRedirection();
 
+            app.UseMiddleware<ExceptionHandlerMiddleware>();
+
             app.UseRouting();
 
             app.UseAuthentication();
@@ -98,6 +101,7 @@ namespace StockAdvisor.Api
                 var dataInitializer = app.ApplicationServices.GetService<IDataInitializer>();
                 dataInitializer.SeedAsync();
             }
+
 
             hostApplicationLifetime.ApplicationStopped.Register(() => 
                 ApplicationContainer.Dispose());
