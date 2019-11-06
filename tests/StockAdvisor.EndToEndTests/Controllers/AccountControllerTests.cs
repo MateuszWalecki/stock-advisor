@@ -203,6 +203,44 @@ namespace StockAdvisor.EndToEndTests.Controllers
             response.StatusCode.Should().BeEquivalentTo(HttpStatusCode.NoContent);
         }
 
+        [Fact]
+        public async Task get_current_user_returns_unathorized_if_user_is_not_authorized()
+        {
+        //Given
+            var client = Factory.CreateClient();
+            
+        //When
+            var response = await client.GetAsync(Url("me"));
+            var responseString = await response.Content.ReadAsStringAsync();
+            var user = JsonConvert.DeserializeObject<UserDto>(responseString);
+
+        //Then
+            response.StatusCode.Should().BeEquivalentTo(HttpStatusCode.Unauthorized);
+            user.Should().BeNull();
+        }
+        
+        [Fact]
+        public async Task get_current_user_returns_it_if_exists()
+        {
+        //Given
+            dynamic user = await AddUserWithInvestorToRepoAndGetAsync();
+            HttpClient client = await CreateAuthorizedClient(user);
+            
+        //When
+            var response = await client.GetAsync(Url("me"));
+            var responseString = await response.Content.ReadAsStringAsync();
+            var resultUser = JsonConvert.DeserializeObject<UserDto>(responseString);
+
+        //Then
+            response.StatusCode.Should().BeEquivalentTo(HttpStatusCode.OK);
+            resultUser.Should().NotBeNull();
+            Assert.Equal(user.Id, resultUser.Id);
+            Assert.Equal(user.Email, resultUser.Email);
+            Assert.Equal(user.FirstName, resultUser.FirstName);
+            Assert.Equal(user.SurName, resultUser.SurName);
+            Assert.Equal(user.Role, resultUser.Role);
+        }
+
         private string Url(string postifx)
             => _baseUrl + "/" + postifx;
     }

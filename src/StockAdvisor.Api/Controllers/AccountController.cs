@@ -16,9 +16,12 @@ namespace StockAdvisor.Api.Controllers
 {
     public class AccountController : ApiControllerBase
     {
-        public AccountController(ICommandDispatcher commandDispatcher)
+        private readonly IUserService _userService;
+
+        public AccountController(ICommandDispatcher commandDispatcher, IUserService userService)
             : base(commandDispatcher)
         {
+            _userService = userService;
         }
 
         [Authorize]
@@ -39,6 +42,21 @@ namespace StockAdvisor.Api.Controllers
             await DispatchAsync(command);
 
             return NoContent();
+        }
+
+        [Authorize]
+        [HttpGet]
+        [Route("me")]
+        public async Task<IActionResult> GetCurrentUser()
+        {
+            var user = await _userService.GetAsync(UserId);
+            
+            if (user == null)
+            {
+                return NotFound($"User with id {UserId} cannot be found.");
+            }
+
+            return Ok(user);
         }
     }
 }
