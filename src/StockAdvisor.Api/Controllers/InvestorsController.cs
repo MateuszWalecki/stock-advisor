@@ -63,7 +63,7 @@ namespace StockAdvisor.Api.Controllers
 
         [Authorize]
         [HttpPost]
-        public async Task<IActionResult> Post()
+        public async Task<IActionResult> CreateNewInvestor()
         {
             var command = new CreateInvestorCommand();
 
@@ -74,7 +74,7 @@ namespace StockAdvisor.Api.Controllers
 
         [Authorize]
         [HttpDelete("me")]
-        public async Task<IActionResult> Delete()
+        public async Task<IActionResult> DeleteCurrentInvestor()
         {
             await DispatchAsync(new DeleteInvestorCommand());
 
