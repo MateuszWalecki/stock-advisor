@@ -12,6 +12,7 @@ using StockAdvisor.Core.Domain;
 using StockAdvisor.Infrastructure.Commands.Login;
 using StockAdvisor.Infrastructure.DTO;
 using StockAdvisor.Infrastructure.Services;
+using StockAdvisor.Infrastructure.Services.DataInitializer;
 using Xunit;
 using Xunit.Abstractions;
 

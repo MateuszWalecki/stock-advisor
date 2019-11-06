@@ -6,6 +6,7 @@ using Autofac;
 using Microsoft.Extensions.Configuration;
 using StockAdvisor.Infrastructure.Extensions;
 using StockAdvisor.Infrastructure.Services;
+using StockAdvisor.Infrastructure.Services.DataInitializer;
 using StockAdvisor.Infrastructure.Settings;
 
 namespace StockAdvisor.Infrastructure.IoC.Modules
@@ -38,10 +39,10 @@ namespace StockAdvisor.Infrastructure.IoC.Modules
                     .As<IJwtHandler>()
                     .SingleInstance();
 
-            builder.RegisterType<DataInitializer>()
-                    .As<IDataInitializer>()
-                    .SingleInstance();
-
+            builder.RegisterAssemblyTypes(assembly)
+                   .Where(x => x.IsAssignableTo<IInputDataBuilder>())
+                   .SingleInstance();
+            
             var financialSettings = _configuration.GetSettings<FinancialModelingPrepSettings>();
             builder.Register(x => new HttpClient()
                     {

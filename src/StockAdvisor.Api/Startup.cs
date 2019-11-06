@@ -24,6 +24,7 @@ using StockAdvisor.Infrastructure.IoC;
 using StockAdvisor.Infrastructure.Mappers;
 using StockAdvisor.Infrastructure.Repositories;
 using StockAdvisor.Infrastructure.Services;
+using StockAdvisor.Infrastructure.Services.DataInitializer;
 using StockAdvisor.Infrastructure.Settings;
 
 namespace StockAdvisor.Api
@@ -99,7 +100,7 @@ namespace StockAdvisor.Api
             if (generalSetting.SeedData)
             {
                 var dataInitializer = app.ApplicationServices.GetService<IDataInitializer>();
-                dataInitializer.SeedAsync();
+                dataInitializer.SeedDefaultAsync();
             }
 
             hostApplicationLifetime.ApplicationStopped.Register(() => 
