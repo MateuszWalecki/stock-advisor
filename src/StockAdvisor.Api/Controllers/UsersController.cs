@@ -26,6 +26,7 @@ namespace StockAdvisor.Api.Controllers
             _userService = userService;
         }
 
+        //TODO: for admin only
         [HttpGet]
         public async Task<IActionResult> Get()
         {
@@ -34,6 +35,7 @@ namespace StockAdvisor.Api.Controllers
             return Ok(users);
         }
 
+        //TODO: for admin only
         [Authorize]
         [HttpGet("{email}")]
         public async Task<IActionResult> Get(string email)
@@ -48,7 +50,6 @@ namespace StockAdvisor.Api.Controllers
             return Ok(user);
         }
 
-        // FromBody attribute provides conversion from the json request to the CreateUser command
         [HttpPost]
         public async Task<IActionResult> Register([FromBody]CreateUserCommand command)
         {
