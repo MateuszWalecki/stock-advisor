@@ -436,8 +436,6 @@ namespace StockAdvisor.UnitTests.Infrastructure
             var user = GetDefaultUser();
 
             var userRepositoryMock = new Mock<IUserRepository>();
-            userRepositoryMock.Setup(x => x.GetAsync(user.Id))
-                              .Returns(Task.FromResult(user));
 
             var investorRepositoryMock = new Mock<IInvestorRepository>();
             investorRepositoryMock.Setup(x => x.GetAsync(user.Id))
@@ -457,6 +455,37 @@ namespace StockAdvisor.UnitTests.Infrastructure
             
         //Then
             await Assert.ThrowsAsync<InvestorNotFoundSerExc>(act);
+        }
+
+        [Fact]
+        public async Task exception_is_thrown_if_related_company_symbol_does_not_exist_while_removing_from_favourite_companies()
+        {
+        //Given
+            string companySymbol = "AAPL";
+            var investor = GetDefaultInvestor();
+
+            var userRepositoryMock = new Mock<IUserRepository>();
+
+            var investorRepositoryMock = new Mock<IInvestorRepository>();
+            investorRepositoryMock.Setup(x => x.GetAsync(investor.UserId))
+                                  .Returns(Task.FromResult(investor));
+
+
+            var companyRepositoryMock = new Mock<ICompanyRepository>();
+
+            var mapperMock = new Mock<IMapper>();
+
+            var investorService = new InvestorService(userRepositoryMock.Object,
+                investorRepositoryMock.Object, companyRepositoryMock.Object,
+                mapperMock.Object);
+
+        //When
+            Func<Task> act = () 
+                => investorService.RemoveFromFavouriteCompaniesAsync(investor.UserId,
+                                                                     companySymbol);
+            
+        //Then
+            await Assert.ThrowsAsync<CompanySymbolNotFoundSerExc>(act);
         }
 
         [Fact]

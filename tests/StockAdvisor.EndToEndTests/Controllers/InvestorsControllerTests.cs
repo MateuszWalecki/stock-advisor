@@ -246,6 +246,60 @@ namespace StockAdvisor.EndToEndTests.Controllers
             response.StatusCode.Should().BeEquivalentTo(HttpStatusCode.Conflict);
         }
 
+
+        [Fact]
+        public async Task remove_favourite_company_returns_unathorized_if_user_us_not_authorized()
+        {
+        //Given
+            var companySymbol = "AAPL";
+            var client = Factory.CreateClient();
+
+        //When
+            var response = await client.DeleteAsync(Uri($"companies/{companySymbol}"));
+
+        //Then
+            response.StatusCode.Should().BeEquivalentTo(HttpStatusCode.Unauthorized);
+        }
+
+        [Fact]
+        public async Task remove_favourite_company_returns_bad_request_if_symbol_is_not_in_collection()
+        {
+        //Given
+            var userWithInvestor = await AddUserWithInvestorToRepoAndGetAsync();
+            var client = await CreateAuthorizedClient(userWithInvestor);
+            var companySymbol = "AAPL";
+
+        //When
+            var response = await client.DeleteAsync(Uri($"companies/{companySymbol}"));
+
+        //Then
+            response.StatusCode.Should().BeEquivalentTo(HttpStatusCode.NotFound);
+        }
+
+        [Fact]
+        public async Task remove_favourite_company_returns_no_content_on_success()
+        {
+        //Given
+            var userWithInvestor = await AddUserWithInvestorToRepoAndGetAsync();
+            var client = await CreateAuthorizedClient(userWithInvestor);
+
+            var companySymbol = "AAPL";
+            var command = new AddFavouriteCompanyCommand()
+            {
+                CompanySymbol = companySymbol
+            };
+            var payload = GetPayload(command);
+
+            var initResponse = await client.PostAsync(Uri("companies"), payload);
+            initResponse.EnsureSuccessStatusCode();
+
+        //When
+            var response = await client.DeleteAsync(Uri($"companies/{companySymbol}"));
+
+        //Then
+            response.StatusCode.Should().BeEquivalentTo(HttpStatusCode.NoContent);
+        }
+
         private string Uri(string subRoute = null)
             => string.IsNullOrEmpty(subRoute) ?
                 _controllerRoute :

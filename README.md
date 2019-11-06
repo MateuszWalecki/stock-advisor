@@ -11,6 +11,7 @@ This repository is sample .Net Core 3.0 Web API that provides stock related logi
 7. Authorization using JWT Tokens
 8. Using external API to get current stock values
 9. Global exception handler with custom exceptions
+10. Logging
 
 ## Used modules:
 1. Autofac

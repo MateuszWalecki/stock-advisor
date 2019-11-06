@@ -83,11 +83,27 @@ namespace StockAdvisor.Api.Controllers
         }
 
         [Authorize]
-        [HttpPost]
         [Route("companies")]
+        [HttpPost]
         public async Task<IActionResult> AddFavouriteCompany(
             [FromBody]AddFavouriteCompanyCommand command)
         {
+            await DispatchAsync(command);
+
+            return NoContent();
+        }
+
+        [Authorize]
+        [Route("companies/{symbol}")]
+        [HttpDelete]
+        public async Task<IActionResult> DeleteFavouriteCompany(
+            string symbol)
+        {
+            var command = new DeleteFavouriteCompanyCommand()
+            {
+                CompanySymbol = symbol
+            };
+
             await DispatchAsync(command);
 
             return NoContent();

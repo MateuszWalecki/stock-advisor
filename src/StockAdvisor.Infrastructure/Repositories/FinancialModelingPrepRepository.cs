@@ -59,12 +59,12 @@ namespace StockAdvisor.Infrastructure.Repositories
 
         private async Task<IEnumerable<Company>> GetCompaniesFromExternalSource()
         {
-                var response = await _client.GetAsync("api/v3/company/stock/list");
-                response.EnsureSuccessStatusCode();
-                var stringResponse = await response.Content.ReadAsStringAsync();
+            var response = await _client.GetAsync("api/v3/company/stock/list");
+            response.EnsureSuccessStatusCode();
+            var stringResponse = await response.Content.ReadAsStringAsync();
 
-                var jsonCompanies = JsonConvert.DeserializeObject<CompaniesJson>(stringResponse);
-                return jsonCompanies.SymbolsList;
+            var jsonCompanies = JsonConvert.DeserializeObject<CompaniesJson>(stringResponse);
+            return jsonCompanies.SymbolsList;
         }
 
         private async Task<IEnumerable<CompanyValue>> GetHistoricalPriceFromExternalSource(

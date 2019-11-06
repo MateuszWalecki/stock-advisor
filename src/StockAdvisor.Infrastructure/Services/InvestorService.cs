@@ -97,11 +97,17 @@ namespace StockAdvisor.Infrastructure.Services
             await _investorRepository.UpdateAsync(investor);
         }
 
-        public async Task RemoveFromFavouriteCompaniesAsync(Guid userId, string company)
+        public async Task RemoveFromFavouriteCompaniesAsync(Guid userId, string companySymbol)
         {
             var investor = await _investorRepository.GetInvestorOrFailAsync(userId);
+            
+            if (!investor.FavouriteCompanies.Contains(companySymbol))
+            {
+                throw new CompanySymbolNotFoundSerExc($"Company symbol {companySymbol} " +
+                    "does not exist in favourties collection.");
+            }
 
-            investor.RemoveFromFavouriteCompanies(company);
+            investor.RemoveFromFavouriteCompanies(companySymbol);
             
             await _investorRepository.UpdateAsync(investor);
         }
