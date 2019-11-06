@@ -1,8 +1,8 @@
 namespace StockAdvisor.Infrastructure.Commands.Users
 {
-    public class ChangeUserPasswordCommand : AuthenticatedCommandBase
+    public class ChangeUserEmailCommand : AuthenticatedCommandBase
     {
         public string CurrentPassword { get; set; }
-        public string NewPassword { get; set; }
+        public string NewEmail { get; set; }
     }
 }

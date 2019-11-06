@@ -66,8 +66,8 @@ namespace StockAdvisor.EndToEndTests.Controllers
                     await AddUserWithInvestorToRepoAndGetAsync() :
                     userToAuthorize as dynamic;
 
-            var authorizationHeader =  await GetValidBearerTokenHeader(client, userData.Email,
-                userData.Password);
+            var authorizationHeader =  await GetValidBearerTokenHeader(client, (string)userData.Email,
+                (string)userData.Password);
             client.DefaultRequestHeaders.Add("Authorization", authorizationHeader);
 
             return client;

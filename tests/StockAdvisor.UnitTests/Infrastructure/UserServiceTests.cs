@@ -20,7 +20,8 @@ namespace StockAdvisor.UnitTests.Infrastructure
             _surname = "Messi",
             _password = "secret",
             _salt = "someSaltValue",
-            _passwordHash = "somePasswordHashValue";
+            _passwordHash = "somePasswordHashValue",
+            _validPassword = "SomeValidPassword12.";
 
         private readonly Guid _id = Guid.NewGuid();
         private readonly UserRole _role = UserRole.User;
@@ -186,6 +187,31 @@ namespace StockAdvisor.UnitTests.Infrastructure
         }
 
         [Fact]
+        public async Task register_async_throws_exception_if_email_is_invalid()
+        {
+        //Given
+            string unvalidEmail = "";
+
+            var userRepositoryMock = new Mock<IUserRepository>();
+            userRepositoryMock.Setup(x => x.GetAsync(unvalidEmail))
+                              .ReturnsAsync((User)null);
+            
+            var mapperMock = new Mock<IMapper>();
+
+            var encrypterMock = new Mock<IEncrypter>();
+
+            var userService = new UserService(userRepositoryMock.Object,
+                encrypterMock.Object, mapperMock.Object);
+
+        //When 
+            Func<Task> act = () => userService.RegisterAsync(_id, unvalidEmail, _firstname, _surname,
+                _password, _role); 
+
+            // Then
+            await Assert.ThrowsAsync<InvalidEmailSerExc>(act);
+        }
+
+        [Fact]
         public async Task loginasync_throws_exception_if_repo_getasync_returns_null()
         {
         //Given
@@ -321,6 +347,324 @@ namespace StockAdvisor.UnitTests.Infrastructure
             
         //Then
             returnedUsers.Should().BeSameAs(users);
+        }
+
+        [Theory]
+        [InlineData("")]
+        [InlineData("123")]
+        public async Task change_password_throws_exception_if_new_password_is_invalid(string newPassword)
+        {
+        //Given
+            var user = GetDefaultUser();
+
+            var userRepositoryMock = new Mock<IUserRepository>();
+
+            var mapperMock = new Mock<IMapper>();
+
+            var encrypterMock = new Mock<IEncrypter>();
+
+            var userService = new UserService(userRepositoryMock.Object,
+                encrypterMock.Object, mapperMock.Object);
+
+        //When
+            Func<Task> act = () => userService.ChangeUserPasswordAsync(user.Id, newPassword,
+                It.IsAny<string>());
+        
+        //Then
+            await Assert.ThrowsAsync<InvalidPasswordSerExc>(act);
+        }
+
+        [Fact]
+        public async Task change_password_throws_exception_if_old_password_does_not_match()
+        {
+        //Given
+            var user = GetDefaultUser();
+            string newPassword = "newasfasgf3254.,34,5.";
+            string oldPassword = "dsagagt34.tsag.e";
+
+            var userRepositoryMock = new Mock<IUserRepository>();
+            userRepositoryMock.Setup(x => x.GetAsync(user.Id))
+                              .ReturnsAsync(user);
+
+            var mapperMock = new Mock<IMapper>();
+
+            var encrypterMock = new Mock<IEncrypter>();
+            encrypterMock.Setup(x => x.GetHash(oldPassword, user.Salt))
+                         .Returns(user.PasswordHash + "dsa");
+
+            var userService = new UserService(userRepositoryMock.Object,
+                encrypterMock.Object, mapperMock.Object);
+
+        //When
+            Func<Task> act = () => userService.ChangeUserPasswordAsync(user.Id, newPassword,
+                oldPassword);
+        
+        //Then
+            await Assert.ThrowsAsync<InvalidCredentialsSerExc>(act);
+        }
+        [Fact]
+        public async Task change_password_throws_exception_if_given_userid_is_invalid()
+        {
+        //Given
+            var user = GetDefaultUser();
+            
+            var userRepositoryMock = new Mock<IUserRepository>();
+            userRepositoryMock.Setup(x => x.GetAsync(user.Id))
+                              .ReturnsAsync((User)null);
+
+            var mapperMock = new Mock<IMapper>();
+
+            var encrypterMock = new Mock<IEncrypter>();
+
+            var userService = new UserService(userRepositoryMock.Object,
+                encrypterMock.Object, mapperMock.Object);
+
+        //When
+            Func<Task> act = () => userService.ChangeUserPasswordAsync(user.Id, _validPassword,
+                It.IsAny<string>());
+        
+        //Then
+            await Assert.ThrowsAsync<UserNotFoundSerExc>(act);
+        }
+
+        [Fact]
+        public async Task change_password_throws_exception_if_new_password_equals_current()
+        {
+        //Given
+            var user = GetDefaultUser();
+            string oldAndNewPassword = _validPassword;
+            
+            var userRepositoryMock = new Mock<IUserRepository>();
+            userRepositoryMock.Setup(x => x.GetAsync(user.Id))
+                              .ReturnsAsync(user);
+
+            var mapperMock = new Mock<IMapper>();
+
+            var encrypterMock = new Mock<IEncrypter>();
+            encrypterMock.Setup(x => x.GetHash(oldAndNewPassword, user.Salt))
+                         .Returns(user.PasswordHash);
+
+            var userService = new UserService(userRepositoryMock.Object,
+                encrypterMock.Object, mapperMock.Object);
+
+        //When
+            Func<Task> act = () => userService.ChangeUserPasswordAsync(user.Id, oldAndNewPassword,
+                oldAndNewPassword);
+        
+        //Then
+            await Assert.ThrowsAsync<InvalidPasswordSerExc>(act);
+        }
+
+        [Fact]
+        public async Task on_succes_changing_password_set_password_method_is_called_with_encrypter_outputs()
+        {
+        //Given
+            var user = GetDefaultUser();
+            var oldUpdatedAt = user.UpdatedAt;
+
+            string oldPassword = _validPassword;
+            string newPassword = _validPassword + "sadasd";
+
+            string newSalt = "newSalt";
+            string newHash = "newHash";
+            
+            var userRepositoryMock = new Mock<IUserRepository>();
+            userRepositoryMock.Setup(x => x.GetAsync(user.Id))
+                              .ReturnsAsync(user);
+
+            var mapperMock = new Mock<IMapper>();
+
+            var encrypterMock = new Mock<IEncrypter>();
+            encrypterMock.Setup(x => x.GetHash(oldPassword, user.Salt))
+                         .Returns(user.PasswordHash);
+            encrypterMock.Setup(x => x.GetSalt())
+                         .Returns(newSalt);
+            encrypterMock.Setup(x => x.GetHash(newPassword, newSalt))
+                         .Returns(newHash);
+
+            var userService = new UserService(userRepositoryMock.Object,
+                encrypterMock.Object, mapperMock.Object);
+
+        //When
+            await userService.ChangeUserPasswordAsync(user.Id, newPassword, oldPassword);
+        
+        //Then
+            encrypterMock.Verify(x => x.GetSalt(), Times.Once);
+            encrypterMock.Verify(x => x.GetHash(newPassword, newSalt), Times.Once);
+
+            user.UpdatedAt.Should().NotBe(oldUpdatedAt);
+            user.Salt.Should().Be(newSalt);
+            user.PasswordHash.Should().Be(newHash);
+
+            userRepositoryMock.Verify(x => x.UpdateAsync(user), Times.Once);
+        }
+
+        [Fact]
+        public async Task change_password_throws_exception_if_coupled_user_cannot_be_found()
+        {
+        //Given
+            var user = GetDefaultUser();
+            
+            var userRepositoryMock = new Mock<IUserRepository>();
+            userRepositoryMock.Setup(x => x.GetAsync(user.Id))
+                              .ReturnsAsync((User)null);
+
+            var mapperMock = new Mock<IMapper>();
+
+            var encrypterMock = new Mock<IEncrypter>();
+
+            var userService = new UserService(userRepositoryMock.Object,
+                encrypterMock.Object, mapperMock.Object);
+
+        //When
+            Func<Task> act = () => userService.ChangeUserEmailAsync(user.Id, It.IsAny<string>(),
+                It.IsAny<string>());
+        
+        //Then
+            await Assert.ThrowsAsync<UserNotFoundSerExc>(act);
+        }
+
+        [Fact]
+        public async Task change_email_throws_exception_when_related_used_cannot_be_found()
+        {
+        //Given
+            var user = GetDefaultUser();
+            
+            var userRepositoryMock = new Mock<IUserRepository>();
+            userRepositoryMock.Setup(x => x.GetAsync(user.Id))
+                              .ReturnsAsync((User)null);
+
+            var mapperMock = new Mock<IMapper>();
+
+            var encrypterMock = new Mock<IEncrypter>();
+
+            var userService = new UserService(userRepositoryMock.Object,
+                encrypterMock.Object, mapperMock.Object);
+
+        //When
+            Func<Task> act = () => userService.ChangeUserEmailAsync(user.Id, It.IsAny<string>(),
+                It.IsAny<string>());
+        
+        //Then
+            await Assert.ThrowsAsync<UserNotFoundSerExc>(act);
+        }
+
+        [Fact]
+        public async Task change_email_throws_exception_when_given_password_is_invalid()
+        {
+        //Given
+            string password = "SecretPassword";
+            string newEmail = "new_email@test.com";
+            var user = GetDefaultUser();
+            var differentPasswordHash = user.PasswordHash + "aa";
+            
+            var userRepositoryMock = new Mock<IUserRepository>();
+            userRepositoryMock.Setup(x => x.GetAsync(user.Id))
+                              .ReturnsAsync(user);
+
+            var mapperMock = new Mock<IMapper>();
+
+            var encrypterMock = new Mock<IEncrypter>();
+            encrypterMock.Setup(x => x.GetHash(password, user.Salt))
+                         .Returns(differentPasswordHash);
+
+            var userService = new UserService(userRepositoryMock.Object,
+                encrypterMock.Object, mapperMock.Object);
+
+        //When
+            Func<Task> act = () => userService.ChangeUserEmailAsync(user.Id, password,
+                newEmail);
+        
+        //Then
+            await Assert.ThrowsAsync<InvalidCredentialsSerExc>(act);
+        }
+
+        [Fact]
+        public async Task change_email_throws_exception_when_given_email_is_invalid()
+        {
+        //Given
+            string password = "SecretPassword";
+            string newEmail = "InvalidEmail";
+            var user = GetDefaultUser();
+            
+            var userRepositoryMock = new Mock<IUserRepository>();
+            userRepositoryMock.Setup(x => x.GetAsync(user.Id))
+                              .ReturnsAsync(user);
+
+            var mapperMock = new Mock<IMapper>();
+
+            var encrypterMock = new Mock<IEncrypter>();
+            encrypterMock.Setup(x => x.GetHash(password, user.Salt))
+                         .Returns(user.PasswordHash);
+
+            var userService = new UserService(userRepositoryMock.Object,
+                encrypterMock.Object, mapperMock.Object);
+
+        //When
+            Func<Task> act = () => userService.ChangeUserEmailAsync(user.Id, password,
+                newEmail);
+        
+        //Then
+            await Assert.ThrowsAsync<InvalidEmailSerExc>(act);
+        }
+
+        [Fact]
+        public async Task change_email_throws_exception_when_given_email_equals_current()
+        {
+        //Given
+            string password = "SecretPassword";
+            var user = GetDefaultUser();
+            
+            var userRepositoryMock = new Mock<IUserRepository>();
+            userRepositoryMock.Setup(x => x.GetAsync(user.Id))
+                              .ReturnsAsync(user);
+
+            var mapperMock = new Mock<IMapper>();
+
+            var encrypterMock = new Mock<IEncrypter>();
+            encrypterMock.Setup(x => x.GetHash(password, user.Salt))
+                         .Returns(user.PasswordHash);
+
+            var userService = new UserService(userRepositoryMock.Object,
+                encrypterMock.Object, mapperMock.Object);
+
+        //When
+            Func<Task> act = () => userService.ChangeUserEmailAsync(user.Id, password,
+                user.Email);
+        
+        //Then
+            await Assert.ThrowsAsync<InvalidEmailSerExc>(act);
+        }
+
+        [Fact]
+        public async Task change_email_sets_new_email_and_updates_repo_on_success()
+        {
+        //Given
+            string password = "SecretPassword";
+            string newEmail = "new_email@test.com";
+            var user = GetDefaultUser();
+            var originalUpdatedAt = user.UpdatedAt;
+
+            var userRepositoryMock = new Mock<IUserRepository>();
+            userRepositoryMock.Setup(x => x.GetAsync(user.Id))
+                              .ReturnsAsync(user);
+
+            var mapperMock = new Mock<IMapper>();
+
+            var encrypterMock = new Mock<IEncrypter>();
+            encrypterMock.Setup(x => x.GetHash(password, user.Salt))
+                         .Returns(user.PasswordHash);
+
+            var userService = new UserService(userRepositoryMock.Object,
+                encrypterMock.Object, mapperMock.Object);
+
+        //When
+            await userService.ChangeUserEmailAsync(user.Id, password, newEmail);
+        
+        //Then
+            user.Email.Should().BeEquivalentTo(newEmail);
+            user.UpdatedAt.Should().NotBe(originalUpdatedAt);
+            userRepositoryMock.Verify(x => x.UpdateAsync(user), Times.Once);
         }
 
         private User GetDefaultUser()

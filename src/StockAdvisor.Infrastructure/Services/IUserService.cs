@@ -15,6 +15,8 @@ namespace StockAdvisor.Infrastructure.Services
             string password, UserRole userRole);
         Task ChangeUserPasswordAsync(Guid userId, string newPassword,
             string oldPassword);
+        Task ChangeUserEmailAsync(Guid userId, string password,
+            string newEmail);
         Task LoginAsync(string email, string Password);
     }
 }

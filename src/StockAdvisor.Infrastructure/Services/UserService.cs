@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Net.Mail;
 using System.Threading.Tasks;
 using AutoMapper;
 using StockAdvisor.Core.Domain;
@@ -64,12 +65,7 @@ namespace StockAdvisor.Infrastructure.Services
 
             var user = await _userRepository.GetUserOrFailAsync(userId);
 
-            var oldPasswordHash = _encrypter.GetHash(oldPassword, user.Salt);
-
-            if (oldPasswordHash != user.PasswordHash)
-            {
-                throw new InvalidPasswordSerExc("Given currently used password is invalid");
-            }
+            ValidateCurrentPassword(user, oldPassword);
 
             if (oldPassword == newPassword)
             {
@@ -80,6 +76,27 @@ namespace StockAdvisor.Infrastructure.Services
             var newPasswordHash = _encrypter.GetHash(newPassword, salt);
 
             user.SetPassword(newPasswordHash, salt);
+
+            await _userRepository.UpdateAsync(user);
+        }
+
+        public async Task ChangeUserEmailAsync(Guid userId, string password,
+            string newEmail)
+        {
+            var user = await _userRepository.GetUserOrFailAsync(userId);
+
+            ValidateCurrentPassword(user, password);
+
+            ValidateEmail(newEmail);
+
+            if (user.Email == newEmail)
+            {
+                throw new InvalidEmailSerExc($"Given email {newEmail} is already used.");
+            }
+
+            user.SetEmail(newEmail);
+
+            await _userRepository.UpdateAsync(user);
         }
 
         public async Task LoginAsync(string email, string password)
@@ -109,12 +126,36 @@ namespace StockAdvisor.Infrastructure.Services
                 throw new EmailInUseSerExc($"Given email {email} is in use.");
             }
 
+            ValidateEmail(email);
+
             var salt = _encrypter.GetSalt();
             var hash = _encrypter.GetHash(password, salt);
 
             User newUser = new User(userId, email, firstName,
                 surName, hash, salt, userRole);
             await _userRepository.AddAsync(newUser);
+        }
+
+        private void ValidateCurrentPassword(User user, string currentPassword)
+        {
+            var oldPasswordHash = _encrypter.GetHash(currentPassword, user.Salt);
+
+            if (oldPasswordHash != user.PasswordHash)
+            {
+                throw new InvalidCredentialsSerExc("Given currently used password is invalid");
+            }
+        }
+
+        private void ValidateEmail(string emailAddress)
+        {
+            try
+            {
+                var email = new MailAddress(emailAddress);
+            }
+            catch
+            {
+                throw new InvalidEmailSerExc($"Given email {emailAddress} is invalid.");
+            }
         }
     }
 }

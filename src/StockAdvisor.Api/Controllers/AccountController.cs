@@ -30,5 +30,15 @@ namespace StockAdvisor.Api.Controllers
 
             return NoContent();
         }
+
+        [Authorize]
+        [HttpPut]
+        [Route("email")]
+        public async Task<IActionResult> ChangeEmailAsync([FromBody]ChangeUserEmailCommand command)
+        {
+            await DispatchAsync(command);
+
+            return NoContent();
+        }
     }
 }
