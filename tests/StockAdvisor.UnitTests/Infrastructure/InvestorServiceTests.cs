@@ -27,10 +27,13 @@ namespace StockAdvisor.UnitTests.Infrastructure
             investorRepositoryMock.Setup(x => x.GetAsync(investor.UserId))
                                   .Returns(Task.FromResult(investor));
 
+            var companyRepositoryMock = new Mock<ICompanyRepository>();
+
             var mapperMock = new Mock<IMapper>();
 
             var investorService = new InvestorService(userRepositoryMock.Object,
-                investorRepositoryMock.Object, mapperMock.Object);
+                investorRepositoryMock.Object, companyRepositoryMock.Object,
+                mapperMock.Object);
 
         //When
             await investorService.GetAsync(investor.UserId);
@@ -61,12 +64,15 @@ namespace StockAdvisor.UnitTests.Infrastructure
                                   .Returns(Task.FromResult(investor));
 
 
+            var companyRepositoryMock = new Mock<ICompanyRepository>();
+
             var mapperMock = new Mock<IMapper>();
             mapperMock.Setup(x => x.Map<InvestorDto>(It.IsAny<Investor>()))
                       .Returns(expectedInvestorDto);
 
             var investorService = new InvestorService(userRepositoryMock.Object,
-                investorRepositoryMock.Object, mapperMock.Object);
+                investorRepositoryMock.Object, companyRepositoryMock.Object,
+                mapperMock.Object);
 
         //When
             var occuredInvestorDto = await investorService.GetAsync(investor.UserId);
@@ -89,10 +95,13 @@ namespace StockAdvisor.UnitTests.Infrastructure
                                   .Returns(Task.FromResult((Investor)null));
 
 
+            var companyRepositoryMock = new Mock<ICompanyRepository>();
+
             var mapperMock = new Mock<IMapper>();
 
             var investorService = new InvestorService(userRepositoryMock.Object,
-                investorRepositoryMock.Object, mapperMock.Object);
+                investorRepositoryMock.Object, companyRepositoryMock.Object,
+                mapperMock.Object);
 
         //When
             var investor = await investorService.GetAsync(userId);
@@ -116,10 +125,13 @@ namespace StockAdvisor.UnitTests.Infrastructure
             investorRepositoryMock.Setup(x => x.GetAsync(investor.UserId))
                                   .Returns(Task.FromResult((Investor)null));
 
+            var companyRepositoryMock = new Mock<ICompanyRepository>();
+
             var mapperMock = new Mock<IMapper>();
 
             var investorService = new InvestorService(userRepositoryMock.Object,
-                investorRepositoryMock.Object, mapperMock.Object);
+                investorRepositoryMock.Object, companyRepositoryMock.Object,
+                mapperMock.Object);
 
         //When
             await investorService.RegisterAsync(investor.UserId);
@@ -144,10 +156,13 @@ namespace StockAdvisor.UnitTests.Infrastructure
                                   .Returns(Task.FromResult(investor));
 
 
+            var companyRepositoryMock = new Mock<ICompanyRepository>();
+
             var mapperMock = new Mock<IMapper>();
 
             var investorService = new InvestorService(userRepositoryMock.Object,
-                investorRepositoryMock.Object, mapperMock.Object);
+                investorRepositoryMock.Object, companyRepositoryMock.Object,
+                mapperMock.Object);
 
         //When
             Func<Task> act = () => investorService.RegisterAsync(investor.UserId);
@@ -171,10 +186,13 @@ namespace StockAdvisor.UnitTests.Infrastructure
                                   .Returns(Task.FromResult(investor));
 
 
+            var companyRepositoryMock = new Mock<ICompanyRepository>();
+
             var mapperMock = new Mock<IMapper>();
 
             var investorService = new InvestorService(userRepositoryMock.Object,
-                investorRepositoryMock.Object, mapperMock.Object);
+                investorRepositoryMock.Object, companyRepositoryMock.Object,
+                mapperMock.Object);
 
         //When
             Func<Task> act = () => investorService.RegisterAsync(investor.UserId);
@@ -184,10 +202,10 @@ namespace StockAdvisor.UnitTests.Infrastructure
         }
 
         [Fact]
-        public async Task adding_new_favourite_company_adds_company_to_investors_set()
+        public async Task adding_new_favourite_company_adds_company_to_set()
         {
         //Given
-            string companySymbol = "AAPL";
+            var company = GetDefaultCompany();
             var investor = GetDefaultInvestor();
             var favouriteComapniesBeforeAdd = new List<string>(investor.FavouriteCompanies);
 
@@ -198,24 +216,29 @@ namespace StockAdvisor.UnitTests.Infrastructure
                                   .Returns(Task.FromResult(investor));
 
 
+            var companyRepositoryMock = new Mock<ICompanyRepository>();
+            companyRepositoryMock.Setup(x => x.BrowseAsync())
+                                 .ReturnsAsync(new List<Company>(){company});
+
             var mapperMock = new Mock<IMapper>();
 
             var investorService = new InvestorService(userRepositoryMock.Object,
-                investorRepositoryMock.Object, mapperMock.Object);
+                investorRepositoryMock.Object, companyRepositoryMock.Object,
+                mapperMock.Object);
 
         //When
-            await investorService.AddToFavouriteCompaniesAsync(investor.UserId, companySymbol);
+            await investorService.AddToFavouriteCompaniesAsync(investor.UserId, company.Symbol);
             
         //Then
-            favouriteComapniesBeforeAdd.Should().NotContain(companySymbol);
-            investor.FavouriteCompanies.Should().Contain(companySymbol);
+            favouriteComapniesBeforeAdd.Should().NotContain(company.Symbol);
+            investor.FavouriteCompanies.Should().Contain(company.Symbol);
         }
 
         [Fact]
-        public async Task excpetion_is_thrown_if_related_investor_does_not_exist_while_adding_to_favourite_companies()
+        public async Task exception_is_thrown_if_related_investor_does_not_exist_while_adding_to_favourite_companies()
         {
         //Given
-            string companySymbol = "AAPL";
+            var company = GetDefaultCompany();
             var user = GetDefaultUser();
 
             var userRepositoryMock = new Mock<IUserRepository>();
@@ -227,13 +250,17 @@ namespace StockAdvisor.UnitTests.Infrastructure
                                   .Returns(Task.FromResult((Investor)null));
 
 
+            var companyRepositoryMock = new Mock<ICompanyRepository>();
+
             var mapperMock = new Mock<IMapper>();
 
             var investorService = new InvestorService(userRepositoryMock.Object,
-                investorRepositoryMock.Object, mapperMock.Object);
+                investorRepositoryMock.Object, companyRepositoryMock.Object,
+                mapperMock.Object);
 
         //When
-            Func<Task> act = () => investorService.AddToFavouriteCompaniesAsync(user.Id, companySymbol);
+            Func<Task> act = () => 
+                investorService.AddToFavouriteCompaniesAsync(user.Id, company.Symbol);
             
         //Then
             await Assert.ThrowsAsync<InvestorNotFoundSerExc>(act);
@@ -243,7 +270,7 @@ namespace StockAdvisor.UnitTests.Infrastructure
         public async Task add_to_favourite_companies_invokes_get_async_on_investors_repo()
         {
         //Given
-            string companySymbol = "AAPL";
+            var company = GetDefaultCompany();
             var investor = GetDefaultInvestor();
 
             var userRepositoryMock = new Mock<IUserRepository>();
@@ -253,13 +280,18 @@ namespace StockAdvisor.UnitTests.Infrastructure
                                   .Returns(Task.FromResult(investor));
 
 
+            var companyRepositoryMock = new Mock<ICompanyRepository>();
+            companyRepositoryMock.Setup(x => x.BrowseAsync())
+                                 .ReturnsAsync(new List<Company>(){company});
+
             var mapperMock = new Mock<IMapper>();
 
             var investorService = new InvestorService(userRepositoryMock.Object,
-                investorRepositoryMock.Object, mapperMock.Object);
+                investorRepositoryMock.Object, companyRepositoryMock.Object,
+                mapperMock.Object);
 
         //When
-            await investorService.AddToFavouriteCompaniesAsync(investor.UserId, companySymbol);
+            await investorService.AddToFavouriteCompaniesAsync(investor.UserId, company.Symbol);
             
         //Then
             investorRepositoryMock.Verify(x => x.GetAsync(investor.UserId), Times.Once);
@@ -269,7 +301,7 @@ namespace StockAdvisor.UnitTests.Infrastructure
         public async Task add_to_favourite_companies_invokes_update_async_on_investors_repo()
         {
         //Given
-            string companySymbol = "AAPL";
+            var company = GetDefaultCompany();
             var investor = GetDefaultInvestor();
 
             var userRepositoryMock = new Mock<IUserRepository>();
@@ -279,16 +311,88 @@ namespace StockAdvisor.UnitTests.Infrastructure
                                   .Returns(Task.FromResult(investor));
 
 
+            var companyRepositoryMock = new Mock<ICompanyRepository>();
+            companyRepositoryMock.Setup(x => x.BrowseAsync())
+                                 .ReturnsAsync(new List<Company>(){company});
+
             var mapperMock = new Mock<IMapper>();
 
             var investorService = new InvestorService(userRepositoryMock.Object,
-                investorRepositoryMock.Object, mapperMock.Object);
+                investorRepositoryMock.Object, companyRepositoryMock.Object,
+                mapperMock.Object);
 
         //When
-            await investorService.AddToFavouriteCompaniesAsync(investor.UserId, companySymbol);
+            await investorService.AddToFavouriteCompaniesAsync(investor.UserId, company.Symbol);
             
         //Then
             investorRepositoryMock.Verify(x => x.UpdateAsync(investor), Times.Once);
+        }
+
+        [Fact]
+        public async Task add_to_favourite_companies_throws_exception_if_given_symbol_is_present()
+        {
+        //Given
+            var company = GetDefaultCompany();
+
+            var investor = GetDefaultInvestor();
+            investor.AddToFavouriteCompanies(company.Symbol);
+
+            var userRepositoryMock = new Mock<IUserRepository>();
+
+            var investorRepositoryMock = new Mock<IInvestorRepository>();
+            investorRepositoryMock.Setup(x => x.GetAsync(investor.UserId))
+                                  .Returns(Task.FromResult(investor));
+
+            var companyRepositoryMock = new Mock<ICompanyRepository>();
+            companyRepositoryMock.Setup(x => x.BrowseAsync())
+                                 .ReturnsAsync(new List<Company>(){company});
+
+            var mapperMock = new Mock<IMapper>();
+
+            var investorService = new InvestorService(userRepositoryMock.Object,
+                investorRepositoryMock.Object, companyRepositoryMock.Object,
+                mapperMock.Object);
+
+        //When
+            Func<Task> act = () => 
+                investorService.AddToFavouriteCompaniesAsync(investor.UserId, company.Symbol);
+
+        //Then
+            await Assert.ThrowsAsync<CompanySymbolInUseSerExc>(act);
+        }
+
+        [Fact]
+        public async Task add_to_favourite_companies_throws_exception_if_given_company_symbol_is_invalid()
+        {
+            // invalid means related company symbol is not in repo. 
+        //Given
+            var company = GetDefaultCompany();
+
+            var investor = GetDefaultInvestor();
+
+            var userRepositoryMock = new Mock<IUserRepository>();
+
+            var investorRepositoryMock = new Mock<IInvestorRepository>();
+            investorRepositoryMock.Setup(x => x.GetAsync(investor.UserId))
+                                  .Returns(Task.FromResult(investor));
+
+            var companyRepositoryMock = new Mock<ICompanyRepository>();
+            companyRepositoryMock.Setup(x => x.BrowseAsync())
+                                 .ReturnsAsync(new List<Company>(){company});
+
+            var mapperMock = new Mock<IMapper>();
+
+            var investorService = new InvestorService(userRepositoryMock.Object,
+                investorRepositoryMock.Object, companyRepositoryMock.Object,
+                mapperMock.Object);
+
+        //When
+            Func<Task> act = () => 
+                investorService.AddToFavouriteCompaniesAsync(investor.UserId, "BAD_COMPANY_SYMBOL");
+
+        //Then
+            await Assert.ThrowsAsync<InvalidCompanySymbolSerExc>(act);
+            companyRepositoryMock.Verify(x => x.BrowseAsync(), Times.Once);
         }
 
         [Fact]
@@ -308,10 +412,13 @@ namespace StockAdvisor.UnitTests.Infrastructure
                                   .Returns(Task.FromResult(investor));
 
 
+            var companyRepositoryMock = new Mock<ICompanyRepository>();
+
             var mapperMock = new Mock<IMapper>();
 
             var investorService = new InvestorService(userRepositoryMock.Object,
-                investorRepositoryMock.Object, mapperMock.Object);
+                investorRepositoryMock.Object, companyRepositoryMock.Object,
+                mapperMock.Object);
 
         //When
             await investorService.RemoveFromFavouriteCompaniesAsync(investor.UserId, companySymbol);
@@ -337,10 +444,13 @@ namespace StockAdvisor.UnitTests.Infrastructure
                                   .Returns(Task.FromResult((Investor)null));
 
 
+            var companyRepositoryMock = new Mock<ICompanyRepository>();
+
             var mapperMock = new Mock<IMapper>();
 
             var investorService = new InvestorService(userRepositoryMock.Object,
-                investorRepositoryMock.Object, mapperMock.Object);
+                investorRepositoryMock.Object, companyRepositoryMock.Object,
+                mapperMock.Object);
 
         //When
             Func<Task> act = () => investorService.RemoveFromFavouriteCompaniesAsync(user.Id, companySymbol);
@@ -364,10 +474,13 @@ namespace StockAdvisor.UnitTests.Infrastructure
                                   .Returns(Task.FromResult(investor));
 
 
+            var companyRepositoryMock = new Mock<ICompanyRepository>();
+
             var mapperMock = new Mock<IMapper>();
 
             var investorService = new InvestorService(userRepositoryMock.Object,
-                investorRepositoryMock.Object, mapperMock.Object);
+                investorRepositoryMock.Object, companyRepositoryMock.Object,
+                mapperMock.Object);
 
         //When
             await investorService.RemoveFromFavouriteCompaniesAsync(investor.UserId, companySymbol);
@@ -391,10 +504,13 @@ namespace StockAdvisor.UnitTests.Infrastructure
                                   .Returns(Task.FromResult(investor));
 
 
+            var companyRepositoryMock = new Mock<ICompanyRepository>();
+
             var mapperMock = new Mock<IMapper>();
 
             var investorService = new InvestorService(userRepositoryMock.Object,
-                investorRepositoryMock.Object, mapperMock.Object);
+                investorRepositoryMock.Object, companyRepositoryMock.Object,
+                mapperMock.Object);
 
         //When
             await investorService.RemoveFromFavouriteCompaniesAsync(investor.UserId, companySymbol);
@@ -409,12 +525,15 @@ namespace StockAdvisor.UnitTests.Infrastructure
         //Given
             var userRepositoryMock = new Mock<IUserRepository>();
             
+            var companyRepositoryMock = new Mock<ICompanyRepository>();
+
             var mapperMock = new Mock<IMapper>();
 
             var investorRepositoryMock = new Mock<IInvestorRepository>();
 
             var investorService = new InvestorService(userRepositoryMock.Object,
-                investorRepositoryMock.Object, mapperMock.Object);
+                investorRepositoryMock.Object, companyRepositoryMock.Object,
+                mapperMock.Object);
 
         //When
             var returnedInvestors = await investorService.BrowseAsync();
@@ -429,12 +548,15 @@ namespace StockAdvisor.UnitTests.Infrastructure
         //Given
             var userRepositoryMock = new Mock<IUserRepository>();
             
+            var companyRepositoryMock = new Mock<ICompanyRepository>();
+
             var mapperMock = new Mock<IMapper>();
 
             var investorRepositoryMock = new Mock<IInvestorRepository>();
 
             var investorService = new InvestorService(userRepositoryMock.Object,
-                investorRepositoryMock.Object, mapperMock.Object);
+                investorRepositoryMock.Object, companyRepositoryMock.Object,
+                mapperMock.Object);
 
         //When
             var returnedInvestors = await investorService.BrowseAsync();
@@ -453,6 +575,8 @@ namespace StockAdvisor.UnitTests.Infrastructure
 
             var userRepositoryMock = new Mock<IUserRepository>();
 
+            var companyRepositoryMock = new Mock<ICompanyRepository>();
+
             var mapperMock = new Mock<IMapper>();
             mapperMock.Setup(x =>
                 x.Map<IEnumerable<InvestorDto>>(It.IsAny<IEnumerable<Investor>>()))
@@ -461,7 +585,8 @@ namespace StockAdvisor.UnitTests.Infrastructure
             var investorRepositoryMock = new Mock<IInvestorRepository>();
 
             var investorService = new InvestorService(userRepositoryMock.Object,
-                investorRepositoryMock.Object, mapperMock.Object);
+                investorRepositoryMock.Object, companyRepositoryMock.Object,
+                mapperMock.Object);
 
         //When
             var returnedInvestors = await investorService.BrowseAsync();
@@ -481,6 +606,8 @@ namespace StockAdvisor.UnitTests.Infrastructure
             userRepositoryMock.Setup(x => x.GetAsync(user.Email))
                               .Returns(Task.FromResult((User)null));
 
+            var companyRepositoryMock = new Mock<ICompanyRepository>();
+
             var mapperMock = new Mock<IMapper>();
 
             var investorRepositoryMock = new Mock<IInvestorRepository>();
@@ -488,7 +615,8 @@ namespace StockAdvisor.UnitTests.Infrastructure
                                   .Returns(Task.FromResult(investor));
 
             var investorService = new InvestorService(userRepositoryMock.Object,
-                investorRepositoryMock.Object, mapperMock.Object);
+                investorRepositoryMock.Object, companyRepositoryMock.Object,
+                mapperMock.Object);
 
         //When
             var returnedInvestorDto = await investorService.GetAsync(user.Email);
@@ -509,6 +637,8 @@ namespace StockAdvisor.UnitTests.Infrastructure
             userRepositoryMock.Setup(x => x.GetAsync(user.Email))
                               .Returns(Task.FromResult(user));
 
+            var companyRepositoryMock = new Mock<ICompanyRepository>();
+
             var mapperMock = new Mock<IMapper>();
 
             var investorRepositoryMock = new Mock<IInvestorRepository>();
@@ -516,7 +646,8 @@ namespace StockAdvisor.UnitTests.Infrastructure
                                   .Returns(Task.FromResult((Investor)null));
 
             var investorService = new InvestorService(userRepositoryMock.Object,
-                investorRepositoryMock.Object, mapperMock.Object);
+                investorRepositoryMock.Object, companyRepositoryMock.Object,
+                mapperMock.Object);
 
         //When
             var returnedInvestorDto = await investorService.GetAsync(user.Email);
@@ -543,12 +674,15 @@ namespace StockAdvisor.UnitTests.Infrastructure
             investorRepositoryMock.Setup(x => x.GetAsync(user.Id))
                                   .Returns(Task.FromResult(investor));
             
+            var companyRepositoryMock = new Mock<ICompanyRepository>();
+
             var mapperMock = new Mock<IMapper>();
             mapperMock.Setup(x => x.Map<InvestorDto>(investor))
                       .Returns(investorDto);
 
             var investorService = new InvestorService(userRepositoryMock.Object,
-                investorRepositoryMock.Object, mapperMock.Object);
+                investorRepositoryMock.Object, companyRepositoryMock.Object,
+                mapperMock.Object);
             
         //When
             var returnedInvestorDto = await investorService.GetAsync(user.Email);
@@ -572,10 +706,13 @@ namespace StockAdvisor.UnitTests.Infrastructure
             investorRepoMock.Setup(x => x.GetAsync(investor.UserId))
                             .ReturnsAsync(investor);
 
+            var companyRepositoryMock = new Mock<ICompanyRepository>();
+
             var mapperMock = new Mock<IMapper>();
 
             var investorService = new InvestorService(userRepoMock.Object,
-                investorRepoMock.Object, mapperMock.Object);
+                investorRepoMock.Object, companyRepositoryMock.Object, 
+                mapperMock.Object);
                 
         //When
             await investorService.RemoveAsync(investor.UserId);
@@ -595,10 +732,13 @@ namespace StockAdvisor.UnitTests.Infrastructure
                         .ReturnsAsync((User)null);
 
             var investorRepoMock = new Mock<IInvestorRepository>();
+            var companyRepositoryMock = new Mock<ICompanyRepository>();
+
             var mapperMock = new Mock<IMapper>();
 
             var investorService = new InvestorService(userRepoMock.Object,
-                investorRepoMock.Object, mapperMock.Object);
+                investorRepoMock.Object, companyRepositoryMock.Object, 
+                mapperMock.Object);
                 
         //When
             Func<Task> act = () => investorService.RemoveAsync(investor.UserId);
@@ -619,10 +759,13 @@ namespace StockAdvisor.UnitTests.Infrastructure
             investorRepoMock.Setup(x => x.GetAsync(investor.UserId))
                             .ReturnsAsync(investor);
 
+            var companyRepositoryMock = new Mock<ICompanyRepository>();
+
             var mapperMock = new Mock<IMapper>();
 
             var investorService = new InvestorService(userRepoMock.Object,
-                investorRepoMock.Object, mapperMock.Object);
+                investorRepoMock.Object, companyRepositoryMock.Object, 
+                mapperMock.Object);
                 
         //When
             await investorService.RemoveAsync(investor.UserId);
@@ -640,5 +783,8 @@ namespace StockAdvisor.UnitTests.Infrastructure
         private User GetDefaultUser()
             => new User(Guid.NewGuid(), "email@email.com", "Firstname",
                 "Surname", "PasswordHash1", "Salt1", UserRole.User);
+
+        private Company GetDefaultCompany()
+            => new Company("AAPL", "Apple Inc.", 256.0m);
     }
 }

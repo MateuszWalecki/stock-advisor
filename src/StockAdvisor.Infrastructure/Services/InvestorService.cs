@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using StockAdvisor.Core.Domain;
@@ -14,6 +15,7 @@ namespace StockAdvisor.Infrastructure.Services
     {
         private readonly IUserRepository _userRepository;
         private readonly IInvestorRepository _investorRepository;
+        private readonly ICompanyRepository _companyRepository;
         private readonly IMapper _mapper;
 
         protected InvestorService()
@@ -21,10 +23,12 @@ namespace StockAdvisor.Infrastructure.Services
         }
 
         public InvestorService(IUserRepository userRepository,
-            IInvestorRepository investorRepository, IMapper mapper)
+            IInvestorRepository investorRepository, 
+            ICompanyRepository companyRepository, IMapper mapper)
         {
             _userRepository = userRepository;
             _investorRepository = investorRepository;
+            _companyRepository = companyRepository;
             _mapper = mapper;
         }
 
@@ -71,11 +75,24 @@ namespace StockAdvisor.Infrastructure.Services
             await _investorRepository.AddAsync(investor);
         }
 
-        public async Task AddToFavouriteCompaniesAsync(Guid userId, string company)
+        public async Task AddToFavouriteCompaniesAsync(Guid userId, string companySymbol)
         {
             var investor = await _investorRepository.GetInvestorOrFailAsync(userId);
 
-            investor.AddToFavouriteCompanies(company);
+            if (investor.FavouriteCompanies.Contains(companySymbol))
+            {
+                throw new CompanySymbolInUseSerExc($"Company symbol {companySymbol} currently " +
+                    "exists in favourites collection.");
+            }
+
+            var allCompanies = await _companyRepository.BrowseAsync();
+            if (!allCompanies.Where(x => x.Symbol == companySymbol).Any())
+            {
+                throw new InvalidCompanySymbolSerExc($"Given company symbol {companySymbol} " +
+                    "is incorrect.");
+            }
+
+            investor.AddToFavouriteCompanies(companySymbol);
 
             await _investorRepository.UpdateAsync(investor);
         }

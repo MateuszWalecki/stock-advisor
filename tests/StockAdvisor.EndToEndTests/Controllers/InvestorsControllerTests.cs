@@ -1,3 +1,4 @@
+using System;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -5,6 +6,7 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Newtonsoft.Json;
 using StockAdvisor.Api;
+using StockAdvisor.Infrastructure.Commands.Investors;
 using StockAdvisor.Infrastructure.DTO;
 using Xunit;
 using Xunit.Abstractions;
@@ -13,6 +15,8 @@ namespace StockAdvisor.EndToEndTests.Controllers
 {
     public class InvestorsControllerTests : ControllerTestBase
     {
+        private string _controllerRoute = "investors";
+
         public InvestorsControllerTests(WebApplicationFactory<Startup> factory,
             ITestOutputHelper output)
             : base(factory, output)
@@ -26,7 +30,7 @@ namespace StockAdvisor.EndToEndTests.Controllers
             var client = Factory.CreateClient();
 
         //When
-            var response = await client.GetAsync("investors");
+            var response = await client.GetAsync(Uri());
             var responseString = await response.Content.ReadAsStringAsync();
 
         //Then
@@ -41,7 +45,7 @@ namespace StockAdvisor.EndToEndTests.Controllers
             var client = Factory.CreateClient();
             
         //When
-            var response = await client.GetAsync($"investors/me");
+            var response = await client.GetAsync(Uri("me"));
             var responseString = await response.Content.ReadAsStringAsync();
             var investor = JsonConvert.DeserializeObject<InvestorDto>(responseString);
 
@@ -57,7 +61,7 @@ namespace StockAdvisor.EndToEndTests.Controllers
             var client = await CreateAuthorizedClient();
             
         //When
-            var response = await client.GetAsync($"investors/me");
+            var response = await client.GetAsync(Uri("me"));
             var responseString = await response.Content.ReadAsStringAsync();
             var investor = JsonConvert.DeserializeObject<InvestorDto>(responseString);
 
@@ -74,7 +78,7 @@ namespace StockAdvisor.EndToEndTests.Controllers
             var client = await CreateAuthorizedClient(userWithoutInvestor);
 
         //When
-            var response = await client.GetAsync($"investors/me");
+            var response = await client.GetAsync(Uri("me"));
             var responseString = await response.Content.ReadAsStringAsync();
 
         //Then
@@ -89,7 +93,7 @@ namespace StockAdvisor.EndToEndTests.Controllers
             var client = Factory.CreateClient();
             
         //When
-            var response = await client.PostAsync($"investors", GetPayload(""));
+            var response = await client.PostAsync(Uri(), GetPayload(""));
 
         //Then
             response.StatusCode.Should().BeEquivalentTo(HttpStatusCode.Unauthorized);
@@ -103,7 +107,7 @@ namespace StockAdvisor.EndToEndTests.Controllers
             var client = await CreateAuthorizedClient(user);
             
         //When
-            var response = await client.PostAsync($"investors", GetPayload(""));
+            var response = await client.PostAsync(Uri(), GetPayload(""));
 
         //Then
             response.StatusCode.Should().BeEquivalentTo(HttpStatusCode.Conflict);
@@ -117,7 +121,7 @@ namespace StockAdvisor.EndToEndTests.Controllers
             var client = await CreateAuthorizedClient(userWithoutInvestor);
             
         //When
-            var response = await client.PostAsync($"investors", GetPayload(""));
+            var response = await client.PostAsync(Uri(), GetPayload(""));
 
         //Then
             response.StatusCode.Should().BeEquivalentTo(HttpStatusCode.NoContent);
@@ -130,7 +134,7 @@ namespace StockAdvisor.EndToEndTests.Controllers
             var client = Factory.CreateClient();
 
         //When
-            var response = await client.DeleteAsync("investors/me");
+            var response = await client.DeleteAsync(Uri("me"));
 
         //Then
             response.StatusCode.Should().BeEquivalentTo(HttpStatusCode.Unauthorized);
@@ -144,7 +148,7 @@ namespace StockAdvisor.EndToEndTests.Controllers
             HttpClient client = await CreateAuthorizedClient(user);
 
         //When
-            var response = await client.DeleteAsync("investors/me");
+            var response = await client.DeleteAsync(Uri("me"));
 
         //Then
             response.StatusCode.Should().BeEquivalentTo(HttpStatusCode.NotFound);
@@ -157,10 +161,94 @@ namespace StockAdvisor.EndToEndTests.Controllers
             var client = await CreateAuthorizedClient();
 
         //When
-            var response = await client.DeleteAsync("investors/me");
+            var response = await client.DeleteAsync(Uri("me"));
 
         //Then
             response.StatusCode.Should().BeEquivalentTo(HttpStatusCode.NoContent);
         }
+
+        [Fact]
+        public async Task add_favourite_company_returns_unathorized_if_user_us_not_authorized()
+        {
+        //Given
+            var companySymbol = "AAPL";
+            var client = Factory.CreateClient();
+            var payload = GetPayload(companySymbol);
+
+        //When
+            var response = await client.PostAsync(Uri("companies"), payload);
+
+        //Then
+            response.StatusCode.Should().BeEquivalentTo(HttpStatusCode.Unauthorized);
+        }
+
+        [Fact]
+        public async Task add_favourite_company_returns_bad_request_if_given_company_symbol_is_incorrect()
+        {
+        //Given
+            var user = await AddUserWithInvestorToRepoAndGetAsync();
+            var client = await CreateAuthorizedClient(user);
+
+            string companySymbol = "INVALID_SYMBOL";
+            var command = new AddFavouriteCompanyCommand()
+            {
+                CompanySymbol = companySymbol
+            };
+            var payload = GetPayload(command);
+
+        //When
+            var response = await client.PostAsync(Uri("companies"), payload);
+
+        //Then
+            response.StatusCode.Should().BeEquivalentTo(HttpStatusCode.BadRequest);
+        }
+
+        [Fact]
+        public async Task add_favourite_company_returns_no_content_on_success()
+        {
+        //Given
+            var user = await AddUserWithInvestorToRepoAndGetAsync();
+            var client = await CreateAuthorizedClient(user);
+
+            string companySymbol = "AAPL";
+            var command = new AddFavouriteCompanyCommand()
+            {
+                CompanySymbol = companySymbol
+            };
+            var payload = GetPayload(command);
+
+        //When
+            var response = await client.PostAsync(Uri("companies"), payload);
+
+        //Then
+            response.StatusCode.Should().BeEquivalentTo(HttpStatusCode.NoContent);
+        }
+
+        [Fact]
+        public async Task add_favourite_company_returns_conflict_if_given_symbol_is_present()
+        {
+        //Given
+            var user = await AddUserWithInvestorToRepoAndGetAsync();
+            var client = await CreateAuthorizedClient(user);
+
+            string companySymbol = "AAPL";
+            var command = new AddFavouriteCompanyCommand()
+            {
+                CompanySymbol = companySymbol
+            };
+            var payload = GetPayload(command);
+            await client.PostAsync(Uri("companies"), payload);
+
+        //When
+            var response = await client.PostAsync(Uri("companies"), payload);
+
+        //Then
+            response.StatusCode.Should().BeEquivalentTo(HttpStatusCode.Conflict);
+        }
+
+        private string Uri(string subRoute = null)
+            => string.IsNullOrEmpty(subRoute) ?
+                _controllerRoute :
+                _controllerRoute + "/" + subRoute;
     }
 }

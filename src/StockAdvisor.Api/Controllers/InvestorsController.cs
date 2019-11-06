@@ -39,8 +39,8 @@ namespace StockAdvisor.Api.Controllers
         }
         
         [Authorize]
-        [Route("me")]
         [HttpGet]
+        [Route("me")]
         public async Task<IActionResult> GetCurrentIvestor()
         {
             var userId = UserId;
@@ -73,10 +73,22 @@ namespace StockAdvisor.Api.Controllers
         }
 
         [Authorize]
-        [HttpDelete("me")]
+        [Route("me")]
+        [HttpDelete]
         public async Task<IActionResult> DeleteCurrentInvestor()
         {
             await DispatchAsync(new DeleteInvestorCommand());
+
+            return NoContent();
+        }
+
+        [Authorize]
+        [HttpPost]
+        [Route("companies")]
+        public async Task<IActionResult> AddFavouriteCompany(
+            [FromBody]AddFavouriteCompanyCommand command)
+        {
+            await DispatchAsync(command);
 
             return NoContent();
         }
