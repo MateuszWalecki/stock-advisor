@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -24,6 +25,7 @@ namespace StockAdvisor.Api.Controllers
             _companyService = companyService;
         }
 
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetAllCompanies()
         {
@@ -37,6 +39,7 @@ namespace StockAdvisor.Api.Controllers
             return Ok(companies);
         }
         
+        [Authorize]
         [HttpGet("{symbol}")]
         public async Task<IActionResult> GetAllCompanies(string symbol)
         {

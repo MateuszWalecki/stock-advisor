@@ -1,4 +1,6 @@
+using System.Net;
 using System.Threading.Tasks;
+using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Testing;
 using StockAdvisor.Api;
 using Xunit;
@@ -14,10 +16,23 @@ namespace StockAdvisor.EndToEndTests.Controllers
         }
 
         [Fact]
-        public async Task get_all_companies_returns_ok_status()
+        public async Task get_all_companies_returns_unathorized_if_use_is_not_authorized()
         {
         //Given
             var client = Factory.CreateClient();
+            
+        //When
+            var response = await client.GetAsync("Companies");
+            
+        //Then
+            response.StatusCode.Should().BeEquivalentTo(HttpStatusCode.Unauthorized);
+        }
+        
+        [Fact]
+        public async Task get_all_companies_returns_ok_status()
+        {
+        //Given
+            var client = await CreateAuthorizedClient();
             
         //When
             var response = await client.GetAsync("Companies");
@@ -27,10 +42,23 @@ namespace StockAdvisor.EndToEndTests.Controllers
         }
 
         [Fact]
-        public async Task get_company_historical_returns_ok_status()
+        public async Task get_company_historical_returns_unathorized_if_use_is_not_authorized()
         {
         //Given
             var client = Factory.CreateClient();
+            
+        //When
+            var response = await client.GetAsync("Companies/AAPL");
+            
+        //Then
+            response.StatusCode.Should().BeEquivalentTo(HttpStatusCode.Unauthorized);
+        }
+
+        [Fact]
+        public async Task get_company_historical_returns_ok_status()
+        {
+        //Given
+            var client = await CreateAuthorizedClient();
             
         //When
             var response = await client.GetAsync("Companies/AAPL");
