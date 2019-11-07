@@ -10,7 +10,7 @@ using StockAdvisor.Infrastructure.Services;
 
 namespace StockAdvisor.Infrastructure.Repositories
 {
-    public class InMemoryUserRepository : IUserRepository
+    public class InMemoryUserRepository : IUserRepository, InMemoryRepository
     {
         private readonly IEncrypter _encrypter = new Encrypter();
         private readonly IFakeUserDatabase _usersDB;

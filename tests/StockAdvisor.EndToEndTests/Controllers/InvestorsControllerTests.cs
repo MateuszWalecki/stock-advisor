@@ -17,9 +17,8 @@ namespace StockAdvisor.EndToEndTests.Controllers
     {
         private string _controllerRoute = "investors";
 
-        public InvestorsControllerTests(WebApplicationFactory<Startup> factory,
-            ITestOutputHelper output)
-            : base(factory, output)
+        public InvestorsControllerTests(WebApplicationFactory<Startup> factory)
+            : base(factory)
         {
         }
         

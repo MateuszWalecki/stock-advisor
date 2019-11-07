@@ -20,9 +20,8 @@ namespace StockAdvisor.EndToEndTests.Controllers
     public class AccountControllerTests : ControllerTestBase
     {
         private readonly string _baseUrl = "account";
-        public AccountControllerTests(WebApplicationFactory<Startup> factory,
-            ITestOutputHelper output)
-            : base(factory, output)
+        public AccountControllerTests(WebApplicationFactory<Startup> factory)
+            : base(factory)
         {
         }
 

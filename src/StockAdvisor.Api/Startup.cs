@@ -22,6 +22,7 @@ using StockAdvisor.Core.Repositories;
 using StockAdvisor.Infrastructure.Extensions;
 using StockAdvisor.Infrastructure.IoC;
 using StockAdvisor.Infrastructure.Mappers;
+using StockAdvisor.Infrastructure.Mongo;
 using StockAdvisor.Infrastructure.Repositories;
 using StockAdvisor.Infrastructure.Services;
 using StockAdvisor.Infrastructure.Services.DataInitializer;
@@ -97,7 +98,11 @@ namespace StockAdvisor.Api
             });
 
             var generalSetting = Configuration.GetSettings<GeneralSettings>();
-            if (generalSetting.SeedData)
+            if(!generalSetting.InMemoryRepositories)
+            {
+                MongoConfigurator.Initialize();
+            }
+            if(generalSetting.SeedData)
             {
                 var dataInitializer = app.ApplicationServices.GetService<IDataInitializer>();
                 dataInitializer.SeedDefaultAsync();

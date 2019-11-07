@@ -9,7 +9,7 @@ using StockAdvisor.Infrastructure.Repositories.FakeDatabases;
 
 namespace StockAdvisor.Infrastructure.Repositories
 {
-    public class InMemoryInvestorRepository : IInvestorRepository
+    public class InMemoryInvestorRepository : IInvestorRepository, InMemoryRepository
     {
         private readonly IFakeInvestorDatabase _investorsDB;
 

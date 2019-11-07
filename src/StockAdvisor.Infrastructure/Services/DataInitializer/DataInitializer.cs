@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Dynamic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using StockAdvisor.Core.Domain;
@@ -15,16 +16,18 @@ namespace StockAdvisor.Infrastructure.Services.DataInitializer
         private readonly UserWithInvestorBuilder _userWithInvestorBuilder;
         private readonly AdminBuilder _adminBuilder;
 
+        private readonly IUserService _userService;
         private readonly ILogger<DataInitializer> _logger;
 
         public DataInitializer(UserWithoutInvestorBuilder userWithoutInvestorBuilder,
             UserWithInvestorBuilder userWithInvestorBuilder, AdminBuilder adminBuilder,
-            ILogger<DataInitializer> logger)
+            IUserService userService, ILogger<DataInitializer> logger)
         {
             _userWithoutInvestorBuilder = userWithoutInvestorBuilder;
             _userWithInvestorBuilder = userWithInvestorBuilder;
             _adminBuilder = adminBuilder;
 
+            _userService = userService;
             _logger = logger;
         }
 
@@ -44,6 +47,11 @@ namespace StockAdvisor.Infrastructure.Services.DataInitializer
 
         public async Task SeedDefaultAsync()
         {
+            if(await UsersHasBeenInitialized())
+            {
+                return;
+            }
+
             _logger.LogTrace("Initializing data...");
 
             var tasks = new List<Task>();
@@ -66,6 +74,13 @@ namespace StockAdvisor.Infrastructure.Services.DataInitializer
             await Task.WhenAll(tasks);
 
             _logger.LogTrace("Data was initialized.");
+        }
+
+        private async Task<bool> UsersHasBeenInitialized()
+        {
+            var users = await _userService.BrowseAsync();
+
+            return users.Any();
         }
     }
 }

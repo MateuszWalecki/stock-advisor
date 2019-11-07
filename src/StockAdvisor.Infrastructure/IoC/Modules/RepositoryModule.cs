@@ -3,6 +3,7 @@ using Autofac;
 using Microsoft.Extensions.Configuration;
 using StockAdvisor.Core.Repositories;
 using StockAdvisor.Infrastructure.Extensions;
+using StockAdvisor.Infrastructure.Repositories;
 using StockAdvisor.Infrastructure.Repositories.FakeDatabases;
 using StockAdvisor.Infrastructure.Settings;
 
@@ -10,20 +11,11 @@ namespace StockAdvisor.Infrastructure.IoC.Modules
 {
     public class RepositoryModule : Autofac.Module
     {
-        private readonly IConfiguration _configuration;
-        
-        public RepositoryModule(IConfiguration configuration)
-        {
-            _configuration = configuration;    
-        }
-
         protected override void Load(Autofac.ContainerBuilder builder)
         {
             var assembly = typeof(RepositoryModule)
                 .GetTypeInfo()
                 .Assembly;
-
-            var settings = _configuration.GetSettings<GeneralSettings>();
 
             builder.RegisterAssemblyTypes(assembly)
                    .Where(x => x.IsAssignableTo<IFakeDatabase>())
@@ -32,6 +24,11 @@ namespace StockAdvisor.Infrastructure.IoC.Modules
 
             builder.RegisterAssemblyTypes(assembly)
                    .Where(x => x.IsAssignableTo<IRepository>())
+                   .AsImplementedInterfaces()
+                   .InstancePerLifetimeScope();
+            
+            builder.RegisterAssemblyTypes(assembly)
+                   .Where(x => x.IsAssignableTo<InMemoryRepository>())
                    .AsImplementedInterfaces()
                    .InstancePerLifetimeScope();
         }

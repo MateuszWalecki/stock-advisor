@@ -18,9 +18,8 @@ namespace StockAdvisor.EndToEndTests.Controllers
 {
     public class UsersControllerTests : ControllerTestBase
     {
-        public UsersControllerTests(WebApplicationFactory<Startup> factory,
-            ITestOutputHelper output)
-            : base(factory, output)
+        public UsersControllerTests(WebApplicationFactory<Startup> factory)
+            : base(factory)
         {
         }
         
