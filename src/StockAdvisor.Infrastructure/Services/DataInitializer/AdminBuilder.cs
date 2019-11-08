@@ -23,7 +23,7 @@ namespace StockAdvisor.Infrastructure.Services.DataInitializer
             newAdmin.Email = $"admin{i}@admin.com";
             newAdmin.FirstName = $"Leo{i}";;
             newAdmin.SurName = $"Messi{i}";
-            newAdmin.Role =  UserRole.Admin.ToString();
+            newAdmin.Role =  UserRole.Admin;
             newAdmin.Password = $"SuperSecret{i}";
 
             NewResourceToAdd = newAdmin;
@@ -34,7 +34,7 @@ namespace StockAdvisor.Infrastructure.Services.DataInitializer
             dynamic newAdmin = NewResourceToAdd;
 
             await UserService.RegisterAsync(newAdmin.Id, newAdmin.Email, newAdmin.FirstName,
-                newAdmin.SurName, newAdmin.Password, UserRole.User);
+                newAdmin.SurName, newAdmin.Password, newAdmin.Role);
         }
 
         protected override void Log()

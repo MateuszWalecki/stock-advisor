@@ -28,7 +28,7 @@ namespace StockAdvisor.Infrastructure.Services.DataInitializer
             newUser.Email = $"user_with_investor{i}@test.com";
             newUser.FirstName = $"John{i}";;
             newUser.SurName = $"Rambo{i}";
-            newUser.Role =  UserRole.User.ToString();
+            newUser.Role =  UserRole.User;
             newUser.Password = $"Secret{i}";
 
             NewResourceToAdd = newUser;
@@ -39,7 +39,7 @@ namespace StockAdvisor.Infrastructure.Services.DataInitializer
             dynamic newUser = NewResourceToAdd;
 
             await UserService.RegisterAsync(newUser.Id, newUser.Email, newUser.FirstName,
-                newUser.SurName, newUser.Password, UserRole.User);
+                newUser.SurName, newUser.Password, newUser.Role);
             await _investorService.RegisterAsync(newUser.Id);
         }
 

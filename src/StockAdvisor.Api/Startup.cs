@@ -19,6 +19,7 @@ using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using StockAdvisor.Api.Framework;
 using StockAdvisor.Core.Repositories;
+using StockAdvisor.Infrastructure.EF;
 using StockAdvisor.Infrastructure.Extensions;
 using StockAdvisor.Infrastructure.IoC;
 using StockAdvisor.Infrastructure.Mappers;
@@ -66,6 +67,9 @@ namespace StockAdvisor.Api
 
             services.AddMemoryCache();
             services.AddLogging();
+            services.AddEntityFrameworkSqlServer()
+                    .AddEntityFrameworkInMemoryDatabase()
+                    .AddDbContext<StockAdvisorContext>();
         }
 
         public void ConfigureContainer(ContainerBuilder builder)

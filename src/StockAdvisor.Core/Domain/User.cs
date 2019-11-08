@@ -12,13 +12,11 @@ namespace StockAdvisor.Core.Domain
         public string Email { get; protected set; }
         public string FirstName { get; protected set; }
         public string SurName { get; protected set; }
-        public string Role { get { return _role.ToString(); } }
+        public UserRole Role { get; protected set; }
         public string PasswordHash { get; protected set; }
         public string Salt { get; protected set; }
         public DateTime CreatedAt { get; protected set; }
         public DateTime UpdatedAt { get; protected set; }
-
-        private UserRole _role;
 
         protected User()
         {
@@ -99,7 +97,8 @@ namespace StockAdvisor.Core.Domain
 
         public void SetRole(UserRole role)
         {
-            _role = role;
+            Role = role;
+            UpdatedAt = DateTime.UtcNow;
         }
 
         public void SetPassword(string passwordHash, string salt)

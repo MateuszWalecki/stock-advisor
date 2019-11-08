@@ -60,7 +60,7 @@ namespace StockAdvisor.UnitTests.Infrastructure
                 Email = user.Email,
                 FirstName = user.FirstName,
                 SurName = user.SurName,
-                Role = user.Role,
+                Role = user.Role.ToString(),
                 CreatedAt = user.CreatedAt,
                 UpdatedAt = user.UpdatedAt,
             };
@@ -138,7 +138,7 @@ namespace StockAdvisor.UnitTests.Infrastructure
             Assert.Equal(_email, registeredUser.Email);
             Assert.Equal(_firstname, registeredUser.FirstName);
             Assert.Equal(_surname, registeredUser.SurName);
-            Assert.Equal(_role.ToString(), registeredUser.Role);
+            Assert.Equal(_role, registeredUser.Role);
         }
 
         [Fact]

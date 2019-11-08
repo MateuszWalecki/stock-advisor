@@ -26,7 +26,7 @@ namespace StockAdvisor.Infrastructure.IoC.Modules
                 return database;
             }).As<IMongoDatabase>();
 
-            var assembly = typeof(RepositoryModule)
+            var assembly = typeof(MongoModule)
                 .GetTypeInfo()
                 .Assembly;
 

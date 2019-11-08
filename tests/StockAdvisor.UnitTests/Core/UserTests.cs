@@ -32,7 +32,7 @@ namespace StockAdvisor.UnitTests.Core
             Assert.Equal(_validFirstName, user.FirstName);
             Assert.Equal(_validSurName, user.SurName);
             Assert.Equal(_validPasswordHash, user.PasswordHash);
-            Assert.Equal(_role.ToString(), user.Role);
+            Assert.Equal(_role, user.Role);
         }
 
         [Fact]
@@ -159,7 +159,7 @@ namespace StockAdvisor.UnitTests.Core
         //When
             
         //Then
-            user.Role.Should().BeEquivalentTo(role.ToString());
+            user.Role.Should().BeEquivalentTo(role);
         }
         
         [Fact]
@@ -174,7 +174,7 @@ namespace StockAdvisor.UnitTests.Core
             var newRole = user.Role;
             
         //Then
-            user.Role.Should().BeEquivalentTo(UserRole.Admin.ToString());
+            user.Role.Should().BeEquivalentTo(UserRole.Admin);
             newRole.Should().NotBe(defaultRole);
         }
 

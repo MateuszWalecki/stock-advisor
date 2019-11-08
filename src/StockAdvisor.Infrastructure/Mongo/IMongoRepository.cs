@@ -1,6 +1,6 @@
 using StockAdvisor.Core.Repositories;
 
-namespace StockAdvisor.Infrastructure.Repositories
+namespace StockAdvisor.Infrastructure.Mongo
 {
     public interface IMongoRepository
     {

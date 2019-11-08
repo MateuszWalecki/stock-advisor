@@ -5,6 +5,7 @@ using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 using StockAdvisor.Core.Domain;
 using StockAdvisor.Core.Repositories;
+using StockAdvisor.Infrastructure.Mongo;
 
 namespace StockAdvisor.Infrastructure.Repositories
 {

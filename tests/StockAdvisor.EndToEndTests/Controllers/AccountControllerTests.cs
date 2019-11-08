@@ -237,7 +237,7 @@ namespace StockAdvisor.EndToEndTests.Controllers
             Assert.Equal(user.Email, resultUser.Email);
             Assert.Equal(user.FirstName, resultUser.FirstName);
             Assert.Equal(user.SurName, resultUser.SurName);
-            Assert.Equal(user.Role, resultUser.Role);
+            Assert.Equal(((UserRole)user.Role).ToString(), resultUser.Role);
         }
 
         private string Url(string postifx)

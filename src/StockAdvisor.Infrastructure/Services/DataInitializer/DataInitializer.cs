@@ -58,17 +58,17 @@ namespace StockAdvisor.Infrastructure.Services.DataInitializer
             
             for (int i = 1; i <= 10; i++)
             {
-                tasks.Add(_userWithInvestorBuilder.Build());
+                await _userWithInvestorBuilder.Build();
             }
 
             for (int i = 1; i <= 10; i++)
             {
-                tasks.Add(_userWithoutInvestorBuilder.Build());
+                await _userWithoutInvestorBuilder.Build();
             }
 
             for (int i = 1; i <= 3; i++)
             {
-                tasks.Add(_adminBuilder.Build());
+                await _adminBuilder.Build();
             }
 
             await Task.WhenAll(tasks);

@@ -34,7 +34,7 @@ namespace StockAdvisor.Api.Framework
 
         private Task HandleException(HttpContext context, Exception exception)
         {
-            var errorCode = "error";
+            var errorCode = "unsupported_error";
             var statusCode = HttpStatusCode.BadRequest;
             var exceptionType = exception.GetType();
 
