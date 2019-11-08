@@ -6,7 +6,7 @@ using StockAdvisor.Api;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace StockAdvisor.EndToEndTests.Controllers
+namespace StockAdvisor.Tests.EndToEnd.Controllers
 {
     public class CompaniesControllerTests : ControllerTestBase
     {

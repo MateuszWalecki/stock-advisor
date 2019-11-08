@@ -1,4 +1,4 @@
-$projects=@("StockAdvisor.UnitTests","StockAdvisor.EndToEndTests")
+$projects=@("StockAdvisor.Tests.Unit","StockAdvisor.Tests.EndToEnd")
 
 foreach($project in $projects) {
   Write-Output "Running tests for: $project"

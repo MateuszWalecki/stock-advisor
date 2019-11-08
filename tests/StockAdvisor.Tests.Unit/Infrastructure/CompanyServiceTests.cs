@@ -9,7 +9,7 @@ using StockAdvisor.Infrastructure.DTO;
 using StockAdvisor.Infrastructure.Services;
 using Xunit;
 
-namespace StockAdvisor.UnitTests.Infrastructure
+namespace StockAdvisor.Tests.Unit.Infrastructure
 {
     public class CompanyServiceTests
     {

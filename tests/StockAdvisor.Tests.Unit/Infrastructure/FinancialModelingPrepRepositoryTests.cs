@@ -13,7 +13,7 @@ using StockAdvisor.Infrastructure.Repositories;
 using StockAdvisor.Infrastructure.Settings;
 using Xunit;
 
-namespace StockAdvisor.UnitTests.Infrastructure
+namespace StockAdvisor.Tests.Unit.Infrastructure
 {
     public class FinancialModelingPrepRepositoryTests
     {

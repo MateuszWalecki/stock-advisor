@@ -20,7 +20,7 @@ using StockAdvisor.Infrastructure.Services.DataInitializer;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace StockAdvisor.EndToEndTests.Controllers
+namespace StockAdvisor.Tests.EndToEnd.Controllers
 {
     public class ControllerTestBase
         : IClassFixture<WebApplicationFactory<Startup>>

@@ -1,5 +1,5 @@
 $source_projects=@("StockAdvisor.Core","StockAdvisor.Infrastructure","StockAdvisor.Api")
-$test_projects=@("StockAdvisor.UnitTests","StockAdvisor.EndToEndTests")
+$test_projects=@("StockAdvisor.Tests.Unit","StockAdvisor.Tests.EndToEnd")
 
 foreach($project in $source_projects) {
   Write-Output "`nRestore: $project"

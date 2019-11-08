@@ -4,7 +4,7 @@ using StockAdvisor.Core.Domain;
 using StockAdvisor.Core.Exceptions;
 using Xunit;
 
-namespace StockAdvisor.UnitTests.Core
+namespace StockAdvisor.Tests.Unit.Core
 {
     public class InvestorTests
     {

@@ -11,7 +11,7 @@ using StockAdvisor.Infrastructure.DTO;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace StockAdvisor.EndToEndTests.Controllers
+namespace StockAdvisor.Tests.EndToEnd.Controllers
 {
     public class InvestorsControllerTests : ControllerTestBase
     {
