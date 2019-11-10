@@ -485,7 +485,7 @@ namespace StockAdvisor.Tests.Unit.Infrastructure
                                                                      companySymbol);
             
         //Then
-            await Assert.ThrowsAsync<CompanySymbolNotFoundSerExc>(act);
+            await Assert.ThrowsAsync<WrongCompanySymbolSerExc>(act);
         }
 
         [Fact]

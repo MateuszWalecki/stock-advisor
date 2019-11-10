@@ -16,9 +16,9 @@ namespace StockAdvisor.Api.Controllers
         private readonly IMemoryCache _cache;
         
         public LoginController(ICommandDispatcher commandDispatcher,
-            IMemoryCache userService, IJwtHandler jwtHandler) : base(commandDispatcher)
+            IMemoryCache cache, IJwtHandler jwtHandler) : base(commandDispatcher)
         {
-            _cache = userService;
+            _cache = cache;
             _jwtHandler = jwtHandler;
         }
 

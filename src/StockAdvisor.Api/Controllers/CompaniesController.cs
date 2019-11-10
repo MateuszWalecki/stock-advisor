@@ -39,7 +39,7 @@ namespace StockAdvisor.Api.Controllers
             return Ok(companies);
         }
         
-        [Authorize]
+        // [Authorize]
         [HttpGet("{symbol}")]
         public async Task<IActionResult> GetAllCompanies(string symbol)
         {
@@ -51,6 +51,17 @@ namespace StockAdvisor.Api.Controllers
             }
 
             return Ok(company);
+        }
+
+        // [Authorize]
+        [HttpGet("predict")]
+        public async Task<IActionResult> PredictValue(
+            [FromQuery]string companySymbol,
+            [FromQuery]string algorithm)
+        {
+            var result = await _companyService.PredictValues(companySymbol, algorithm);
+
+            return Ok(result);
         }
     }
 }

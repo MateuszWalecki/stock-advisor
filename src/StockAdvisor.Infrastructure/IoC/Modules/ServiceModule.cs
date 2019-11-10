@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using StockAdvisor.Infrastructure.Extensions;
 using StockAdvisor.Infrastructure.Services;
 using StockAdvisor.Infrastructure.Services.DataInitializer;
+using StockAdvisor.Infrastructure.Services.ValuePredicting;
 using StockAdvisor.Infrastructure.Settings;
 
 namespace StockAdvisor.Infrastructure.IoC.Modules
@@ -49,6 +50,11 @@ namespace StockAdvisor.Infrastructure.IoC.Modules
                         BaseAddress = new Uri(financialSettings.Uri)
                     })
                     .SingleInstance();
+
+            builder.RegisterAssemblyTypes(assembly)
+                   .Where(x => x.IsAssignableTo<IValuePredictor>())
+                   .AsImplementedInterfaces()
+                   .InstancePerLifetimeScope();
         }
     }
 }

@@ -29,7 +29,8 @@ namespace StockAdvisor.Infrastructure.Handlers.Users
                         throw new UserNotFoundSerExc($"User cannot be found using id {command.UserId}.");
                     }
                 })
-                .OnSuccess(async () => 
+                .Next()
+                .Run(async () => 
                     await _userService.ChangeUserEmailAsync(command.UserId,
                         command.CurrentPassword, command.NewEmail))
                 .Next()

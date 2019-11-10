@@ -103,7 +103,7 @@ namespace StockAdvisor.Infrastructure.Services
             
             if (!investor.FavouriteCompanies.Contains(companySymbol))
             {
-                throw new CompanySymbolNotFoundSerExc($"Company symbol {companySymbol} " +
+                throw new WrongCompanySymbolSerExc($"Company symbol {companySymbol} " +
                     "does not exist in favourties collection.");
             }
 

@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Logging;
 using NLog.Web;
 
 namespace StockAdvisor.Api
@@ -16,6 +17,7 @@ namespace StockAdvisor.Api
     {
         public static void Main(string[] args)
         {
+            IdentityModelEventSource.ShowPII = true;
             var logger = NLog.Web.NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
             
             try
