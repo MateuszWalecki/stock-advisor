@@ -48,9 +48,19 @@ namespace StockAdvisor.Infrastructure.Repositories
                 _cache.Set(GetStrictCompanyKey(companySymbol), historicalPrice);
             }
 
+            if (historicalPrice == null)
+            {
+                return null;
+            }
+
             var companiesInfo = await BrowseAsync();
             var companyInfo = companiesInfo.SingleOrDefault(x => x.Symbol == companySymbol);
             
+            if (companyInfo == null)
+            {
+                return null;
+            }
+
             return new CompanyValueStatus(companyInfo, historicalPrice);
         }
 

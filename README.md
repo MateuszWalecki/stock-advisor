@@ -25,6 +25,7 @@ This repository is sample .Net Core 3.0 Web API that provides stock related logi
 6. MongoDB
 7. NewtonsoftJson
 8. NLog
+9. XUnit
 
 ## From author
 This project is not finished yet..

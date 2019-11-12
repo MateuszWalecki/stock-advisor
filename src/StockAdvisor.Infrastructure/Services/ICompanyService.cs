@@ -8,5 +8,7 @@ namespace StockAdvisor.Infrastructure.Services
     {
         Task<CompanyValueStatusDto> GetValueStatusAsync(string companySymbol);
         Task<IEnumerable<CompanyDto>> BrowseAsync();
+        Task<CompanyValueStatusDto> PredictValues(string companySymbol,
+            string algorithm);
     }
 }

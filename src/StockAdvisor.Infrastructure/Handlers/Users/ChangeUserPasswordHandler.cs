@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 using StockAdvisor.Infrastructure.Commands;
-using StockAdvisor.Infrastructure.Commands.Users;
+    using StockAdvisor.Infrastructure.Commands.Users;
 using StockAdvisor.Infrastructure.Exceptions;
 using StockAdvisor.Infrastructure.Services;
 using StockAdvisor.Infrastructure.Services.TasksHandling;
@@ -29,7 +29,8 @@ namespace StockAdvisor.Infrastructure.Handlers.Users
                         throw new UserNotFoundSerExc($"User cannot be found using id {command.UserId}.");
                     }
                 })
-                .OnSuccess(async () => 
+                .Next()
+                .Run(async () =>
                     await _userService.ChangeUserPasswordAsync(command.UserId,
                         command.NewPassword, command.CurrentPassword))
                 .Next()

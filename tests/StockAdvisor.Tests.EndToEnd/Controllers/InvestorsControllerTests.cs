@@ -272,7 +272,7 @@ namespace StockAdvisor.Tests.EndToEnd.Controllers
             var response = await client.DeleteAsync(Uri($"companies/{companySymbol}"));
 
         //Then
-            response.StatusCode.Should().BeEquivalentTo(HttpStatusCode.NotFound);
+            response.StatusCode.Should().BeEquivalentTo(HttpStatusCode.BadRequest);
         }
 
         [Fact]
