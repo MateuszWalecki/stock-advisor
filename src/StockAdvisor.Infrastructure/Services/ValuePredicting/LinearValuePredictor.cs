@@ -5,41 +5,44 @@ using StockAdvisor.Core.Domain;
 
 namespace StockAdvisor.Infrastructure.Services.ValuePredicting
 {
-    public class LinearValuePredictor : IValuePredictor, IFakeValuePredictor
+    public class LinearValuePredictor : FakeLinearPredictor
     {
-        private static readonly int _valuesToGenerate = 365 * 2;
-
-        public string GetName()
+        public override string GetName()
             => "Linear";
 
-        public CompanyValueStatus PredictValue(CompanyValueStatus historical)
+        public override CompanyValueStatus PredictValue(CompanyValueStatus historical)
         {
-            TimeSpan timeStep = historical.HistoricalValue.Skip(1).First().Date -
-                                historical.HistoricalValue.First().Date;
-            decimal priceStep =  historical.HistoricalValue.First().Price -
-                                 historical.HistoricalValue.Skip(1).First().Price;
+            Historical = historical;
 
-            var currentDate = historical.HistoricalValue.Last().Date;
-            var currentPrice = historical.HistoricalValue.Last().Price;
+            CalculatePriceAndDateSteps();
+            var generatedValues = GenerateCollectionToReturn();
 
-            var valuesToExtend = new List<CompanyValue>(historical.HistoricalValue);
+            return new CompanyValueStatus(historical.Company, generatedValues);
+        }
 
-            for (int i = 0; i < _valuesToGenerate; i++)
+        private IEnumerable<CompanyValue> GenerateCollectionToReturn()
+        {
+            var currentDate = Historical.HistoricalValue.Last().Date;
+            var currentPrice = Historical.HistoricalValue.Last().Price;
+
+            var valuesToExtend = new List<CompanyValue>(Historical.HistoricalValue);
+
+            for (int i = 0; i < ValuesToGenerate; i++)
             {
-                currentDate += timeStep;
-                currentPrice += priceStep;
+                currentDate += TimeStep;
+                currentPrice += PriceStep;
                 
-                if (currentPrice < 0)
+                if (PriceStepShouldBeReversed(currentPrice))
                 {
-                    priceStep *= -1;
-                    currentPrice += 2 * priceStep;
+                    PriceStep *= -1;
+                    currentPrice += 2 * PriceStep;
                 }
 
                 var toAdd = new CompanyValue(currentDate, currentPrice);
                 valuesToExtend.Add(toAdd);
             }
 
-            return new CompanyValueStatus(historical.Company, valuesToExtend);
+            return valuesToExtend;
         }
     }
 }

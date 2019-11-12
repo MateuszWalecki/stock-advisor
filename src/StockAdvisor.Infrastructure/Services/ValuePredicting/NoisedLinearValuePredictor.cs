@@ -5,45 +5,51 @@ using StockAdvisor.Core.Domain;
 
 namespace StockAdvisor.Infrastructure.Services.ValuePredicting
 {
-    public class NoisedLinearValuePredictor : IValuePredictor, IFakeValuePredictor
+    public class NoisedLinearValuePredictor : FakeLinearPredictor
     {
-        private static readonly int _valuesToGenerate = 365 * 2;
-
         private readonly Random _noiseGenerator = new Random();
 
-        public string GetName()
+        public override string GetName()
             => "Noised-Linear";
 
-        public CompanyValueStatus PredictValue(CompanyValueStatus historical)
+        public override CompanyValueStatus PredictValue(CompanyValueStatus historical)
         {
-            TimeSpan timeStep = historical.HistoricalValue.Skip(1).First().Date -
-                                historical.HistoricalValue.First().Date;
-            decimal priceStep =  historical.HistoricalValue.First().Price -
-                                 historical.HistoricalValue.Skip(1).First().Price;
+            Historical = historical;
 
-            var currentDate = historical.HistoricalValue.Last().Date;
-            var currentPrice = historical.HistoricalValue.Last().Price;
+            CalculatePriceAndDateSteps();
+            var generatedValues = GenerateCollectionToReturn();
 
-            var valuesToExtend = new List<CompanyValue>(historical.HistoricalValue);
+            return new CompanyValueStatus(historical.Company, generatedValues);
+        }
+        
+        private IEnumerable<CompanyValue> GenerateCollectionToReturn()
+        {
+            var currentDate = Historical.HistoricalValue.Last().Date;
+            var currentPrice = Historical.HistoricalValue.Last().Price;
 
-            for (int i = 0; i < _valuesToGenerate; i++)
+            var valuesToExtend = new List<CompanyValue>(Historical.HistoricalValue);
+
+            for (int i = 0; i < ValuesToGenerate; i++)
             {
-                priceStep += _noiseGenerator.Next(-100, 100) / 100.0m * priceStep;
+                AddNoiseToPriceStep();
 
-                currentDate += timeStep;
-                currentPrice += priceStep;
+                currentDate += TimeStep;
+                currentPrice += PriceStep;
                 
-                if (currentPrice < 0)
+                if (PriceStepShouldBeReversed(currentPrice))
                 {
-                    priceStep *= -1;
-                    currentPrice += 2 * priceStep;
+                    PriceStep *= -1;
+                    currentPrice += 2 * PriceStep;
                 }
 
                 var toAdd = new CompanyValue(currentDate, currentPrice);
                 valuesToExtend.Add(toAdd);
             }
 
-            return new CompanyValueStatus(historical.Company, valuesToExtend);
+            return valuesToExtend;
         }
+        
+        private void AddNoiseToPriceStep()
+            => PriceStep += _noiseGenerator.Next(-100, 100) / 100.0m * PriceStep;
     }
 }
