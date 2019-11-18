@@ -207,7 +207,7 @@ namespace StockAdvisor.Tests.EndToEnd.Controllers
             var user = await AddUserWithInvestorToRepoAndGetAsync();
             var client = await CreateAuthorizedClient(user);
 
-            string companySymbol = "AAPL";
+            string companySymbol = "MSFT";
             var command = new AddFavouriteCompanyCommand()
             {
                 CompanySymbol = companySymbol
@@ -234,7 +234,6 @@ namespace StockAdvisor.Tests.EndToEnd.Controllers
                 CompanySymbol = companySymbol
             };
             var payload = GetPayload(command);
-            await client.PostAsync(Uri("companies"), payload);
 
         //When
             var response = await client.PostAsync(Uri("companies"), payload);
@@ -264,7 +263,7 @@ namespace StockAdvisor.Tests.EndToEnd.Controllers
         //Given
             var userWithInvestor = await AddUserWithInvestorToRepoAndGetAsync();
             var client = await CreateAuthorizedClient(userWithInvestor);
-            var companySymbol = "AAPL";
+            var companySymbol = "MSFT";
 
         //When
             var response = await client.DeleteAsync(Uri($"companies/{companySymbol}"));
@@ -281,14 +280,6 @@ namespace StockAdvisor.Tests.EndToEnd.Controllers
             var client = await CreateAuthorizedClient(userWithInvestor);
 
             var companySymbol = "AAPL";
-            var command = new AddFavouriteCompanyCommand()
-            {
-                CompanySymbol = companySymbol
-            };
-            var payload = GetPayload(command);
-
-            var initResponse = await client.PostAsync(Uri("companies"), payload);
-            initResponse.EnsureSuccessStatusCode();
 
         //When
             var response = await client.DeleteAsync(Uri($"companies/{companySymbol}"));
