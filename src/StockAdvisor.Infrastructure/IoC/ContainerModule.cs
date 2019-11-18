@@ -27,7 +27,6 @@ namespace StockAdvisor.Infrastructure.IoC
             if (!generalSettings.InMemoryRepositories)
             {
                 builder.RegisterModule<MongoModule>();
-                builder.RegisterModule<SqlModule>();
             }
             
             builder.RegisterModule(new ServiceModule(_configuration));

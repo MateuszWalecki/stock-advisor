@@ -1,6 +1,5 @@
 using Autofac;
 using Microsoft.Extensions.Configuration;
-using StockAdvisor.Infrastructure.EF;
 using StockAdvisor.Infrastructure.Extensions;
 using StockAdvisor.Infrastructure.Mongo;
 using StockAdvisor.Infrastructure.Settings;
@@ -25,8 +24,6 @@ namespace StockAdvisor.Infrastructure.IoC.Modules
             builder.RegisterInstance(_configuration.GetSettings<FinancialModelingPrepSettings>())
                    .SingleInstance();
             builder.RegisterInstance(_configuration.GetSettings<MongoSettings>())
-                   .SingleInstance();
-            builder.RegisterInstance(_configuration.GetSettings<SqlSettings>())
                    .SingleInstance();
         }
     }
