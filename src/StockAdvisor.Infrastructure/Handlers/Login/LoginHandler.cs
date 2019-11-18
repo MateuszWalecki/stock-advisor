@@ -2,7 +2,6 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Memory;
 using StockAdvisor.Infrastructure.Commands;
 using StockAdvisor.Infrastructure.Commands.Login;
-using StockAdvisor.Infrastructure.Exceptions;
 using StockAdvisor.Infrastructure.Extensions;
 using StockAdvisor.Infrastructure.Services;
 using StockAdvisor.Infrastructure.Services.TasksHandling;

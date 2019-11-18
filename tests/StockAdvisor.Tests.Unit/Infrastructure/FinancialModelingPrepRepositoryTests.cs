@@ -10,7 +10,6 @@ using Moq;
 using Moq.Protected;
 using StockAdvisor.Core.Domain;
 using StockAdvisor.Infrastructure.Repositories;
-using StockAdvisor.Infrastructure.Settings;
 using Xunit;
 
 namespace StockAdvisor.Tests.Unit.Infrastructure

@@ -2,7 +2,6 @@ using System.Reflection;
 using Autofac;
 using MongoDB.Driver;
 using StockAdvisor.Infrastructure.Mongo;
-using StockAdvisor.Infrastructure.Repositories;
 
 namespace StockAdvisor.Infrastructure.IoC.Modules
 {

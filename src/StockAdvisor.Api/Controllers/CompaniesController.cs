@@ -1,15 +1,7 @@
-using System;
-using System.IO;
 using System.Linq;
-using System.Security.Claims;
-using System.Text;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.Net.Http.Headers;
 using StockAdvisor.Infrastructure.Commands;
 using StockAdvisor.Infrastructure.Services;
 

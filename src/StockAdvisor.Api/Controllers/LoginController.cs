@@ -2,7 +2,6 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
-using StockAdvisor.Core.Exceptions;
 using StockAdvisor.Infrastructure.Commands;
 using StockAdvisor.Infrastructure.Commands.Login;
 using StockAdvisor.Infrastructure.Extensions;

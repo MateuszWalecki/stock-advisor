@@ -4,7 +4,6 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Testing;
 using StockAdvisor.Api;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace StockAdvisor.Tests.EndToEnd.Controllers
 {

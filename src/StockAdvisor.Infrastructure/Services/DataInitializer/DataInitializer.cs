@@ -1,12 +1,8 @@
-using System;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using StockAdvisor.Core.Domain;
-using StockAdvisor.Infrastructure.DTO;
-using StockAdvisor.Infrastructure.Services.TasksHandling;
 
 namespace StockAdvisor.Infrastructure.Services.DataInitializer
 {

@@ -1,8 +1,6 @@
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
-using StockAdvisor.Core.Domain;
 using StockAdvisor.Core.Repositories;
 using StockAdvisor.Infrastructure.DTO;
 using StockAdvisor.Infrastructure.Exceptions;

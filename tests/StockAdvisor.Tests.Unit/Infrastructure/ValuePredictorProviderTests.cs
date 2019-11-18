@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using FluentAssertions;
-using Moq;
 using StockAdvisor.Core.Domain;
 using StockAdvisor.Infrastructure.Exceptions;
 using StockAdvisor.Infrastructure.Services.ValuePredicting;

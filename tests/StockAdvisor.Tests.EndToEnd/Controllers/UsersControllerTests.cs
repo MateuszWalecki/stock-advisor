@@ -1,18 +1,13 @@
-using System.Dynamic;
 using System.Net;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using FluentAssertions;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.AspNetCore.TestHost;
 using Newtonsoft.Json;
 using StockAdvisor.Api;
 using StockAdvisor.Infrastructure.Commands.Users;
 using StockAdvisor.Infrastructure.DTO;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace StockAdvisor.Tests.EndToEnd.Controllers
 {

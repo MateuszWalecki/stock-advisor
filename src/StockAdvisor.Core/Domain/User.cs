@@ -1,7 +1,5 @@
 using System;
-using System.Collections.Generic;
 using System.Net.Mail;
-using System.Text.RegularExpressions;
 using StockAdvisor.Core.Exceptions;
 
 namespace StockAdvisor.Core.Domain

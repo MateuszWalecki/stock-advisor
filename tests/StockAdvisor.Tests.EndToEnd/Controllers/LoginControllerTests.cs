@@ -1,4 +1,3 @@
-using System;
 using System.Net;
 using System.Threading.Tasks;
 using FluentAssertions;
@@ -8,7 +7,6 @@ using StockAdvisor.Api;
 using StockAdvisor.Infrastructure.Commands.Login;
 using StockAdvisor.Infrastructure.DTO;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace StockAdvisor.Tests.EndToEnd.Controllers
 {

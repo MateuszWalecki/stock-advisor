@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-
 namespace StockAdvisor.Infrastructure.DTO
 {
     public class JwtDto

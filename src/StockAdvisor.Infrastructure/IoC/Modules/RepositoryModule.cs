@@ -1,11 +1,8 @@
 using System.Reflection;
 using Autofac;
-using Microsoft.Extensions.Configuration;
 using StockAdvisor.Core.Repositories;
-using StockAdvisor.Infrastructure.Extensions;
 using StockAdvisor.Infrastructure.Repositories;
 using StockAdvisor.Infrastructure.Repositories.FakeDatabases;
-using StockAdvisor.Infrastructure.Settings;
 
 namespace StockAdvisor.Infrastructure.IoC.Modules
 {

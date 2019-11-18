@@ -1,6 +1,5 @@
 using System.Dynamic;
 using System.Threading.Tasks;
-using StockAdvisor.Infrastructure.DTO;
 
 namespace StockAdvisor.Infrastructure.Services.DataInitializer
 {
