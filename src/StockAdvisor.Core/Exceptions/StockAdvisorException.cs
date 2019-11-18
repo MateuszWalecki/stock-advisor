@@ -1,9 +1,11 @@
 using System;
+using System.Net;
 
 namespace StockAdvisor.Core.Exceptions
 {
     public abstract class StockAdvisorException : Exception
     {
+        public abstract HttpStatusCode CorrespondingStatusCode { get; }
         public abstract string Code { get; }
 
         protected StockAdvisorException()

@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using StockAdvisor.Infrastructure.Exceptions;
 
-namespace StockAdvisor.Api.Framework
+namespace StockAdvisor.Infrastructure.Framework
 {
     public class ExceptionHandlerMiddleware
     {

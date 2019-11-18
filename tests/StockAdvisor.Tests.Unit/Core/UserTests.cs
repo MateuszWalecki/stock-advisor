@@ -46,7 +46,7 @@ namespace StockAdvisor.Tests.Unit.Core
                     _validPasswordHash, _validPasswordSalt, _role);
 
         //Then
-            Assert.Throws<DomainException>(act);
+            Assert.Throws<InvalidEmailDomExc>(act);
         }
 
         [Fact]
@@ -60,7 +60,7 @@ namespace StockAdvisor.Tests.Unit.Core
                     _validPasswordSalt, _role);
 
         //Then
-            Assert.Throws<DomainException>(act);
+            Assert.Throws<InvalidFirstNameDomExc>(act);
         }
 
         [Fact]
@@ -74,7 +74,7 @@ namespace StockAdvisor.Tests.Unit.Core
                     _validPasswordSalt, _role);
 
         //Then
-            Assert.Throws<DomainException>(act);
+            Assert.Throws<InvalidSurNameDomExc>(act);
         }
 
         [Fact]
@@ -88,7 +88,7 @@ namespace StockAdvisor.Tests.Unit.Core
                     _validPasswordSalt, _role);
 
         //Then
-            Assert.Throws<DomainException>(act);
+            Assert.Throws<ArgumentException>(act);
         }
 
         [Fact]
@@ -207,7 +207,7 @@ namespace StockAdvisor.Tests.Unit.Core
             Action act = () => user.SetPassword(newPwHash, newSalt);
 
         //Then
-            Assert.Throws<DomainException>(act);
+            Assert.Throws<ArgumentException>(act);
         }
 
         [Theory]
@@ -223,7 +223,7 @@ namespace StockAdvisor.Tests.Unit.Core
             Action act = () => user.SetPassword(newPwHash, newSalt);
 
         //Then
-            Assert.Throws<DomainException>(act);
+            Assert.Throws<ArgumentException>(act);
         }
 
         [Fact]
@@ -237,7 +237,7 @@ namespace StockAdvisor.Tests.Unit.Core
             Action act = () => user.SetPassword(newPwHash, _validPasswordSalt);
 
         //Then
-            Assert.Throws<DomainException>(act);
+            Assert.Throws<ArgumentException>(act);
         }
 
         [Fact]
@@ -251,22 +251,23 @@ namespace StockAdvisor.Tests.Unit.Core
             Action act = () => user.SetPassword(_validPasswordHash, newSalt);
 
         //Then
-            Assert.Throws<DomainException>(act);
+            Assert.Throws<ArgumentException>(act);
         }
 
-        [Fact]
-        public void given_empy_null_hash_while_changing_it_throws_exception()
+        [Theory]
+        [InlineData("")]
+        [InlineData(null)]
+        public void given_empy_null_hash_while_changing_it_throws_exception(string pwHash)
         {
         //Given
             var user = GetValidUser();
-            string newPwHash = "";
             string newSalt = "newSalt4465d4saf654sd6f";
 
         //When
-            Action act = () => user.SetPassword(newPwHash, newSalt);
+            Action act = () => user.SetPassword(pwHash, newSalt);
 
         //Then
-            Assert.Throws<DomainException>(act);
+            Assert.Throws<ArgumentException>(act);
         }
 
         private User GetValidUser()

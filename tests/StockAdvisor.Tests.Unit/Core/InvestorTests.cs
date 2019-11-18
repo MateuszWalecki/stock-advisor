@@ -37,7 +37,7 @@ namespace StockAdvisor.Tests.Unit.Core
             Action act = () => investor.AddToFavouriteCompanies(companySymbolToAdd);
 
         //Then
-            Assert.Throws<DomainException>(act);
+            Assert.Throws<SymbolInSetDomExc>(act);
             Assert.Equal(investor.UpdatedAt, userUpdateTime);
         }
 
@@ -70,7 +70,7 @@ namespace StockAdvisor.Tests.Unit.Core
             Action act = () => investor.RemoveFromFavouriteCompanies(companySymbol);
 
         //Then
-            Assert.Throws<DomainException>(act);
+            Assert.Throws<SymbolNotInSetDomExc>(act);
             Assert.Equal(investor.UpdatedAt, userUpdateTime);
         }
         

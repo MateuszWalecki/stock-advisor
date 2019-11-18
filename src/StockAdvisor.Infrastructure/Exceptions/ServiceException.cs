@@ -6,8 +6,6 @@ namespace StockAdvisor.Infrastructure.Exceptions
 {
     public abstract class ServiceException : StockAdvisorException
     {
-        public abstract HttpStatusCode CorrespondingStatusCode { get; }
-
         protected ServiceException(string message, params object[] args)
             : base(message, args)
         {

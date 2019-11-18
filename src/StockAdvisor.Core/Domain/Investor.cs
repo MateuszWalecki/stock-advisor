@@ -37,9 +37,9 @@ namespace StockAdvisor.Core.Domain
 
             if (comapny != null)
             {
-                throw new DomainException(ErrorCodes.ElementInSet,
-                    $"Company represented by the set {companySymbol} is currently included in the " +
-                    $"FavouriteCompanies set, so it cannot be added.");
+                throw new SymbolInSetDomExc( $"Company represented by the symbol " +
+                    $"'{companySymbol}' is currently included in the " +
+                    $"favourite companies set, so it cannot be added.");
             }
 
             _favouriteCompanies.Add(companySymbol);
@@ -52,9 +52,9 @@ namespace StockAdvisor.Core.Domain
             
             if (comapny == null)
             {
-                throw new DomainException(ErrorCodes.ElementNotInSet,
-                    $"Company represented by the set {companySymbol} is not included in the " +
-                    $"FavouriteCompanies set, so it cannot be removed.");
+                throw new SymbolNotInSetDomExc($"Company represented by the symbol " +
+                    $"'{companySymbol}' is not included in the " +
+                    $"favourite companies set, so it cannot be removed.");
             }
 
             _favouriteCompanies.Remove(companySymbol);

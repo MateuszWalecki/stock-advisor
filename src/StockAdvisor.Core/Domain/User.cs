@@ -43,14 +43,13 @@ namespace StockAdvisor.Core.Domain
             }
             catch
             {
-                throw new DomainException(ErrorCodes.InvalidEmail,
-                    "Email is invalid.");
+                throw new InvalidEmailDomExc($"Email '{emailAddress}' is invalid.");
             }
             
             if (Email == emailAddress)
             {
-                throw new DomainException(ErrorCodes.InvalidEmail,
-                    "New email cannot be equal to the currently used.");
+                throw new InvalidEmailDomExc($"New email cannot be equal to the " +
+                    "currently used.");
             }
 
             Email = emailAddress;
@@ -61,14 +60,13 @@ namespace StockAdvisor.Core.Domain
         {
             if (String.IsNullOrEmpty(firstName))
             {
-                throw new DomainException(ErrorCodes.InvalidFirstName, 
-                    "First name is invalid.");
+                throw new InvalidFirstNameDomExc("First name cannot be null or empty.");
             }
 
             if (FirstName == firstName)
             {
-                throw new DomainException(ErrorCodes.InvalidFirstName, 
-                    "New first name cannot be equal to the currently used.");
+                throw new InvalidFirstNameDomExc("New first name cannot be equal to " +
+                    "the currently used.");
             }
 
             FirstName = firstName;
@@ -79,14 +77,13 @@ namespace StockAdvisor.Core.Domain
         {
             if (String.IsNullOrEmpty(surName))
             {
-                throw new DomainException(ErrorCodes.InvalidSurname, 
-                    "Surname is invalid.");
+                throw new InvalidSurNameDomExc("Surname cannot be null or empty.");
             }
 
             if (SurName == surName)
             {
-                throw new DomainException(ErrorCodes.InvalidSurname, 
-                    "New surname cannot be equal to the currently used.");
+                throw new InvalidSurNameDomExc("New surname cannot be equal to the currently" +
+                    "used.");
             }
 
             SurName = surName;
@@ -103,23 +100,22 @@ namespace StockAdvisor.Core.Domain
         {
             if (string.IsNullOrWhiteSpace(passwordHash))
             {
-                throw new DomainException(ErrorCodes.InvalidHash, 
-                    "Password hash can not be empty.");
+                throw new ArgumentException("Password hash can not be null or empty.",
+                    nameof(passwordHash));
             }
             if (string.IsNullOrWhiteSpace(salt))
             {
-                throw new DomainException(ErrorCodes.InvalidSalt, 
-                    "Salt can not be empty.");
+                throw new ArgumentException("Salt can not be null or empty.", nameof(salt));
             }
             if (PasswordHash == passwordHash)
             {
-                throw new DomainException(ErrorCodes.InvalidHash, 
-                    "New and old password hashes cannot be equal.");
+                throw new ArgumentException("New and old password hashes cannot be equal.",
+                    nameof(passwordHash));
             }
             if (Salt == salt)
             {
-                throw new DomainException(ErrorCodes.InvalidSalt, 
-                    "New and old salts cannot be equal.");
+                throw new ArgumentException("New and old salts cannot be equal.",
+                    nameof(salt));
             }
 
             PasswordHash = passwordHash;
