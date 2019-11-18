@@ -24,14 +24,15 @@ namespace StockAdvisor.Infrastructure.IoC
                 .SingleInstance();
 
             builder.RegisterModule<RepositoryModule>();
+            builder.RegisterModule(new ServiceModule(_configuration));
+            builder.RegisterModule<CommandModule>();
+            builder.RegisterModule(new SettingsModule(_configuration));
+
+            
             if (!generalSettings.InMemoryRepositories)
             {
                 builder.RegisterModule<MongoModule>();
             }
-            
-            builder.RegisterModule(new ServiceModule(_configuration));
-            builder.RegisterModule<CommandModule>();
-            builder.RegisterModule(new SettingsModule(_configuration));
         }
     }
 }

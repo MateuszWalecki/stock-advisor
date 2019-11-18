@@ -33,17 +33,21 @@ namespace StockAdvisor.Infrastructure.Repositories
             => await Task.FromResult(_investorsDB.GetAll());
 
         public async Task<Investor> GetAsync(Guid userId)
-            => await Task.FromResult(_investorsDB.GetAll().SingleOrDefault(x => x.UserId == userId));
+            => await Task.FromResult(_investorsDB.GetAll()
+                                                 .SingleOrDefault(x => x.UserId == userId));
 
-        public async Task RemoveAsync(Investor investor)
+        public async Task RemoveAsync(Guid userId)
         {
-            if (!_investorsDB.GetAll().Contains(investor))
+            var investorToRemove = _investorsDB.GetAll()
+                                               .SingleOrDefault(x => x.UserId == userId);
+
+            if (investorToRemove == null)
             {
                 throw new InvestorNotFoundSerExc($"Investor cannot be removed from the repository, " +
                     "because it does not exists there.");
             }
 
-            _investorsDB.Remove(investor);
+            _investorsDB.Remove(investorToRemove);
             await Task.CompletedTask;
         }
 

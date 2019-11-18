@@ -40,7 +40,10 @@ namespace StockAdvisor.Infrastructure.Services.DataInitializer
 
             await UserService.RegisterAsync(newUser.Id, newUser.Email, newUser.FirstName,
                 newUser.SurName, newUser.Password, newUser.Role);
+            
             await _investorService.RegisterAsync(newUser.Id);
+
+            await _investorService.AddToFavouriteCompaniesAsync(newUser.Id, "AAPL");
         }
 
         protected override void Log()

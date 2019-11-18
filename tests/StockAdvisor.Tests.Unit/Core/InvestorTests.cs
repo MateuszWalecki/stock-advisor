@@ -74,6 +74,21 @@ namespace StockAdvisor.Tests.Unit.Core
             Assert.Equal(investor.UpdatedAt, userUpdateTime);
         }
         
+        [Fact]
+        public void creating_investor_updated_at_is_assigned()
+        {
+        //Given
+            DateTime beforeCreation = DateTime.Now;
+        
+        //When
+            var investor = GetValidInvestor();
+
+        //Then
+            DateTime afterCreation = DateTime.Now;
+
+            Assert.True(beforeCreation < investor.UpdatedAt);
+            Assert.True(afterCreation > investor.UpdatedAt);
+        }
 
         private Investor GetValidInvestor()
         {

@@ -800,7 +800,7 @@ namespace StockAdvisor.Tests.Unit.Infrastructure
             await investorService.RemoveAsync(investor.UserId);
 
         //Then
-            investorRepoMock.Verify(x => x.RemoveAsync(investor), Times.Once);
+            investorRepoMock.Verify(x => x.RemoveAsync(investor.UserId), Times.Once);
         }
 
         private Investor GetDefaultInvestor()

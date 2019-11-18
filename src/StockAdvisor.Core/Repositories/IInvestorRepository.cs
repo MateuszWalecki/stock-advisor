@@ -11,6 +11,6 @@ namespace StockAdvisor.Core.Repositories
         Task<IEnumerable<Investor>> BrowseAsync();
         Task AddAsync(Investor investor);
         Task UpdateAsync(Investor investor);
-        Task RemoveAsync(Investor userId);
+        Task RemoveAsync(Guid userId);
     }
 }

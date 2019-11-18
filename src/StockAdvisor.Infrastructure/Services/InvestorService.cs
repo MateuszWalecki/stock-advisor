@@ -114,9 +114,9 @@ namespace StockAdvisor.Infrastructure.Services
 
         public async Task RemoveAsync(Guid userId)
         {
-            var investor = await _investorRepository.GetInvestorOrFailAsync(userId);
+            await _investorRepository.GetInvestorOrFailAsync(userId);
 
-            await _investorRepository.RemoveAsync(investor);
+            await _investorRepository.RemoveAsync(userId);
         }
     }
 }

@@ -9,8 +9,15 @@ namespace StockAdvisor.Core.Domain
     {
         public Guid UserId { get; protected set; }
         public DateTime UpdatedAt { get; protected set; }
-        public IEnumerable<string> FavouriteCompanies { 
-            get {return _favouriteCompanies; } }
+        public IEnumerable<string> FavouriteCompanies
+        { 
+            get {return _favouriteCompanies; }
+            protected set
+            {
+                _favouriteCompanies = new HashSet<string>(value);
+                UpdatedAt = DateTime.Now;
+            }
+        }
 
         private ISet<string> _favouriteCompanies = new HashSet<string>();
 
@@ -21,6 +28,7 @@ namespace StockAdvisor.Core.Domain
         public Investor(User user)
         {
             UserId = user.Id;
+            UpdatedAt = DateTime.Now;
         }
 
         public void AddToFavouriteCompanies(string companySymbol)
