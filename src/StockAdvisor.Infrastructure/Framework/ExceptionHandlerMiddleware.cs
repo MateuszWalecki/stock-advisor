@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using StockAdvisor.Core.Exceptions;
 using StockAdvisor.Infrastructure.Exceptions;
 
 namespace StockAdvisor.Infrastructure.Framework
@@ -34,29 +35,29 @@ namespace StockAdvisor.Infrastructure.Framework
 
         private Task HandleException(HttpContext context, Exception exception)
         {
-            var errorCode = "unsupported_error";
-            var statusCode = HttpStatusCode.BadRequest;
+            string errorCode;
+            string message;
+            HttpStatusCode statusCode;
             var exceptionType = exception.GetType();
 
             switch(exception)
             {
-                case Exception e when exceptionType == typeof(UnauthorizedAccessException):
-                    statusCode = HttpStatusCode.Unauthorized;
-                    break;
-            
-                case ServiceException e when exception is ServiceException:
+                case StockAdvisorException e when exception is StockAdvisorException:
                     statusCode = e.CorrespondingStatusCode;
                     errorCode = e.Code;
+                    message = e.Message;
                     break;
             
                 default:
                     statusCode = HttpStatusCode.InternalServerError;
-                    _logger.LogError(exception, "Unsupported exception");
+                    errorCode = "unsupported_error";
+                    message = "Report problem to the administration.";
                     break;
             }
 
-            var response = new { code = errorCode };
+            var response = new { code = errorCode, message = message };
             var payload = JsonConvert.SerializeObject(response);
+            
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int)statusCode;
 

@@ -118,7 +118,7 @@ namespace StockAdvisor.Tests.EndToEnd.Controllers
 
             var changeEmailCommand = new ChangeUserEmailCommand()
             {
-                CurrentPassword = user.Password,
+                Password = user.Password,
                 NewEmail = "new_email@test.com"
             };
 
@@ -140,7 +140,7 @@ namespace StockAdvisor.Tests.EndToEnd.Controllers
 
             var changeEmailCommand = new ChangeUserEmailCommand()
             {
-                CurrentPassword = user.Password + "a",
+                Password = user.Password + "a",
                 NewEmail = "new_email@test.com"
             };
 
@@ -162,7 +162,7 @@ namespace StockAdvisor.Tests.EndToEnd.Controllers
 
             var changeEmailCommand = new ChangeUserEmailCommand()
             {
-                CurrentPassword = user.Password,
+                Password = user.Password,
                 NewEmail = ""
             };
 
@@ -184,7 +184,7 @@ namespace StockAdvisor.Tests.EndToEnd.Controllers
 
             var changeEmailCommand = new ChangeUserEmailCommand()
             {
-                CurrentPassword = user.Password,
+                Password = user.Password,
                 NewEmail = "newemail@test.com"
             };
 

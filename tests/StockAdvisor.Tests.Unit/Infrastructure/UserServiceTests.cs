@@ -187,31 +187,6 @@ namespace StockAdvisor.Tests.Unit.Infrastructure
         }
 
         [Fact]
-        public async Task register_async_throws_exception_if_email_is_invalid()
-        {
-        //Given
-            string unvalidEmail = "";
-
-            var userRepositoryMock = new Mock<IUserRepository>();
-            userRepositoryMock.Setup(x => x.GetAsync(unvalidEmail))
-                              .ReturnsAsync((User)null);
-            
-            var mapperMock = new Mock<IMapper>();
-
-            var encrypterMock = new Mock<IEncrypter>();
-
-            var userService = new UserService(userRepositoryMock.Object,
-                encrypterMock.Object, mapperMock.Object);
-
-        //When 
-            Func<Task> act = () => userService.RegisterAsync(_id, unvalidEmail, _firstname, _surname,
-                _password, _role); 
-
-            // Then
-            await Assert.ThrowsAsync<InvalidEmailSerExc>(act);
-        }
-
-        [Fact]
         public async Task loginasync_throws_exception_if_repo_getasync_returns_null()
         {
         //Given
@@ -577,35 +552,6 @@ namespace StockAdvisor.Tests.Unit.Infrastructure
         
         //Then
             await Assert.ThrowsAsync<InvalidCredentialsSerExc>(act);
-        }
-
-        [Fact]
-        public async Task change_email_throws_exception_when_given_email_is_invalid()
-        {
-        //Given
-            string password = "SecretPassword";
-            string newEmail = "InvalidEmail";
-            var user = GetDefaultUser();
-            
-            var userRepositoryMock = new Mock<IUserRepository>();
-            userRepositoryMock.Setup(x => x.GetAsync(user.Id))
-                              .ReturnsAsync(user);
-
-            var mapperMock = new Mock<IMapper>();
-
-            var encrypterMock = new Mock<IEncrypter>();
-            encrypterMock.Setup(x => x.GetHash(password, user.Salt))
-                         .Returns(user.PasswordHash);
-
-            var userService = new UserService(userRepositoryMock.Object,
-                encrypterMock.Object, mapperMock.Object);
-
-        //When
-            Func<Task> act = () => userService.ChangeUserEmailAsync(user.Id, password,
-                newEmail);
-        
-        //Then
-            await Assert.ThrowsAsync<InvalidEmailSerExc>(act);
         }
 
         [Fact]

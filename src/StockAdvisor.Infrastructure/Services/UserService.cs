@@ -87,8 +87,6 @@ namespace StockAdvisor.Infrastructure.Services
 
             ValidateCurrentPassword(user, password);
 
-            ValidateEmail(newEmail);
-
             if (user.Email == newEmail)
             {
                 throw new InvalidEmailSerExc($"Given email {newEmail} is already used.");
@@ -126,8 +124,6 @@ namespace StockAdvisor.Infrastructure.Services
                 throw new EmailInUseSerExc($"Given email {email} is in use.");
             }
 
-            ValidateEmail(email);
-
             var salt = _encrypter.GetSalt();
             var hash = _encrypter.GetHash(password, salt);
 
@@ -143,18 +139,6 @@ namespace StockAdvisor.Infrastructure.Services
             if (oldPasswordHash != user.PasswordHash)
             {
                 throw new InvalidCredentialsSerExc("Given currently used password is invalid");
-            }
-        }
-
-        private void ValidateEmail(string emailAddress)
-        {
-            try
-            {
-                var email = new MailAddress(emailAddress);
-            }
-            catch
-            {
-                throw new InvalidEmailSerExc($"Given email {emailAddress} is invalid.");
             }
         }
     }

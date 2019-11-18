@@ -32,7 +32,7 @@ namespace StockAdvisor.Infrastructure.Handlers.Users
                 .Next()
                 .Run(async () => 
                     await _userService.ChangeUserEmailAsync(command.UserId,
-                        command.CurrentPassword, command.NewEmail))
+                        command.Password, command.NewEmail))
                 .Next()
                 .ExecuteAllAsync();
     }
