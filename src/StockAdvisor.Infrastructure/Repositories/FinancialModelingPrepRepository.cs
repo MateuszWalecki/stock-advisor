@@ -1,11 +1,13 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
 using StockAdvisor.Core.Domain;
 using StockAdvisor.Core.Repositories;
+using StockAdvisor.Infrastructure.Exceptions;
 
 namespace StockAdvisor.Infrastructure.Repositories
 {
@@ -82,7 +84,13 @@ namespace StockAdvisor.Infrastructure.Repositories
         {
             var response = await _client.GetAsync(
                 $"/api/v3/historical-price-full/{companySymbol}?serietype=line");
-            response.EnsureSuccessStatusCode();
+            
+            if (response.StatusCode == HttpStatusCode.NotFound)
+            {
+                throw new InvalidCompanySymbolSerExc($"Company symbol '{companySymbol} is " +
+                    $"invalid.'");
+            }
+
             var stringResponse = await response.Content.ReadAsStringAsync();
 
             var jsonHistorical = JsonConvert.DeserializeObject<HistoricalJson>(stringResponse);

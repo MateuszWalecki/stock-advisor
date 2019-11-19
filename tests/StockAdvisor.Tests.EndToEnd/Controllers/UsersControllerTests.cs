@@ -101,7 +101,7 @@ namespace StockAdvisor.Tests.EndToEnd.Controllers
         [Fact]
         public async Task trying_to_create_user_with_currently_used_email_returns_conflict_status()
         {
-        //Given
+            //Given
             var client = Factory.CreateClient();
             dynamic existingUser = await AddUserWithInvestorToRepoAndGetAsync();
 
@@ -115,11 +115,138 @@ namespace StockAdvisor.Tests.EndToEnd.Controllers
             };
             var payload = GetPayload(creauteUserRequest);
 
-        //When
+            //When
             var response = await client.PostAsync("users", payload);
 
-        //Then
+            //Then
             response.StatusCode.Should().BeEquivalentTo(HttpStatusCode.Conflict);
+            response.Headers.Location.Should().BeNull();
+        }
+
+        [Fact]
+        public async Task trying_to_create_user_with_empty_body_request_returns_bad_request()
+        {
+            //Given
+            var client = Factory.CreateClient();
+
+            var payload = GetPayload(null);
+
+            //When
+            var response = await client.PostAsync("users", payload);
+
+            //Then
+            response.StatusCode.Should().BeEquivalentTo(HttpStatusCode.BadRequest);
+            response.Headers.Location.Should().BeNull();
+        }
+
+        [Theory]
+        [InlineData("@test.com")]
+        [InlineData("")]
+        [InlineData("john.rambo")]
+        [InlineData(null)]
+        public async Task trying_to_create_user_with_invalid_email_returns_bad_request(string invalidEmail)
+        {
+            //Given
+            var client = Factory.CreateClient();
+
+            var creauteUserRequest = new CreateUserCommand
+            {
+                Email = invalidEmail,
+                FirstName = "Name",
+                SurName = "Surname",
+                Password = "Secret1"
+            };
+            var payload = GetPayload(creauteUserRequest);
+
+            //When
+            var response = await client.PostAsync("users", payload);
+
+            //Then
+            response.StatusCode.Should().BeEquivalentTo(HttpStatusCode.BadRequest);
+            response.Headers.Location.Should().BeNull();
+        }
+
+        [Theory]
+        [InlineData("")]
+        [InlineData(null)]
+        public async Task trying_to_create_user_with_invalid_first_name_returns_bad_request(string invalidFirstName)
+        {
+            //Given
+            var client = Factory.CreateClient();
+            string tmp = "firstNameInvalid@test.com";
+            string unusedEmail = invalidFirstName == null ? "null_" + tmp
+                                                          : "empty_" + tmp;
+
+            var creauteUserRequest = new CreateUserCommand
+            {
+                Email = unusedEmail,
+                FirstName = invalidFirstName,
+                SurName = "Surname",
+                Password = "Secret1"
+            };
+            var payload = GetPayload(creauteUserRequest);
+
+            //When
+            var response = await client.PostAsync("users", payload);
+
+            //Then
+            response.StatusCode.Should().BeEquivalentTo(HttpStatusCode.BadRequest);
+            response.Headers.Location.Should().BeNull();
+        }
+
+        [Theory]
+        [InlineData("")]
+        [InlineData(null)]
+        public async Task trying_to_create_user_with_invalid_surname_returns_bad_request(string invalidSurname)
+        {
+            //Given
+            var client = Factory.CreateClient();
+            string tmp = "SurnameInvalid@test.com";
+            string unusedEmail = invalidSurname == null ? "null_" + tmp
+                                                        : "empty_" + tmp;
+
+            var creauteUserRequest = new CreateUserCommand
+            {
+                Email = unusedEmail,
+                FirstName = "Name",
+                SurName = invalidSurname,
+                Password = "Secret1"
+            };
+            var payload = GetPayload(creauteUserRequest);
+
+            //When
+            var response = await client.PostAsync("users", payload);
+
+            //Then
+            response.StatusCode.Should().BeEquivalentTo(HttpStatusCode.BadRequest);
+            response.Headers.Location.Should().BeNull();
+        }
+
+        [Theory]
+        [InlineData("")]
+        [InlineData(null)]
+        public async Task trying_to_create_user_with_invalid_password_returns_bad_request(string invalidPassword)
+        {
+            //Given
+            var client = Factory.CreateClient();
+            string tmp = "SurnameInvalid@test.com";
+            string unusedEmail = invalidPassword == null ? "null_" + tmp
+                                                        : "empty_" + tmp;
+
+            var creauteUserRequest = new CreateUserCommand
+            {
+                Email = unusedEmail,
+                FirstName = "Firstname",
+                SurName = "Surname",
+                Password = invalidPassword
+            };
+            var payload = GetPayload(creauteUserRequest);
+
+            //When
+            var response = await client.PostAsync("users", payload);
+
+            //Then
+            response.StatusCode.Should().BeEquivalentTo(HttpStatusCode.BadRequest);
             response.Headers.Location.Should().BeNull();
         }
 

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using StockAdvisor.Infrastructure.Exceptions;
+using StockAdvisor.Infrastructure.Extensions;
 
 namespace StockAdvisor.Infrastructure.Services.ValuePredicting
 {
@@ -15,6 +16,12 @@ namespace StockAdvisor.Infrastructure.Services.ValuePredicting
         
         public IValuePredictor GetPredictor(string id)
         {
+            if (id.Empty())
+            {
+                throw new WrongAlgorithmNameSerExc($"Algorithm name cannot be " +
+                    $"null or white space");
+            }
+
             var predictor = _predictors.SingleOrDefault(
                 x => x.GetName().ToLowerInvariant() == id.ToLowerInvariant());
 

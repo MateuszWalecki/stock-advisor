@@ -39,7 +39,7 @@ namespace StockAdvisor.Infrastructure.Repositories
 
         public async Task<User> GetAsync(string email)
             => await Task.FromResult(
-                _usersDB.GetAll().SingleOrDefault(x => x.Email == email.ToLowerInvariant()));
+                _usersDB.GetAll().SingleOrDefault(x => x.Email == email?.ToLowerInvariant()));
 
         public async Task RemoveAsync(Guid id)
         {

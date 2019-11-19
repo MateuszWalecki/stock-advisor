@@ -42,16 +42,18 @@ namespace StockAdvisor.Tests.EndToEnd.Controllers
             response.StatusCode.Should().BeEquivalentTo(HttpStatusCode.Unauthorized);
         }
 
-        [Fact]
-        public async Task change_password_returns_unathorized_if_old_password_does_not_match()
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData("sdgfasdfgsadf")]
+        public async Task change_password_returns_unathorized_if_old_password_does_not_match(string oldPassword)
         {
         //Given
-            dynamic user = await AddUserWithoutInvestorToRepoAndGetAsync();
-            HttpClient client = await CreateAuthorizedClient(user);
+            HttpClient client = await CreateAuthorizedClient();
 
             var changePasswordCommand = new ChangeUserPasswordCommand()
             {
-                CurrentPassword = user.Password + "a",
+                CurrentPassword = oldPassword,
                 NewPassword = "sdafsadfgasdgdfag312423rf,"
             };
 
@@ -147,17 +149,18 @@ namespace StockAdvisor.Tests.EndToEnd.Controllers
         //Then
             response.StatusCode.Should().BeEquivalentTo(HttpStatusCode.Unauthorized);
         }
-        
-        [Fact]
-        public async Task change_email_returns_unathorized_if_password_does_not_match()
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        public async Task change_email_returns_unathorized_if_password_does_not_match(string password)
         {
         //Given
-            dynamic user = await AddUserWithoutInvestorToRepoAndGetAsync();
-            HttpClient client = await CreateAuthorizedClient(user);
+            HttpClient client = await CreateAuthorizedClient();
 
             var changeEmailCommand = new ChangeUserEmailCommand()
             {
-                Password = user.Password + "a",
+                Password = password,
                 NewEmail = "new_email@test.com"
             };
 

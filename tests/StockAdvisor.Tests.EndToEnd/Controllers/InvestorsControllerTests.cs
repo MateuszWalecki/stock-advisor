@@ -179,17 +179,19 @@ namespace StockAdvisor.Tests.EndToEnd.Controllers
             response.StatusCode.Should().BeEquivalentTo(HttpStatusCode.Unauthorized);
         }
 
-        [Fact]
-        public async Task add_favourite_company_returns_bad_request_if_given_company_symbol_is_incorrect()
+        [Theory]
+        [InlineData("INVALID_SYMBOL")]
+        [InlineData(null)]
+        [InlineData("")]
+        public async Task add_favourite_company_returns_bad_request_if_given_company_symbol_is_incorrect(string symbol)
         {
         //Given
             var user = await AddUserWithInvestorToRepoAndGetAsync();
             var client = await CreateAuthorizedClient(user);
 
-            string companySymbol = "INVALID_SYMBOL";
             var command = new AddFavouriteCompanyCommand()
             {
-                CompanySymbol = companySymbol
+                CompanySymbol = symbol
             };
             var payload = GetPayload(command);
 

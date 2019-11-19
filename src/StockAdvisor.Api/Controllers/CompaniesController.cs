@@ -33,7 +33,7 @@ namespace StockAdvisor.Api.Controllers
         
         [Authorize]
         [HttpGet("{symbol}")]
-        public async Task<IActionResult> GetAllCompanies(string symbol)
+        public async Task<IActionResult> GetCompany(string symbol)
         {
             var company = await _companyService.GetValueStatusAsync(symbol);
 

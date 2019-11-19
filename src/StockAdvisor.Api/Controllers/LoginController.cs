@@ -5,20 +5,17 @@ using Microsoft.Extensions.Caching.Memory;
 using StockAdvisor.Infrastructure.Commands;
 using StockAdvisor.Infrastructure.Commands.Login;
 using StockAdvisor.Infrastructure.Extensions;
-using StockAdvisor.Infrastructure.Services;
 
 namespace StockAdvisor.Api.Controllers
 {
     public class LoginController : ApiControllerBase
     {
-        private readonly IJwtHandler _jwtHandler;
         private readonly IMemoryCache _cache;
         
         public LoginController(ICommandDispatcher commandDispatcher,
-            IMemoryCache cache, IJwtHandler jwtHandler) : base(commandDispatcher)
+            IMemoryCache cache) : base(commandDispatcher)
         {
             _cache = cache;
-            _jwtHandler = jwtHandler;
         }
 
         [HttpPost]

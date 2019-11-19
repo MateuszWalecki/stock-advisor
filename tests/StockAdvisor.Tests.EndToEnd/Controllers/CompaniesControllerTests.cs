@@ -9,7 +9,9 @@ namespace StockAdvisor.Tests.EndToEnd.Controllers
 {
     public class CompaniesControllerTests : ControllerTestBase
     {
-        private string _controllerRoute = "companies";
+        private readonly string _controllerRoute = "companies";
+        private readonly string _existingAlgorithm = "linear";
+        private readonly string _existingCompanySymbol = "AAPL";
 
         public CompaniesControllerTests(WebApplicationFactory<Startup> factory) : base(factory)
         {
@@ -38,7 +40,7 @@ namespace StockAdvisor.Tests.EndToEnd.Controllers
             var response = await client.GetAsync(Uri());
             
         //Then
-            response.EnsureSuccessStatusCode();
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
         }
 
         [Fact]
@@ -48,7 +50,7 @@ namespace StockAdvisor.Tests.EndToEnd.Controllers
             var client = Factory.CreateClient();
             
         //When
-            var response = await client.GetAsync(Uri("AAPL"));
+            var response = await client.GetAsync(Uri(_existingCompanySymbol));
             
         //Then
             response.StatusCode.Should().BeEquivalentTo(HttpStatusCode.Unauthorized);
@@ -61,7 +63,7 @@ namespace StockAdvisor.Tests.EndToEnd.Controllers
             var client = await CreateAuthorizedClient();
             
         //When
-            var response = await client.GetAsync(Uri("AAPL"));
+            var response = await client.GetAsync(Uri(_existingCompanySymbol));
             
         //Then
             response.StatusCode.Should().BeEquivalentTo(HttpStatusCode.OK);
@@ -71,8 +73,8 @@ namespace StockAdvisor.Tests.EndToEnd.Controllers
         public async Task predict_values_return_unathorized_on_unlogged_user()
         {
         //Given
-            string companySymbol = "AAPL",
-                algortihmName = "linear";
+            string companySymbol = _existingCompanySymbol,
+                algortihmName = _existingAlgorithm;
 
             var client = Factory.CreateClient();
             
@@ -84,11 +86,11 @@ namespace StockAdvisor.Tests.EndToEnd.Controllers
         }
 
         [Fact]
-        public async Task predict_values_return_ok_status()
+        public async Task predict_values_return_ok_status_on_success()
         {
         //Given
-            string companySymbol = "AAPL",
-                algortihmName = "linear";
+            string companySymbol = _existingCompanySymbol,
+                algortihmName = _existingAlgorithm;
 
             var client = await CreateAuthorizedClient();
             
@@ -99,12 +101,15 @@ namespace StockAdvisor.Tests.EndToEnd.Controllers
             response.StatusCode.Should().BeEquivalentTo(HttpStatusCode.OK);
         }
 
-        [Fact]
-        public async Task predict_values_returns_bad_request_if_algorithm_is_invalid()
+        [Theory]
+        [InlineData("invalid algorithm")]
+        [InlineData("")]
+        [InlineData(null)]
+        public async Task predict_values_returns_bad_request_if_algorithm_is_invalid(string algorithm)
         {
         //Given
-            string companySymbol = "AAPL",
-                invalidAlgorithm = "invalid";
+            string companySymbol = _existingCompanySymbol,
+                invalidAlgorithm = algorithm;
 
             var client = await CreateAuthorizedClient();
             
@@ -115,12 +120,15 @@ namespace StockAdvisor.Tests.EndToEnd.Controllers
             response.StatusCode.Should().BeEquivalentTo(HttpStatusCode.BadRequest);
         }
 
-        [Fact]
-        public async Task predict_values_returns_bad_request_if_company_symbol_is_invalid()
+        [Theory]
+        [InlineData(null)]
+        [InlineData("invalid")]
+        [InlineData("")]
+        public async Task predict_values_returns_bad_request_if_company_symbol_is_invalid(string companySymbol)
         {
         //Given
-            string invalidCompanySymbol = "invalid",
-                algortihmName = "linear";
+            string invalidCompanySymbol = companySymbol,
+                algortihmName = _existingAlgorithm;
 
             var client = await CreateAuthorizedClient();
             
