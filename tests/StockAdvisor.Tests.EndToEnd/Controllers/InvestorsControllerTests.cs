@@ -13,7 +13,7 @@ namespace StockAdvisor.Tests.EndToEnd.Controllers
 {
     public class InvestorsControllerTests : ControllerTestBase
     {
-        private string _controllerRoute = "investors";
+        private readonly string _controllerRoute = "investors";
 
         public InvestorsControllerTests(WebApplicationFactory<Startup> factory)
             : base(factory)
@@ -68,7 +68,7 @@ namespace StockAdvisor.Tests.EndToEnd.Controllers
         }
         
         [Fact]
-        public async Task get_current_investor_returns_null_if_does_not_exist()
+        public async Task get_current_investor_returns_not_found_if_does_not_exist()
         {
         //Given
             var userWithoutInvestor = await AddUserWithoutInvestorToRepoAndGetAsync();
@@ -76,7 +76,6 @@ namespace StockAdvisor.Tests.EndToEnd.Controllers
 
         //When
             var response = await client.GetAsync(Uri("me"));
-            var responseString = await response.Content.ReadAsStringAsync();
 
         //Then
             response.StatusCode.Should().BeEquivalentTo(HttpStatusCode.NotFound);

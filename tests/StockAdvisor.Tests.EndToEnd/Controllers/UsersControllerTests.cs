@@ -88,7 +88,6 @@ namespace StockAdvisor.Tests.EndToEnd.Controllers
 
         //When
             var response = await client.PostAsync("users", payload);
-            var resopnseString = await response.Content.ReadAsStringAsync();
 
         //Then
             response.StatusCode.Should().BeEquivalentTo(HttpStatusCode.Created);

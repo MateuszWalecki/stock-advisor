@@ -12,7 +12,6 @@ namespace StockAdvisor.Infrastructure.Repositories
 {
     public class InMemoryUserRepository : IUserRepository, InMemoryRepository
     {
-        private readonly IEncrypter _encrypter = new Encrypter();
         private readonly IFakeUserDatabase _usersDB;
 
         public InMemoryUserRepository(IFakeUserDatabase fakeUsersDatabase)
