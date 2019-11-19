@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Net.Mail;
 using System.Threading.Tasks;
 using AutoMapper;
 using StockAdvisor.Core.Domain;
@@ -75,6 +74,11 @@ namespace StockAdvisor.Infrastructure.Services
             var salt = _encrypter.GetSalt();
             var newPasswordHash = _encrypter.GetHash(newPassword, salt);
 
+            if (newPasswordHash == null)
+            {
+                throw new InvalidPasswordSerExc("New password is invalid.");
+            }
+
             user.SetPassword(newPasswordHash, salt);
 
             await _userRepository.UpdateAsync(user);
@@ -107,7 +111,6 @@ namespace StockAdvisor.Infrastructure.Services
             }
 
             var hash = _encrypter.GetHash(password, user.Salt);
-
             if (hash != user.PasswordHash)
             {
                 throw new InvalidCredentialsSerExc("Invalid credentials.");
@@ -127,6 +130,11 @@ namespace StockAdvisor.Infrastructure.Services
             var salt = _encrypter.GetSalt();
             var hash = _encrypter.GetHash(password, salt);
 
+            if (hash == null)
+            {
+                throw new InvalidPasswordSerExc("Given password is invalid.");
+            }
+
             User newUser = new User(userId, email, firstName,
                 surName, hash, salt, userRole);
             await _userRepository.AddAsync(newUser);
@@ -136,10 +144,12 @@ namespace StockAdvisor.Infrastructure.Services
         {
             var oldPasswordHash = _encrypter.GetHash(currentPassword, user.Salt);
 
-            if (oldPasswordHash != user.PasswordHash)
+            if (oldPasswordHash?.Equals(user.PasswordHash) == true)
             {
-                throw new InvalidCredentialsSerExc("Given currently used password is invalid");
+                return;
             }
+
+            throw new InvalidCredentialsSerExc("Given currently used password is invalid");
         }
     }
 }

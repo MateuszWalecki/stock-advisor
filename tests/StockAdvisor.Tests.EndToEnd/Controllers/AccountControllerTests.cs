@@ -21,7 +21,7 @@ namespace StockAdvisor.Tests.EndToEnd.Controllers
         }
 
         [Fact]
-        public async Task change_password_unathorized_request_sends_unathorized_code()
+        public async Task change_password_on_unathorized_request_returns_unathorized_code()
         {
         //Given
             var client = Factory.CreateClient();
@@ -64,8 +64,10 @@ namespace StockAdvisor.Tests.EndToEnd.Controllers
             response.StatusCode.Should().BeEquivalentTo(HttpStatusCode.Unauthorized);
         }
 
-        [Fact]
-        public async Task change_password_returns_bad_request_if_new_password_is_not_valid()
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        public async Task change_password_returns_bad_request_if_new_password_is_not_valid(string newPw)
         {
         //Given
             dynamic user = await AddUserWithoutInvestorToRepoAndGetAsync();
@@ -74,10 +76,25 @@ namespace StockAdvisor.Tests.EndToEnd.Controllers
             var changePasswordCommand = new ChangeUserPasswordCommand()
             {
                 CurrentPassword = user.Password,
-                NewPassword = ""
+                NewPassword = newPw
             };
 
             var payload = GetPayload(changePasswordCommand);
+
+        //When
+            var response = await client.PutAsync(Url("password"), payload);
+
+        //Then
+            response.StatusCode.Should().BeEquivalentTo(HttpStatusCode.BadRequest);
+        }
+
+        [Fact]
+        public async Task change_password_without_body_returns_bad_request()
+        {
+        //Given
+            var client = await CreateAuthorizedClient();
+
+            var payload = GetPayload(null);
 
         //When
             var response = await client.PutAsync(Url("password"), payload);
@@ -153,8 +170,11 @@ namespace StockAdvisor.Tests.EndToEnd.Controllers
             response.StatusCode.Should().BeEquivalentTo(HttpStatusCode.Unauthorized);
         }
         
-        [Fact]
-        public async Task change_email_returns_bad_request_if_new_email_is_not_valid()
+        [Theory]
+        [InlineData(null)]
+        [InlineData("@test.com")]
+        [InlineData("sample.email")]
+        public async Task change_email_returns_bad_request_if_new_email_is_not_valid(string email)
         {
         //Given
             dynamic user = await AddUserWithoutInvestorToRepoAndGetAsync();
@@ -163,10 +183,25 @@ namespace StockAdvisor.Tests.EndToEnd.Controllers
             var changeEmailCommand = new ChangeUserEmailCommand()
             {
                 Password = user.Password,
-                NewEmail = ""
+                NewEmail = email
             };
 
             var payload = GetPayload(changeEmailCommand);
+
+        //When
+            var response = await client.PutAsync(Url("email"), payload);
+
+        //Then
+            response.StatusCode.Should().BeEquivalentTo(HttpStatusCode.BadRequest);
+        }
+
+        [Fact]
+        public async Task change_email_without_body_returns_bad_request()
+        {
+        //Given
+            var client = await CreateAuthorizedClient();
+
+            var payload = GetPayload(null);
 
         //When
             var response = await client.PutAsync(Url("email"), payload);

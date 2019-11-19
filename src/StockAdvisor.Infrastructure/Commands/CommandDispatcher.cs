@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Autofac;
+using StockAdvisor.Infrastructure.Exceptions;
 
 namespace StockAdvisor.Infrastructure.Commands
 {
@@ -17,8 +18,7 @@ namespace StockAdvisor.Infrastructure.Commands
         {
             if (command == null)
             {
-                throw new ArgumentNullException(nameof(command),
-                    $"Command {typeof(T).Name} cannot be null.");
+                throw new CommandNullSerExc($"Command {typeof(T).Name} cannot be null.");
             }
 
             var handler = _componentContext.Resolve<ICommandHandler<T>>();

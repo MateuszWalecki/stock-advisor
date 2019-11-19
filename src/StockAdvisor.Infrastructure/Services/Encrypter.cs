@@ -1,5 +1,6 @@
 using System;
 using System.Security.Cryptography;
+using StockAdvisor.Infrastructure.Exceptions;
 using StockAdvisor.Infrastructure.Extensions;
 
 namespace StockAdvisor.Infrastructure.Services
@@ -19,11 +20,16 @@ namespace StockAdvisor.Infrastructure.Services
             return Convert.ToBase64String(saltBytes);
         }
 
-        public string GetHash(string password, string salt)
+#nullable enable
+        /// <summary>
+        /// Generates hash dor the given password - salt pair. When given password is null or empty returns
+        /// null.
+        /// </summary>
+        public string? GetHash(string password, string salt)
         {
             if (password.Empty())
             {
-                throw new ArgumentException("Can not generate hash from an empty value.", nameof(password));
+                return null;
             }
             if (salt.Empty())
             {
@@ -34,6 +40,7 @@ namespace StockAdvisor.Infrastructure.Services
 
             return Convert.ToBase64String(pbkdf2.GetBytes(SaltSize));
         }
+#nullable disable
 
         private static byte[] GetBytes(string value)
         {

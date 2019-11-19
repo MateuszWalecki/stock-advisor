@@ -63,8 +63,11 @@ namespace StockAdvisor.Tests.EndToEnd.Controllers
             response.StatusCode.Should().BeEquivalentTo(HttpStatusCode.Unauthorized);
         }
 
-        [Fact]
-        public async Task given_invalid_password_unathorized_code_is_returned()
+        [Theory]
+        [InlineData("invalid password")]
+        [InlineData("")]
+        [InlineData(null)]
+        public async Task given_invalid_password_unathorized_code_is_returned(string invalidPassword)
         {
         //Given
             var client = Factory.CreateClient();
@@ -73,7 +76,7 @@ namespace StockAdvisor.Tests.EndToEnd.Controllers
             var command = new LoginCommand
             {
                 Email = user.Email,
-                Password = "invalid password"    
+                Password = invalidPassword    
             };
             var payload = GetPayload(command);
 
@@ -82,6 +85,20 @@ namespace StockAdvisor.Tests.EndToEnd.Controllers
 
         //Then
             response.StatusCode.Should().BeEquivalentTo(HttpStatusCode.Unauthorized);
+        }
+
+        [Fact]
+        public async Task login_async_returns_bad_request_if_body_is_empty()
+        {
+        //Given
+            var client = Factory.CreateClient();
+            var payload = GetPayload(null);
+
+        //When
+            var response = await client.PostAsync("/login", payload);
+
+        //Then
+            response.StatusCode.Should().BeEquivalentTo(HttpStatusCode.BadRequest);
         }
     }
 }

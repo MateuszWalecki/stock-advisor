@@ -23,18 +23,20 @@ namespace StockAdvisor.Tests.Unit.Infrastructure
             salt1.Should().NotBe(salt2);
         }
 
-        [Fact]
-        public void get_hash_method_throws_argumentexception_if_given_password_is_empty()
+        [Theory]
+        [InlineData("   ")]
+        [InlineData(null)]
+        public void get_hash_method_returns_null_if_given_password_is_empty_or_white_space(string password)
         {
         //Given
             var encrypter = new Encrypter();
             string salt = encrypter.GetSalt();
 
         //When
-            Action act = () => encrypter.GetHash("", salt);
+            var hash = encrypter.GetHash(password, salt);
 
-        //Then
-            Assert.Throws<ArgumentException>(act);
+            //Then
+            hash.Should().BeNull();
         }
 
         

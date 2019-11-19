@@ -201,6 +201,20 @@ namespace StockAdvisor.Tests.EndToEnd.Controllers
         }
 
         [Fact]
+        public async Task add_favourite_company_returns_bad_request_if_body_request_is_empty()
+        {
+        //Given
+            var client = await CreateAuthorizedClient();
+            var payload = GetPayload(null);
+
+        //When
+            var response = await client.PostAsync(Uri("companies"), payload);
+
+        //Then
+            response.StatusCode.Should().BeEquivalentTo(HttpStatusCode.BadRequest);
+        }
+
+        [Fact]
         public async Task add_favourite_company_returns_no_content_on_success()
         {
         //Given
@@ -244,7 +258,7 @@ namespace StockAdvisor.Tests.EndToEnd.Controllers
 
 
         [Fact]
-        public async Task remove_favourite_company_returns_unathorized_if_user_us_not_authorized()
+        public async Task remove_favourite_company_returns_unathorized_if_user_is_not_authorized()
         {
         //Given
             var companySymbol = "AAPL";

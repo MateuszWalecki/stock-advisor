@@ -24,8 +24,11 @@ namespace StockAdvisor.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> LoginAsync([FromBody] LoginCommand loginCommand)
         {
-            loginCommand.TokenId = Guid.NewGuid();
-            
+            if (loginCommand != null)
+            {
+                loginCommand.TokenId = Guid.NewGuid();
+            }
+
             await DispatchAsync(loginCommand);
 
             var token = _cache.GetJwt(loginCommand.TokenId);

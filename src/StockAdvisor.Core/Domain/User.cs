@@ -35,6 +35,11 @@ namespace StockAdvisor.Core.Domain
 
         public void SetEmail(string emailAddress)
         {
+            if (string.IsNullOrWhiteSpace(emailAddress))
+            {
+                throw new InvalidEmailDomExc($"Email cannot be null or white space.");
+            }
+
             emailAddress = emailAddress.ToLowerInvariant();
 
             try
