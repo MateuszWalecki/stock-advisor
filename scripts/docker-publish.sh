@@ -14,6 +14,6 @@ case "$TRAVIS_BRANCH" in
 esac
 
 echo "$DOCKER_PASSWORD" | docker login --username $DOCKER_USERNAME --password-stdin
-docker build -f ./src/StockAdvisor.Api/Dockerfile -t stock-advisor:$DOCKER_TAG --no-cache .
+docker build -t stock-advisor:$DOCKER_TAG ./src/StockAdvisor.Api --no-cache 
 docker tag stock-advisor:$DOCKER_TAG $DOCKER_USERNAME/stock-advisor:$DOCKER_TAG
 docker push $DOCKER_USERNAME/stock-advisor:$DOCKER_TAG

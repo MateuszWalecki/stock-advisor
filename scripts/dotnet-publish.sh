@@ -1,1 +1,1 @@
-dotnet publish ./src/StockAdvisor.Api -c Release -o ./bin/Docker
+dotnet publish ./src/StockAdvisor.Api -c Release -o ./src/StockAdvisor.Api/bin/Docker
