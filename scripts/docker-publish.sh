@@ -19,7 +19,7 @@ echo "$DOCKER_PASSWORD" | docker login --username $DOCKER_USERNAME --password-st
 echo "files in release folder:"
 ls $(pwd)/bin/Docker
 echo "docker-build $(pwd)"
-docker build -f ./src/StockAdvisor.Api/Dockerfile -t stock-advisor:$DOCKER_TAG --no-cache 
+docker build -f ./src/StockAdvisor.Api/Dockerfile -t stock-advisor:$DOCKER_TAG --no-cache .
 
 echo "docker-tag"
 docker tag stock-advisor:$DOCKER_TAG $DOCKER_USERNAME/stock-advisor:$DOCKER_TAG
