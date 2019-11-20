@@ -41,6 +41,8 @@ namespace StockAdvisor.Api
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .UseServiceProviderFactory(new AutofacServiceProviderFactory())
+                .ConfigureHostConfiguration(
+                    config => config.AddEnvironmentVariables("ASPNETCORE"))
                 .ConfigureWebHostDefaults(webHostBuilder => {
                     webHostBuilder
                         .UseContentRoot(Directory.GetCurrentDirectory())

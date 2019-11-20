@@ -1,3 +1,3 @@
 cd tests
-dotnet test StockAdvisor.Tests.Unit/StockAdvisor.Tests.Unit.csproj
+ASPNETCORE_ENVIRONMENT=Testing dotnet test StockAdvisor.Tests.Unit/StockAdvisor.Tests.Unit.csproj
 dotnet test StockAdvisor.Tests.EndToEnd/StockAdvisor.Tests.EndToEnd.csproj
