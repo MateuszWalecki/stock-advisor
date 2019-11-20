@@ -16,6 +16,8 @@ esac
 echo "login with tag $DOCKER_TAG"
 docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
 
+echo "files in release folder:"
+ls $(pwd)/bin/Docker
 echo "docker-build $(pwd)"
 docker build -t stock-advisor:$DOCKER_TAG ./src/StockAdvisor.Api --no-cache
 
