@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 
 namespace StockAdvisor.Infrastructure.Services.DataInitializer
 {
-    public interface IInputDataBuilder
+    public interface IInputDataBuilder : IService
     {
         Task<dynamic> Build(); 
     }

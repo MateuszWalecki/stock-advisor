@@ -8,15 +8,15 @@ namespace StockAdvisor.Infrastructure.Services.DataInitializer
 {
     public class DataInitializer : IDataInitializer
     {
-        private readonly UserWithoutInvestorBuilder _userWithoutInvestorBuilder;
-        private readonly UserWithInvestorBuilder _userWithInvestorBuilder;
-        private readonly AdminBuilder _adminBuilder;
+        private readonly IUserWithoutInvestorBuilder _userWithoutInvestorBuilder;
+        private readonly IUserWithInvestorBuilder _userWithInvestorBuilder;
+        private readonly IAdminBuilder _adminBuilder;
 
         private readonly IUserService _userService;
         private readonly ILogger<DataInitializer> _logger;
 
-        public DataInitializer(UserWithoutInvestorBuilder userWithoutInvestorBuilder,
-            UserWithInvestorBuilder userWithInvestorBuilder, AdminBuilder adminBuilder,
+        public DataInitializer(IUserWithoutInvestorBuilder userWithoutInvestorBuilder,
+            IUserWithInvestorBuilder userWithInvestorBuilder, IAdminBuilder adminBuilder,
             IUserService userService, ILogger<DataInitializer> logger)
         {
             _userWithoutInvestorBuilder = userWithoutInvestorBuilder;
