@@ -1,11 +1,16 @@
 version: "2"
 
 services:
+  start-dependencies:
+    image: dadarek/wait-for-dependencies
+    depends_on:
+      - mongo
+    command: mongo:27017
+
   api:
     build: ../src/StockAdvisor.Api
     links:
       - mongo
-      - mssql
     ports:
       - '5000:5000'
 
@@ -15,11 +20,3 @@ services:
       - ./data/db:/data/db
     ports:
       - '27017:27017'
-
-  mssql:
-    image: microsoft/mssql-server-linux
-    environment:
-      ACCEPT_EULA: Y
-      SA_PASSWORD: "12345"
-    ports:
-      - "1433:1433"
