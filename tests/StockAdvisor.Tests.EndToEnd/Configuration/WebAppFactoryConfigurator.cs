@@ -8,17 +8,17 @@ namespace StockAdvisor.Tests.EndToEnd.Configuration
         public static WebApplicationFactory<Startup> ConfigureFactory(
             this WebApplicationFactory<Startup> factory)
         {
-            return factory.SetPathToTestAppSettings();
+            return factory.SetEnvironmentVariable();
         }
 
-        private static WebApplicationFactory<Startup> SetPathToTestAppSettings(
+        private static WebApplicationFactory<Startup> SetEnvironmentVariable(
             this WebApplicationFactory<Startup> factory)
         {
             return factory.WithWebHostBuilder(builder =>
             {
                 builder.ConfigureAppConfiguration((context,conf) =>
                 {
-                    context.HostingEnvironment.EnvironmentName = "testing";
+                    context.HostingEnvironment.EnvironmentName = "Testing";
                 });
             });
         }

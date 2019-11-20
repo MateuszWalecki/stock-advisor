@@ -9,14 +9,25 @@ branches:
     - develop
 before_script:
   - chmod -R a+x scripts
-script:
-  - ./scripts/dotnet-build.sh
-  - ./scripts/dotnet-test-unit.sh & ./scripts/dotnet-test-e2e.sh
-  - ./scripts/dotnet-publish.sh
-  - ./scripts/docker-publish.sh
-after_success:
-  - ./scripts/after-success.sh
+jobs:
+  include:
+    - stage: build
+      script:
+        - ./scripts/dotnet-build.sh
+    - stage: test
+      script:
+        - ./scripts/dotnet-test-unit.sh
+        - ./scripts/dotnet-test-e2e.sh
+    - stage: publish
+      script:
+        - ./scripts/dotnet-publish.sh
+        - ./scripts/docker-publish.sh
+stages:
+  - build
+  - test
+  - publish
 notifications:
   email:
     on_success: never
-    on_failure: always
+    on_failure: never
+      
