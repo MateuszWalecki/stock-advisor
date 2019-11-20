@@ -14,7 +14,7 @@ case "$TRAVIS_BRANCH" in
 esac
 
 echo "login with tag $DOCKER_TAG"
-docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+echo "$DOCKER_PASSWORD" | docker login --username $DOCKER_USERNAME --password-stdin
 
 echo "files in release folder:"
 ls $(pwd)/bin/Docker
