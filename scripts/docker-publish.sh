@@ -17,7 +17,7 @@ echo "login with tag $DOCKER_TAG"
 docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
 
 echo "docker-build"
-docker build -f ./src/StockAdvisor.Api/Dockerfile -t stock-advisor:$DOCKER_TAG ./src/StockAdvisor.Api --no-cache
+docker build -t stock-advisor:$DOCKER_TAG ./src/StockAdvisor.Api --no-cache
 
 echo "docker-tag"
 docker tag stock-advisor:$DOCKER_TAG $DOCKER_USERNAME/stock-advisor:$DOCKER_TAG

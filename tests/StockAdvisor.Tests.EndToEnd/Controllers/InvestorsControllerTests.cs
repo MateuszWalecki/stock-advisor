@@ -103,7 +103,7 @@ namespace StockAdvisor.Tests.EndToEnd.Controllers
             var client = await CreateAuthorizedClient(user);
             
         //When
-            var response = await client.PostAsync(Uri(), GetPayload(""));
+            var response = await client.PostAsync(Uri(), GetPayload(null));
 
         //Then
             response.StatusCode.Should().BeEquivalentTo(HttpStatusCode.Conflict);
