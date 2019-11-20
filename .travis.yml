@@ -11,8 +11,8 @@ before_script:
   - chmod -R a+x scripts
 script:
   - ./scripts/dotnet-build.sh
-  # - ./scripts/dotnet-test-unit.sh
-  # - ./scripts/dotnet-test-e2e.sh
+  - ./scripts/dotnet-test-unit.sh
+  - ./scripts/dotnet-test-e2e.sh
   - ./scripts/dotnet-publish.sh
   - ./scripts/docker-publish.sh
 after_success:
