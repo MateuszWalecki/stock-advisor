@@ -5,9 +5,9 @@ This repository is sample .Net Core 3.0 Web API that provides stock related logi
 1. Onion architecture (Core, Infrastructure, API)
 2. REST API
 3. MongoDB
-4. SQL database
-5. Unit tests
-6. Tests end to end
+4. Unit tests, tests end to end 
+5. Docker
+6. Travis CI
 7. Command handler pattern (CQRS)
 8. Users management (register, edit user profile etc.)
 9. Authorization using JWT Tokens
@@ -15,6 +15,7 @@ This repository is sample .Net Core 3.0 Web API that provides stock related logi
 11. Global exception handler with custom exceptions
 12. Logging
 13. Git
+14. Deployed on Azure (http://mateuszwalecki.northeurope.cloudapp.azure.com/)
 
 ## Used modules:
 1. Autofac

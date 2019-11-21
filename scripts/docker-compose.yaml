@@ -8,7 +8,7 @@ services:
     command: mongo:27017
 
   api:
-    build: ../src/StockAdvisor.Api
+    image: mateuszwalecki/stock-advisor
     links:
       - mongo
     ports:
