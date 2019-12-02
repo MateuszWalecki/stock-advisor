@@ -6,7 +6,7 @@ using StockAdvisor.Core.Domain;
 
 namespace StockAdvisor.Infrastructure.Services.DataInitializer
 {
-    public class UserWithInvestorBuilder : InputDataBuilder
+    public class UserWithInvestorBuilder : InputDataBuilder, IUserWithInvestorBuilder
     {
         private readonly IInvestorService _investorService;
 

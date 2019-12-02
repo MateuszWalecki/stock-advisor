@@ -6,9 +6,10 @@ using StockAdvisor.Core.Domain;
 
 namespace StockAdvisor.Infrastructure.Services.DataInitializer
 {
-    public class AdminBuilder : InputDataBuilder
+    public class AdminBuilder : InputDataBuilder, IAdminBuilder
     {
-        public AdminBuilder(IUserService userService, ILogger<InputDataBuilder> logger) : base(userService, logger)
+        public AdminBuilder(IUserService userService, ILogger<InputDataBuilder> logger)
+            : base(userService, logger)
         {
         }
 
