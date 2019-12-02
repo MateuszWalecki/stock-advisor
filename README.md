@@ -6,7 +6,7 @@ This repository is sample .Net Core 3.0 Web API that provides stock related logi
 2. REST API
 3. MongoDB
 4. Unit tests, tests end to end 
-5. Docker
+5. Docker (https://hub.docker.com/repository/docker/mateuszwalecki/stock-advisor)
 6. Travis CI
 7. Command handler pattern (CQRS)
 8. Users management (register, edit user profile etc.)
@@ -15,7 +15,7 @@ This repository is sample .Net Core 3.0 Web API that provides stock related logi
 11. Global exception handler with custom exceptions
 12. Logging
 13. Git
-14. Deployed on Azure (http://mateuszwalecki.northeurope.cloudapp.azure.com/)
+14. Deployed using Azure Linux Ubuntu VM (http://mateuszwalecki.northeurope.cloudapp.azure.com/)
 
 ## Used modules:
 1. Autofac
