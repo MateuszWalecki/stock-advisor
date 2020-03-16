@@ -1,4 +1,3 @@
-using System.Dynamic;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -49,23 +48,21 @@ namespace StockAdvisor.Tests.EndToEnd.Controllers
         }
 
         public async Task<HttpClient> CreateAuthorizedClient(
-            ExpandoObject userToAuthorize = null)
+            UserWrapperForTesting userToAuthorize = null)
         {
             var client = Factory.CreateClient();
-            
-            dynamic userData = 
-                userToAuthorize == null ?
-                    await AddUserWithInvestorToRepoAndGetAsync() :
-                    userToAuthorize as dynamic;
 
-            var authorizationHeader =  await GetValidBearerTokenHeader(client, (string)userData.Email,
-                (string)userData.Password);
+            UserWrapperForTesting userData =
+                userToAuthorize ?? await AddUserWithInvestorToRepoAndGetAsync();
+
+            var authorizationHeader =  await GetValidBearerTokenHeader(client, userData.Email,
+                userData.Password);
             client.DefaultRequestHeaders.Add("Authorization", authorizationHeader);
 
             return client;
         }
 
-        public async Task<ExpandoObject> AddUserWithInvestorToRepoAndGetAsync()
+        public async Task<UserWrapperForTesting> AddUserWithInvestorToRepoAndGetAsync()
         {
             var dataInitializer =
                 Factory.Server.Services.GetService(typeof(IDataInitializer)) as IDataInitializer;
@@ -73,7 +70,7 @@ namespace StockAdvisor.Tests.EndToEnd.Controllers
             return await dataInitializer.AddAndGetNextUserWithInvestor();
         }
 
-        public async Task<ExpandoObject> AddUserWithoutInvestorToRepoAndGetAsync()
+        public async Task<UserWrapperForTesting> AddUserWithoutInvestorToRepoAndGetAsync()
         {
             var dataInitializer =
                 Factory.Server.Services.GetService(typeof(IDataInitializer)) as IDataInitializer;

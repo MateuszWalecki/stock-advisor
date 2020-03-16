@@ -4,6 +4,6 @@ namespace StockAdvisor.Infrastructure.Services.DataInitializer
 {
     public interface IInputDataBuilder : IService
     {
-        Task<dynamic> Build(); 
+        Task<UserWrapperForTesting> Build(); 
     }
 }

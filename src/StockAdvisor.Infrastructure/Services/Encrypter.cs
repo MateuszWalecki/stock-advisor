@@ -1,6 +1,5 @@
 using System;
 using System.Security.Cryptography;
-using StockAdvisor.Infrastructure.Exceptions;
 using StockAdvisor.Infrastructure.Extensions;
 
 namespace StockAdvisor.Infrastructure.Services
@@ -12,7 +11,6 @@ namespace StockAdvisor.Infrastructure.Services
 
         public string GetSalt()
         {
-            var random = new Random();
             var saltBytes = new byte[SaltSize];
             var rng = RandomNumberGenerator.Create();
             rng.GetBytes(saltBytes);

@@ -1,4 +1,3 @@
-using System.Dynamic;
 using System.Threading.Tasks;
 
 namespace StockAdvisor.Infrastructure.Services.DataInitializer
@@ -8,7 +7,7 @@ namespace StockAdvisor.Infrastructure.Services.DataInitializer
         Task SeedDefaultAsync();
 
         //For testing purposes
-        Task<ExpandoObject> AddAndGetNextUserWithInvestor(); 
-        Task<ExpandoObject> AddAndGetNextUserWithoutInvestor();
+        Task<UserWrapperForTesting> AddAndGetNextUserWithInvestor(); 
+        Task<UserWrapperForTesting> AddAndGetNextUserWithoutInvestor();
     }
 }

@@ -24,7 +24,7 @@ namespace StockAdvisor.Tests.EndToEnd.Controllers
         //Given
             var client = Factory.CreateClient();
 
-            dynamic user = await AddUserWithInvestorToRepoAndGetAsync();
+            var user = await AddUserWithInvestorToRepoAndGetAsync();
 
         //When
             var response = await client.GetAsync($"users/{user.Email}");
@@ -39,7 +39,7 @@ namespace StockAdvisor.Tests.EndToEnd.Controllers
         //Given
             var client = await CreateAuthorizedClient();
 
-            dynamic user = await AddUserWithInvestorToRepoAndGetAsync();
+            var user = await AddUserWithInvestorToRepoAndGetAsync();
 
         //When
             var response = await client.GetAsync($"users/{user.Email}");
@@ -102,7 +102,7 @@ namespace StockAdvisor.Tests.EndToEnd.Controllers
         {
             //Given
             var client = Factory.CreateClient();
-            dynamic existingUser = await AddUserWithInvestorToRepoAndGetAsync();
+            var existingUser = await AddUserWithInvestorToRepoAndGetAsync();
 
             string usedEmail = existingUser.Email;
             var creauteUserRequest = new CreateUserCommand

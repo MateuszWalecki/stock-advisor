@@ -15,7 +15,7 @@ This repository is sample .Net Core 3.0 Web API that provides stock related logi
 11. Global exception handler with custom exceptions
 12. Logging
 13. Git
-14. Deployed using Azure Linux Ubuntu VM (http://mateuszwalecki.northeurope.cloudapp.azure.com/)
+14. Deployed using Azure Linux Ubuntu VM (http://mateuszwalecki.northeurope.cloudapp.azure.com/ - free license expired)
 
 ## Used modules:
 1. Autofac

@@ -5,7 +5,6 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Newtonsoft.Json;
 using StockAdvisor.Api;
-using StockAdvisor.Core.Domain;
 using StockAdvisor.Infrastructure.Commands.Users;
 using StockAdvisor.Infrastructure.DTO;
 using Xunit;
@@ -25,7 +24,7 @@ namespace StockAdvisor.Tests.EndToEnd.Controllers
         {
         //Given
             var client = Factory.CreateClient();
-            dynamic user = await AddUserWithoutInvestorToRepoAndGetAsync();
+            var user = await AddUserWithoutInvestorToRepoAndGetAsync();
 
             var changePasswordCommand = new ChangeUserPasswordCommand()
             {
@@ -72,7 +71,7 @@ namespace StockAdvisor.Tests.EndToEnd.Controllers
         public async Task change_password_returns_bad_request_if_new_password_is_not_valid(string newPw)
         {
         //Given
-            dynamic user = await AddUserWithoutInvestorToRepoAndGetAsync();
+            var user = await AddUserWithoutInvestorToRepoAndGetAsync();
             HttpClient client = await CreateAuthorizedClient(user);
 
             var changePasswordCommand = new ChangeUserPasswordCommand()
@@ -109,7 +108,7 @@ namespace StockAdvisor.Tests.EndToEnd.Controllers
         public async Task change_password_on_success_returns_no_content()
         {
         //Given
-            dynamic user = await AddUserWithoutInvestorToRepoAndGetAsync();
+            var user = await AddUserWithoutInvestorToRepoAndGetAsync();
             HttpClient client = await CreateAuthorizedClient(user);
 
             var changePasswordCommand = new ChangeUserPasswordCommand()
@@ -133,7 +132,7 @@ namespace StockAdvisor.Tests.EndToEnd.Controllers
         {
         //Given
             var client = Factory.CreateClient();
-            dynamic user = await AddUserWithoutInvestorToRepoAndGetAsync();
+            var user = await AddUserWithoutInvestorToRepoAndGetAsync();
 
             var changeEmailCommand = new ChangeUserEmailCommand()
             {
@@ -180,7 +179,7 @@ namespace StockAdvisor.Tests.EndToEnd.Controllers
         public async Task change_email_returns_bad_request_if_new_email_is_not_valid(string email)
         {
         //Given
-            dynamic user = await AddUserWithoutInvestorToRepoAndGetAsync();
+            var user = await AddUserWithoutInvestorToRepoAndGetAsync();
             HttpClient client = await CreateAuthorizedClient(user);
 
             var changeEmailCommand = new ChangeUserEmailCommand()
@@ -217,7 +216,7 @@ namespace StockAdvisor.Tests.EndToEnd.Controllers
         public async Task change_email_on_success_returns_no_content()
         {
         //Given
-            dynamic user = await AddUserWithoutInvestorToRepoAndGetAsync();
+            var user = await AddUserWithoutInvestorToRepoAndGetAsync();
             HttpClient client = await CreateAuthorizedClient(user);
 
             var changeEmailCommand = new ChangeUserEmailCommand()
@@ -255,7 +254,7 @@ namespace StockAdvisor.Tests.EndToEnd.Controllers
         public async Task get_current_user_returns_it_if_exists()
         {
         //Given
-            dynamic user = await AddUserWithInvestorToRepoAndGetAsync();
+            var user = await AddUserWithInvestorToRepoAndGetAsync();
             HttpClient client = await CreateAuthorizedClient(user);
             
         //When
@@ -270,7 +269,7 @@ namespace StockAdvisor.Tests.EndToEnd.Controllers
             Assert.Equal(user.Email, resultUser.Email);
             Assert.Equal(user.FirstName, resultUser.FirstName);
             Assert.Equal(user.SurName, resultUser.SurName);
-            Assert.Equal(((UserRole)user.Role).ToString(), resultUser.Role);
+            Assert.Equal(user.Role.ToString(), resultUser.Role);
         }
 
         private string Url(string postifx)

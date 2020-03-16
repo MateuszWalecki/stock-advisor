@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Dynamic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -27,19 +26,11 @@ namespace StockAdvisor.Infrastructure.Services.DataInitializer
             _logger = logger;
         }
 
-        public async Task<ExpandoObject> AddAndGetNextUserWithInvestor()
-        {
-            var newUserWithInvestor = await _userWithInvestorBuilder.Build();
+        public async Task<UserWrapperForTesting> AddAndGetNextUserWithInvestor()
+            => await _userWithInvestorBuilder.Build();
 
-            return newUserWithInvestor;
-        }
-
-        public async Task<ExpandoObject> AddAndGetNextUserWithoutInvestor()
-        {
-            var newUserWithoutInvestor = await _userWithoutInvestorBuilder.Build();
-
-            return newUserWithoutInvestor;
-        }
+        public async Task<UserWrapperForTesting> AddAndGetNextUserWithoutInvestor()
+            => await _userWithoutInvestorBuilder.Build();
 
         public async Task SeedDefaultAsync()
         {

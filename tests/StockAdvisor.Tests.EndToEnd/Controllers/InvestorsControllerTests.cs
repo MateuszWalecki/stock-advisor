@@ -140,7 +140,7 @@ namespace StockAdvisor.Tests.EndToEnd.Controllers
         public async Task delete_investor_returns_not_dound_if_related_investor_does_not_exist()
         {
         //Given
-            dynamic user = await AddUserWithoutInvestorToRepoAndGetAsync();
+            var user = await AddUserWithoutInvestorToRepoAndGetAsync();
             HttpClient client = await CreateAuthorizedClient(user);
 
         //When

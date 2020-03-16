@@ -1,5 +1,4 @@
 using System;
-using System.Dynamic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using StockAdvisor.Core.Domain;
@@ -17,27 +16,21 @@ namespace StockAdvisor.Infrastructure.Services.DataInitializer
             _investorService = investorService;
         }
 
-        protected override void CreateNewResource()
+        protected override UserWrapperForTesting CreateNewResource()
         {
-            int i = CreatedInstanceId;
-            CreatedInstanceId++;
+            int i = GetNewInstaceId();
 
-            dynamic newUser = new ExpandoObject();
-
-            newUser.Id = Guid.NewGuid();
-            newUser.Email = $"user_with_investor{i}@test.com";
-            newUser.FirstName = $"John{i}";;
-            newUser.SurName = $"Rambo{i}";
-            newUser.Role =  UserRole.User;
-            newUser.Password = $"Secret{i}";
-
-            NewResourceToAdd = newUser;
+            return new UserWrapperForTesting(
+                Guid.NewGuid(),
+                $"user_with_investor{i}@test.com",
+                $"John{i}",
+                $"Rambo{i}",
+                $"Secret{i}",
+                UserRole.User);
         }
 
-        protected override async Task AddToRepos()
+        protected override async Task AddToRepos(UserWrapperForTesting newUser)
         {
-            dynamic newUser = NewResourceToAdd;
-
             await UserService.RegisterAsync(newUser.Id, newUser.Email, newUser.FirstName,
                 newUser.SurName, newUser.Password, newUser.Role);
             
@@ -47,9 +40,9 @@ namespace StockAdvisor.Infrastructure.Services.DataInitializer
             await _investorService.AddToFavouriteCompaniesAsync(newUser.Id, "BAC");
         }
 
-        protected override void Log()
+        protected override void Log(UserWrapperForTesting newUser)
         {
-            Logger.LogTrace($"Created user and investor for the email: {NewResourceToAdd.Email}.");
+            Logger.LogTrace($"Created user and investor for the email: {newUser.Email}.");
         }
     }
 }

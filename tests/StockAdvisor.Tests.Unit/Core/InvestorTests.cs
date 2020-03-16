@@ -34,7 +34,7 @@ namespace StockAdvisor.Tests.Unit.Core
             DateTime userUpdateTime = investor.UpdatedAt;
 
         //When
-            Action act = () => investor.AddToFavouriteCompanies(companySymbolToAdd);
+            void act() => investor.AddToFavouriteCompanies(companySymbolToAdd);
 
         //Then
             Assert.Throws<SymbolInSetDomExc>(act);
@@ -67,7 +67,7 @@ namespace StockAdvisor.Tests.Unit.Core
             DateTime userUpdateTime = investor.UpdatedAt;
 
         //When
-            Action act = () => investor.RemoveFromFavouriteCompanies(companySymbol);
+            void act() => investor.RemoveFromFavouriteCompanies(companySymbol);
 
         //Then
             Assert.Throws<SymbolNotInSetDomExc>(act);

@@ -1,3 +1,4 @@
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 
@@ -7,8 +8,8 @@ namespace StockAdvisor.Infrastructure.Services.DataInitializer
     {
         protected readonly IUserService UserService;
         protected readonly ILogger<InputDataBuilder> Logger;
-        protected int CreatedInstanceId = 0;
-        protected dynamic NewResourceToAdd;
+
+        private int _createdInstanceId = 0;
 
         public InputDataBuilder(IUserService userService, ILogger<InputDataBuilder> logger)
         {
@@ -16,17 +17,20 @@ namespace StockAdvisor.Infrastructure.Services.DataInitializer
             Logger = logger;
         }
         
-        public async Task<dynamic> Build()
+        public async Task<UserWrapperForTesting> Build()
         {
-            CreateNewResource();
-            await AddToRepos();
-            Log();
+            var newUser = CreateNewResource();
+            await AddToRepos(newUser);
+            Log(newUser);
 
-            return NewResourceToAdd;
+            return newUser;
         }
 
-        protected abstract void CreateNewResource();
-        protected abstract Task AddToRepos();
-        protected abstract void Log();
+        protected int GetNewInstaceId()
+            => Interlocked.Increment(ref _createdInstanceId);
+
+        protected abstract UserWrapperForTesting CreateNewResource();
+        protected abstract Task AddToRepos(UserWrapperForTesting user);
+        protected abstract void Log(UserWrapperForTesting user);
     }
 }

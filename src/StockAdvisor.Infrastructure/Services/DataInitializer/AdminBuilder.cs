@@ -1,5 +1,4 @@
 using System;
-using System.Dynamic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using StockAdvisor.Core.Domain;
@@ -13,34 +12,27 @@ namespace StockAdvisor.Infrastructure.Services.DataInitializer
         {
         }
 
-        protected override void CreateNewResource()
+        protected override UserWrapperForTesting CreateNewResource()
         {
-            int i = CreatedInstanceId;
-            CreatedInstanceId++;
+            int i = GetNewInstaceId();
 
-            dynamic newAdmin = new ExpandoObject();
-
-            newAdmin.Id = Guid.NewGuid();
-            newAdmin.Email = $"admin{i}@admin.com";
-            newAdmin.FirstName = $"Leo{i}";;
-            newAdmin.SurName = $"Messi{i}";
-            newAdmin.Role =  UserRole.Admin;
-            newAdmin.Password = $"SuperSecret{i}";
-
-            NewResourceToAdd = newAdmin;
+            return new UserWrapperForTesting(
+                Guid.NewGuid(),
+                $"admin{i}@admin.com",
+                $"Leo{i}",
+                $"Messi{i}",
+                $"SuperSecret{i}",
+                UserRole.Admin);
         }
 
-        protected override async Task AddToRepos()
-        {
-            dynamic newAdmin = NewResourceToAdd;
+        protected override async Task AddToRepos(UserWrapperForTesting newUser)
+            => await UserService.RegisterAsync(
+                newUser.Id, newUser.Email, newUser.FirstName, newUser.SurName, newUser.Password,
+                newUser.Role);
 
-            await UserService.RegisterAsync(newAdmin.Id, newAdmin.Email, newAdmin.FirstName,
-                newAdmin.SurName, newAdmin.Password, newAdmin.Role);
-        }
-
-        protected override void Log()
+        protected override void Log(UserWrapperForTesting newUser)
         {
-            Logger.LogTrace($"Created admin for the email: {NewResourceToAdd.Email}.");
+            Logger.LogTrace($"Created admin for the email: {newUser.Email}.");
         }
     }
 }

@@ -41,7 +41,7 @@ namespace StockAdvisor.Tests.Unit.Core
         //Given
             
         //When
-            Action act = () =>
+            void act() => 
                 new User(_guid, "invalidEmail", _validFirstName, _validSurName,
                     _validPasswordHash, _validPasswordSalt, _role);
 
@@ -55,7 +55,7 @@ namespace StockAdvisor.Tests.Unit.Core
         //Given
             
         //When
-            Action act = () =>
+            void act() => 
                 new User(_guid, _validEmail, "", _validSurName, _validPasswordHash,
                     _validPasswordSalt, _role);
 
@@ -69,7 +69,7 @@ namespace StockAdvisor.Tests.Unit.Core
         //Given
             
         //When
-            Action act = () =>
+            void act() => 
                 new User(_guid, _validEmail, _validFirstName, "", _validPasswordHash,
                     _validPasswordSalt, _role);
 
@@ -83,7 +83,7 @@ namespace StockAdvisor.Tests.Unit.Core
         //Given
             
         //When
-            Action act = () =>
+            void act() => 
                 new User(_guid, _validEmail, _validFirstName, _validSurName, "",
                     _validPasswordSalt, _role);
 
@@ -204,7 +204,7 @@ namespace StockAdvisor.Tests.Unit.Core
             string newSalt = "newSalt4465d4saf654sd6f";
 
         //When
-            Action act = () => user.SetPassword(newPwHash, newSalt);
+            void act() => user.SetPassword(newPwHash, newSalt);
 
         //Then
             Assert.Throws<ArgumentException>(act);
@@ -220,7 +220,7 @@ namespace StockAdvisor.Tests.Unit.Core
             string newPwHash = "newSalt4465d4saf654sd6f";
 
         //When
-            Action act = () => user.SetPassword(newPwHash, newSalt);
+            void act() => user.SetPassword(newPwHash, newSalt);
 
         //Then
             Assert.Throws<ArgumentException>(act);
@@ -234,7 +234,7 @@ namespace StockAdvisor.Tests.Unit.Core
             string newPwHash = "newSalt4465d4saf654sd6f";
 
         //When
-            Action act = () => user.SetPassword(newPwHash, _validPasswordSalt);
+            void act() => user.SetPassword(newPwHash, _validPasswordSalt);
 
         //Then
             Assert.Throws<ArgumentException>(act);
@@ -248,7 +248,7 @@ namespace StockAdvisor.Tests.Unit.Core
             string newSalt = "newSalt4465d4saf654sd6f";
 
         //When
-            Action act = () => user.SetPassword(_validPasswordHash, newSalt);
+            void act() => user.SetPassword(_validPasswordHash, newSalt);
 
         //Then
             Assert.Throws<ArgumentException>(act);
@@ -264,7 +264,7 @@ namespace StockAdvisor.Tests.Unit.Core
             string newSalt = "newSalt4465d4saf654sd6f";
 
         //When
-            Action act = () => user.SetPassword(pwHash, newSalt);
+            void act() => user.SetPassword(pwHash, newSalt);
 
         //Then
             Assert.Throws<ArgumentException>(act);

@@ -1,5 +1,4 @@
 using System;
-using System.Dynamic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using StockAdvisor.Core.Domain;
@@ -13,34 +12,27 @@ namespace StockAdvisor.Infrastructure.Services.DataInitializer
         {
         }
 
-        protected override void CreateNewResource()
+        protected override UserWrapperForTesting CreateNewResource()
         {
-            int i = CreatedInstanceId;
-            CreatedInstanceId++;
+            int i = GetNewInstaceId();
 
-            dynamic newUser = new ExpandoObject();
-
-            newUser.Id = Guid.NewGuid();
-            newUser.Email = $"user_without_investor{i}@test.com";
-            newUser.FirstName = $"Sylvester{i}";;
-            newUser.SurName = $"Stalone{i}";
-            newUser.Role =  UserRole.User;
-            newUser.Password = $"Secret{i}";
-
-            NewResourceToAdd = newUser;
+            return new UserWrapperForTesting(
+                Guid.NewGuid(),
+                $"user_without_investor{i}@test.com",
+                $"Sylvester{i}",
+                $"Stalone{i}",
+                $"Secret{i}",
+                UserRole.User);
         }
 
-        protected override async Task AddToRepos()
-        {
-            dynamic newUser = NewResourceToAdd;
+        protected override async Task AddToRepos(UserWrapperForTesting newUser)
+            => await UserService.RegisterAsync(
+                newUser.Id, newUser.Email, newUser.FirstName, newUser.SurName, newUser.Password,
+                newUser.Role);
 
-            await UserService.RegisterAsync(newUser.Id, newUser.Email, newUser.FirstName,
-                newUser.SurName, newUser.Password, newUser.Role);
-        }
-
-        protected override void Log()
+        protected override void Log(UserWrapperForTesting newUser)
         {
-            Logger.LogTrace($"Created user without investor for the email: {NewResourceToAdd.Email}.");
+            Logger.LogTrace($"Created user without investor for the email: {newUser.Email}.");
         }
     }
 }

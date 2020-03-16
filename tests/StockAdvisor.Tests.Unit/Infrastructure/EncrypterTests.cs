@@ -48,7 +48,7 @@ namespace StockAdvisor.Tests.Unit.Infrastructure
             string password = "Secret1.";
 
         //When
-            Action act = () => encrypter.GetHash(password, "");
+            void act() => encrypter.GetHash(password, "");
 
         //Then
             Assert.Throws<ArgumentException>(act);

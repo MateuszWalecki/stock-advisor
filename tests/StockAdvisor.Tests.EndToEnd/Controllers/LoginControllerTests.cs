@@ -21,7 +21,7 @@ namespace StockAdvisor.Tests.EndToEnd.Controllers
         {
         //Given
             var client = Factory.CreateClient();
-            dynamic user = await AddUserWithInvestorToRepoAndGetAsync();
+            var user = await AddUserWithInvestorToRepoAndGetAsync();
 
             var command = new LoginCommand
             {
@@ -47,7 +47,7 @@ namespace StockAdvisor.Tests.EndToEnd.Controllers
         {
         //Given
             var client = Factory.CreateClient();
-            dynamic user = await AddUserWithInvestorToRepoAndGetAsync();
+            var user = await AddUserWithInvestorToRepoAndGetAsync();
 
             var command = new LoginCommand
             {
@@ -71,7 +71,7 @@ namespace StockAdvisor.Tests.EndToEnd.Controllers
         {
         //Given
             var client = Factory.CreateClient();
-            dynamic user = await AddUserWithInvestorToRepoAndGetAsync();
+            var user = await AddUserWithInvestorToRepoAndGetAsync();
 
             var command = new LoginCommand
             {
