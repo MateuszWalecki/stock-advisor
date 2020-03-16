@@ -5,6 +5,7 @@
 
 trigger:
 - master
+- develop
 
 pool:
   vmImage: 'windows-latest'
@@ -37,7 +38,7 @@ steps:
       !**\obj\**
     searchFolder: '$(System.DefaultWorkingDirectory)\tests\StockAdvisor.Tests.Unit'
     
-- task: VSTest@3
+- task: VSTest@2
   inputs:
     testSelector: 'testAssemblies'
     testAssemblyVer2: |

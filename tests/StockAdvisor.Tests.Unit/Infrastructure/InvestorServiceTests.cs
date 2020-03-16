@@ -165,7 +165,7 @@ namespace StockAdvisor.Tests.Unit.Infrastructure
                 mapperMock.Object);
 
         //When
-            Func<Task> act = () => investorService.RegisterAsync(investor.UserId);
+            Task act() => investorService.RegisterAsync(investor.UserId);
 
         //Then
             await Assert.ThrowsAsync<InvestorExistsSerExc>(act);
@@ -195,7 +195,7 @@ namespace StockAdvisor.Tests.Unit.Infrastructure
                 mapperMock.Object);
 
         //When
-            Func<Task> act = () => investorService.RegisterAsync(investor.UserId);
+            Task act() => investorService.RegisterAsync(investor.UserId);
 
         //Then
             await Assert.ThrowsAsync<UserNotFoundSerExc>(act);
@@ -259,7 +259,7 @@ namespace StockAdvisor.Tests.Unit.Infrastructure
                 mapperMock.Object);
 
         //When
-            Func<Task> act = () => 
+            Task act() => 
                 investorService.AddToFavouriteCompaniesAsync(user.Id, company.Symbol);
             
         //Then
@@ -354,7 +354,7 @@ namespace StockAdvisor.Tests.Unit.Infrastructure
                 mapperMock.Object);
 
         //When
-            Func<Task> act = () => 
+            Task act() => 
                 investorService.AddToFavouriteCompaniesAsync(investor.UserId, company.Symbol);
 
         //Then
@@ -387,7 +387,7 @@ namespace StockAdvisor.Tests.Unit.Infrastructure
                 mapperMock.Object);
 
         //When
-            Func<Task> act = () => 
+            Task act() => 
                 investorService.AddToFavouriteCompaniesAsync(investor.UserId, "BAD_COMPANY_SYMBOL");
 
         //Then
@@ -451,7 +451,7 @@ namespace StockAdvisor.Tests.Unit.Infrastructure
                 mapperMock.Object);
 
         //When
-            Func<Task> act = () => investorService.RemoveFromFavouriteCompaniesAsync(user.Id, companySymbol);
+            Task act() => investorService.RemoveFromFavouriteCompaniesAsync(user.Id, companySymbol);
             
         //Then
             await Assert.ThrowsAsync<InvestorNotFoundSerExc>(act);
@@ -480,7 +480,7 @@ namespace StockAdvisor.Tests.Unit.Infrastructure
                 mapperMock.Object);
 
         //When
-            Func<Task> act = () 
+            Task act()
                 => investorService.RemoveFromFavouriteCompaniesAsync(investor.UserId,
                                                                      companySymbol);
             
@@ -770,7 +770,7 @@ namespace StockAdvisor.Tests.Unit.Infrastructure
                 mapperMock.Object);
                 
         //When
-            Func<Task> act = () => investorService.RemoveAsync(investor.UserId);
+            Task act() => investorService.RemoveAsync(investor.UserId);
 
         //Then
             await Assert.ThrowsAsync<InvestorNotFoundSerExc>(act);

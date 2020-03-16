@@ -187,7 +187,7 @@ namespace StockAdvisor.Tests.Unit.Infrastructure
                 predictorProviderMock.Object, mapperMock.Object);
 
         //When
-            Func<Task> act = () => comapnyService.PredictValues(company.Symbol, algorithm);
+            Task act() => comapnyService.PredictValues(company.Symbol, algorithm);
 
         //Then
             await Assert.ThrowsAsync<WrongCompanySymbolSerExc>(act);
