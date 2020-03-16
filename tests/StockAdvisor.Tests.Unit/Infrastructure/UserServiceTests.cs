@@ -179,7 +179,7 @@ namespace StockAdvisor.Tests.Unit.Infrastructure
                 encrypterMock.Object, mapperMock.Object);
 
         //When 
-            Func<Task> act = () => userService.RegisterAsync(_id, _email, _firstname, _surname,
+            Task act() => userService.RegisterAsync(_id, _email, _firstname, _surname,
                 _password, _role); 
 
             // Then
@@ -202,7 +202,7 @@ namespace StockAdvisor.Tests.Unit.Infrastructure
                 encrypterMock.Object, mapperMock.Object);
 
         //When
-            Func<Task> act = () => userService.LoginAsync(_email, _password);
+            Task act() => userService.LoginAsync(_email, _password);
             
         //Then
             await Assert.ThrowsAsync<InvalidCredentialsSerExc>(act);
@@ -252,7 +252,7 @@ namespace StockAdvisor.Tests.Unit.Infrastructure
                 encrypterMock.Object, mapperMock.Object);
 
         //When
-            Func<Task> act = () => userService.LoginAsync(_email, _password);
+            Task act() => userService.LoginAsync(_email, _password);
             
         //Then
             await Assert.ThrowsAsync<InvalidCredentialsSerExc>(act);
@@ -342,7 +342,7 @@ namespace StockAdvisor.Tests.Unit.Infrastructure
                 encrypterMock.Object, mapperMock.Object);
 
         //When
-            Func<Task> act = () => userService.ChangeUserPasswordAsync(user.Id, newPassword,
+            Task act() => userService.ChangeUserPasswordAsync(user.Id, newPassword,
                 It.IsAny<string>());
         
         //Then
@@ -371,7 +371,7 @@ namespace StockAdvisor.Tests.Unit.Infrastructure
                 encrypterMock.Object, mapperMock.Object);
 
         //When
-            Func<Task> act = () => userService.ChangeUserPasswordAsync(user.Id, newPassword,
+           Task act() => userService.ChangeUserPasswordAsync(user.Id, newPassword,
                 oldPassword);
         
         //Then
@@ -395,7 +395,7 @@ namespace StockAdvisor.Tests.Unit.Infrastructure
                 encrypterMock.Object, mapperMock.Object);
 
         //When
-            Func<Task> act = () => userService.ChangeUserPasswordAsync(user.Id, _validPassword,
+            Task act() => userService.ChangeUserPasswordAsync(user.Id, _validPassword,
                 It.IsAny<string>());
         
         //Then
@@ -423,7 +423,7 @@ namespace StockAdvisor.Tests.Unit.Infrastructure
                 encrypterMock.Object, mapperMock.Object);
 
         //When
-            Func<Task> act = () => userService.ChangeUserPasswordAsync(user.Id, oldAndNewPassword,
+            Task act() => userService.ChangeUserPasswordAsync(user.Id, oldAndNewPassword,
                 oldAndNewPassword);
         
         //Then
@@ -492,7 +492,7 @@ namespace StockAdvisor.Tests.Unit.Infrastructure
                 encrypterMock.Object, mapperMock.Object);
 
         //When
-            Func<Task> act = () => userService.ChangeUserEmailAsync(user.Id, It.IsAny<string>(),
+            Task act() => userService.ChangeUserEmailAsync(user.Id, It.IsAny<string>(),
                 It.IsAny<string>());
         
         //Then
@@ -517,7 +517,7 @@ namespace StockAdvisor.Tests.Unit.Infrastructure
                 encrypterMock.Object, mapperMock.Object);
 
         //When
-            Func<Task> act = () => userService.ChangeUserEmailAsync(user.Id, It.IsAny<string>(),
+            Task act() => userService.ChangeUserEmailAsync(user.Id, It.IsAny<string>(),
                 It.IsAny<string>());
         
         //Then
@@ -547,7 +547,7 @@ namespace StockAdvisor.Tests.Unit.Infrastructure
                 encrypterMock.Object, mapperMock.Object);
 
         //When
-            Func<Task> act = () => userService.ChangeUserEmailAsync(user.Id, password,
+            Task act() => userService.ChangeUserEmailAsync(user.Id, password,
                 newEmail);
         
         //Then
@@ -575,7 +575,7 @@ namespace StockAdvisor.Tests.Unit.Infrastructure
                 encrypterMock.Object, mapperMock.Object);
 
         //When
-            Func<Task> act = () => userService.ChangeUserEmailAsync(user.Id, password,
+            Task act() => userService.ChangeUserEmailAsync(user.Id, password,
                 user.Email);
         
         //Then

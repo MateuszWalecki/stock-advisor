@@ -25,7 +25,7 @@ namespace StockAdvisor.Tests.Unit.Infrastructure
             var provider = new ValuePredictorProvider(predictors);
 
         //When
-            Action act = () => provider.GetPredictor(id);
+            void act() => provider.GetPredictor(id);
 
         //Then
             Assert.Throws<InvalidOperationException>(act);
@@ -46,7 +46,7 @@ namespace StockAdvisor.Tests.Unit.Infrastructure
             var provider = new ValuePredictorProvider(predictors);
 
         //When
-            Action act = () => provider.GetPredictor(otherId);
+            void act() => provider.GetPredictor(otherId);
 
         //Then
             Assert.Throws<WrongAlgorithmNameSerExc>(act);
